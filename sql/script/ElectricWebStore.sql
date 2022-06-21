@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `electronicwebstore` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `electronicwebstore`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: electronicwebstore
@@ -51,12 +53,12 @@ DROP TABLE IF EXISTS `cart_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cart_items` (
-  `CartID` int unsigned NOT NULL,
+  `CartUUID` int unsigned NOT NULL,
   `ProductID` char(15) NOT NULL,
   `Quantity` mediumint unsigned NOT NULL,
-  PRIMARY KEY (`CartID`),
+  PRIMARY KEY (`CartUUID`),
   KEY `ProductID FK_idx` (`ProductID`),
-  CONSTRAINT `CartID FK` FOREIGN KEY (`CartID`) REFERENCES `shopping_cart` (`CartID`) ON UPDATE CASCADE,
+  CONSTRAINT `CartUUID FK1` FOREIGN KEY (`CartUUID`) REFERENCES `shopping_cart` (`CartUUID`) ON UPDATE CASCADE,
   CONSTRAINT `ProductID FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -203,11 +205,11 @@ DROP TABLE IF EXISTS `manufacturer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `manufacturer` (
-  `ManufacturerID` char(10) NOT NULL,
+  `ManufacturerID` int unsigned NOT NULL AUTO_INCREMENT,
   `ManufacturerName` varchar(50) NOT NULL,
   PRIMARY KEY (`ManufacturerID`),
   UNIQUE KEY `ManufacturerName_UNIQUE` (`ManufacturerName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,8 +218,40 @@ CREATE TABLE `manufacturer` (
 
 LOCK TABLES `manufacturer` WRITE;
 /*!40000 ALTER TABLE `manufacturer` DISABLE KEYS */;
-INSERT INTO `manufacturer` VALUES ('SS5945','SamSung');
+INSERT INTO `manufacturer` VALUES (2,'Apple\n'),(4,'OPPO'),(5,'RealMe'),(1,'SamSung'),(3,'XiaoMi');
 /*!40000 ALTER TABLE `manufacturer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `offers_by_brand_and_category`
+--
+
+DROP TABLE IF EXISTS `offers_by_brand_and_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `offers_by_brand_and_category` (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `CategoryID` int unsigned NOT NULL,
+  `BrandID` int unsigned NOT NULL,
+  `OfferDescription` varchar(200) NOT NULL,
+  `OfferDetailedLink` varchar(200) NOT NULL,
+  `StartDate` datetime NOT NULL,
+  `EndDate` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `CategoryID New FK_idx` (`CategoryID`),
+  KEY `BrandID FK_idx` (`BrandID`),
+  CONSTRAINT `BrandID FK` FOREIGN KEY (`BrandID`) REFERENCES `manufacturer` (`ManufacturerID`) ON UPDATE CASCADE,
+  CONSTRAINT `CategoryID New FK` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `offers_by_brand_and_category`
+--
+
+LOCK TABLES `offers_by_brand_and_category` WRITE;
+/*!40000 ALTER TABLE `offers_by_brand_and_category` DISABLE KEYS */;
+/*!40000 ALTER TABLE `offers_by_brand_and_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -230,18 +264,19 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ProductID` char(15) NOT NULL,
   `ProductName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
-  `Price` decimal(15,3) unsigned DEFAULT NULL,
-  `ManufacturerID` char(10) NOT NULL,
+  `Price` decimal(15,0) unsigned DEFAULT NULL,
+  `ManufacturerID` int unsigned NOT NULL,
   `CategoryID` int unsigned NOT NULL,
   `ProductWarranty` int NOT NULL,
   `Image` varchar(300) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
   `InterestRate` decimal(3,3) unsigned NOT NULL,
   `Exclusive` tinyint unsigned NOT NULL,
   `AccessoriesIncluded` varchar(200) NOT NULL,
+  `Enabled` tinyint unsigned NOT NULL,
   PRIMARY KEY (`ProductID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   KEY `CategoryID FK_idx` (`CategoryID`),
-  KEY `BrandID FK_idx` (`ManufacturerID`),
+  KEY `ManufacturerID FK_idx` (`ManufacturerID`),
   CONSTRAINT `CategoryID FK` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`) ON UPDATE CASCADE,
   CONSTRAINT `ManufacturerID FK` FOREIGN KEY (`ManufacturerID`) REFERENCES `manufacturer` (`ManufacturerID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -253,7 +288,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES ('SSGA4824','SamSung Galaxy A48',560.000,'SS5945',2,12,'sadfasfasfasfasdfasfsa',0.000,1,'');
+INSERT INTO `product` VALUES ('AP13456','Apple Iphone 13 Pro Max',25890000,2,2,24,'cvszcsdfgdsgdsgdfs',0.500,0,'Box, manual guide, SIM picker, Lightning-Type C charger',1),('SSGA123','SamSung Galaxy A12',12500000,1,2,24,'sdfgsdfgsdghdfgjdfhdg',0.000,1,'Ear-phone, Type C charger, manual guide, touch pen',1);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -348,7 +383,7 @@ DROP TABLE IF EXISTS `product_discount`;
 CREATE TABLE `product_discount` (
   `DiscountID` int unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` char(15) NOT NULL,
-  `DiscountedPrice` decimal(15,3) unsigned NOT NULL,
+  `DiscountedPrice` decimal(15,0) unsigned NOT NULL,
   `DiscountPercent` int unsigned NOT NULL,
   `StartDate` datetime NOT NULL,
   `EndDate` datetime NOT NULL,
@@ -402,12 +437,9 @@ DROP TABLE IF EXISTS `product_offers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_offers` (
-  `OfferID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ProductOfferID` int unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` char(15) NOT NULL,
-  `OfferDescription` varchar(400) DEFAULT NULL,
-  `StarDate` datetime NOT NULL,
-  `EndDate` datetime NOT NULL,
-  PRIMARY KEY (`OfferID`),
+  PRIMARY KEY (`ProductOfferID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `ProductDealID FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -420,6 +452,86 @@ CREATE TABLE `product_offers` (
 LOCK TABLES `product_offers` WRITE;
 /*!40000 ALTER TABLE `product_offers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `product_offers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_offers_details`
+--
+
+DROP TABLE IF EXISTS `product_offers_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_offers_details` (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ProductOfferID` int unsigned NOT NULL,
+  `OfferID` int unsigned NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `OfferID_idx` (`ProductOfferID`),
+  KEY `New OfferID FK_idx` (`OfferID`),
+  CONSTRAINT `New OfferID FK` FOREIGN KEY (`OfferID`) REFERENCES `offers_by_brand_and_category` (`ID`) ON UPDATE CASCADE,
+  CONSTRAINT `OfferID` FOREIGN KEY (`ProductOfferID`) REFERENCES `product_offers` (`ProductOfferID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_offers_details`
+--
+
+LOCK TABLES `product_offers_details` WRITE;
+/*!40000 ALTER TABLE `product_offers_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_offers_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_review`
+--
+
+DROP TABLE IF EXISTS `product_review`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_review` (
+  `ReviewID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ProductID` char(15) NOT NULL,
+  PRIMARY KEY (`ReviewID`),
+  UNIQUE KEY `ProductID_UNIQUE` (`ProductID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_review`
+--
+
+LOCK TABLES `product_review` WRITE;
+/*!40000 ALTER TABLE `product_review` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_review` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `product_review_details`
+--
+
+DROP TABLE IF EXISTS `product_review_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_review_details` (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ReviewID` int unsigned NOT NULL,
+  `ReviewerName` varchar(100) NOT NULL,
+  `ReviewContent` mediumtext NOT NULL,
+  `Rating` int unsigned NOT NULL,
+  `ImageGalleryPath` text NOT NULL,
+  `ReviewerPhoneNumber` int DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_review_details`
+--
+
+LOCK TABLES `product_review_details` WRITE;
+/*!40000 ALTER TABLE `product_review_details` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_review_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -445,7 +557,6 @@ CREATE TABLE `product_specification` (
 
 LOCK TABLES `product_specification` WRITE;
 /*!40000 ALTER TABLE `product_specification` DISABLE KEYS */;
-INSERT INTO `product_specification` VALUES (1,'SSGA4824','{\n	\"random\": \"36\",\n	\"random float\": \"2.553\",\n	\"bool\": \"false\",\n	\"date\": \"1983-06-11\",\n	\"regEx\": \"helloooooooooooooooooooooooooooooooooooooooooooooooooooooooo world\",\n	\"enum\": \"generator\",\n	\"firstname\": \"Deedee\",\n	\"lastname\": \"Allys\",\n	\"city\": \"Ho Chi Minh City\",\n	\"country\": \"Heard Island and Mcdonald Islands\",\n	\"countryCode\": \"PW\",\n	\"email uses current data\": \"Deedee.Allys@gmail.com\",\n	\"email from expression\": \"Deedee.Allys@yopmail.com\",\n	\"array\": [\n		\"Shannah\",\n		\"Marline\",\n		\"Maryellen\",\n		\"Tatiania\",\n		\"Consuela\"\n	],\n	\"array of objects\": [\n		{\n			\"index\": \"0\",\n			\"index start at 5\": \"5\"\n		},\n		{\n			\"index\": \"1\",\n			\"index start at 5\": \"6\"\n		},\n		{\n			\"index\": \"2\",\n			\"index start at 5\": \"7\"\n		}\n	],\n	\"Cherilyn\": {\n		\"age\": \"71\"\n	}\n}');
 /*!40000 ALTER TABLE `product_specification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -476,6 +587,35 @@ LOCK TABLES `product_unboxing_review` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `product_variant`
+--
+
+DROP TABLE IF EXISTS `product_variant`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `product_variant` (
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ProductVariantID` char(15) NOT NULL,
+  `OriginalProductID` char(15) NOT NULL,
+  `ProductVariantName` varchar(100) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ProductVariantID_UNIQUE` (`ProductVariantID`),
+  KEY `OriginalProductID FK_idx` (`OriginalProductID`),
+  CONSTRAINT `OriginalProductID FK` FOREIGN KEY (`OriginalProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
+  CONSTRAINT `ProductVariantID FK` FOREIGN KEY (`ProductVariantID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `product_variant`
+--
+
+LOCK TABLES `product_variant` WRITE;
+/*!40000 ALTER TABLE `product_variant` DISABLE KEYS */;
+/*!40000 ALTER TABLE `product_variant` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `promotecode`
 --
 
@@ -487,9 +627,10 @@ CREATE TABLE `promotecode` (
   `PromoteCodeName` char(50) DEFAULT NULL,
   `PromoteCodeDescription` varchar(400) DEFAULT NULL,
   `PromotionType` enum('Percent','Amount') NOT NULL,
-  `Discount` decimal(10,3) unsigned NOT NULL,
+  `Discount` decimal(10,0) unsigned NOT NULL,
   `StartDate` datetime NOT NULL,
   `EndDate` datetime NOT NULL,
+  `Enabled` tinyint unsigned NOT NULL,
   PRIMARY KEY (`PromoteCodeID`),
   UNIQUE KEY `PromoteCode_UNIQUE` (`PromoteCodeName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -537,7 +678,7 @@ DROP TABLE IF EXISTS `shopping_bill`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shopping_bill` (
   `BillID` int NOT NULL,
-  `CustomerID` int NOT NULL,
+  `CartUUID` int unsigned NOT NULL,
   `TimeCreated` datetime NOT NULL,
   `PromoteCode` char(50) DEFAULT 'No Promote Code',
   PRIMARY KEY (`BillID`),
@@ -545,6 +686,8 @@ CREATE TABLE `shopping_bill` (
   UNIQUE KEY `PromoteCode_UNIQUE` (`PromoteCode`),
   KEY `PromoteCode FK_idx` (`PromoteCode`),
   KEY `PromoteCode FK index` (`PromoteCode`),
+  KEY `CartID FK_idx` (`CartUUID`),
+  CONSTRAINT `CartID FK` FOREIGN KEY (`CartUUID`) REFERENCES `shopping_cart` (`CartUUID`) ON UPDATE CASCADE,
   CONSTRAINT `PromoteCode FK` FOREIGN KEY (`PromoteCode`) REFERENCES `promotecode` (`PromoteCodeName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -566,15 +709,15 @@ DROP TABLE IF EXISTS `shopping_cart`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `shopping_cart` (
-  `CartID` int unsigned NOT NULL AUTO_INCREMENT,
-  `CustomerID` int unsigned NOT NULL,
+  `ID` int unsigned NOT NULL AUTO_INCREMENT,
+  `CartUUID` int unsigned NOT NULL,
   `Active` tinyint NOT NULL,
-  `PromoteCode` char(50) DEFAULT 'No promote code',
-  PRIMARY KEY (`CartID`),
-  UNIQUE KEY `PromoteCode_UNIQUE` (`PromoteCode`),
-  KEY `CustomerID FK_idx` (`CustomerID`),
-  CONSTRAINT `CustomerID FK` FOREIGN KEY (`CustomerID`) REFERENCES `customer` (`CustomerID`) ON UPDATE CASCADE,
-  CONSTRAINT `PromoteCode FK1` FOREIGN KEY (`PromoteCode`) REFERENCES `promotecode` (`PromoteCodeName`)
+  `PromoteCodeID` int unsigned NOT NULL,
+  `Enabled` tinyint unsigned NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `CartUUID_UNIQUE` (`CartUUID`),
+  KEY `PromoteCode FK1_idx` (`PromoteCodeID`),
+  CONSTRAINT `PromoteCode FK1` FOREIGN KEY (`PromoteCodeID`) REFERENCES `promotecode` (`PromoteCodeID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -603,6 +746,7 @@ CREATE TABLE `store` (
   `CityID` int unsigned NOT NULL,
   `DistrictID` int unsigned NOT NULL,
   `WardID` int unsigned NOT NULL,
+  `Enabled` tinyint unsigned NOT NULL,
   PRIMARY KEY (`StoreID`),
   KEY `CItyID FK_idx` (`CityID`),
   KEY `WardID FK_idx` (`WardID`),
@@ -633,6 +777,7 @@ CREATE TABLE `store_products_in_stock` (
   `ProductID` char(15) NOT NULL,
   `StoreID` int unsigned NOT NULL,
   `Quantity` int unsigned NOT NULL,
+  `LocalPrice` decimal(15,0) unsigned NOT NULL,
   PRIMARY KEY (`ProductID`),
   KEY `StoreID FK_idx` (`StoreID`),
   CONSTRAINT `ProductID FKK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
@@ -715,4 +860,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-17  9:46:46
+-- Dump completed on 2022-06-21 16:15:49
