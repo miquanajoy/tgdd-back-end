@@ -680,14 +680,15 @@ CREATE TABLE `shopping_bill` (
   `BillID` int NOT NULL,
   `CartUUID` int unsigned NOT NULL,
   `TimeCreated` datetime NOT NULL,
-  `PromoteCodeID` int unsigned NOT NULL,
+  `PromoteCode` char(50) DEFAULT 'No Promote Code',
   PRIMARY KEY (`BillID`),
   UNIQUE KEY `BillID_UNIQUE` (`BillID`),
-  KEY `PromoteCode FK_idx` (`PromoteCodeID`),
-  KEY `PromoteCode FK index` (`PromoteCodeID`),
+  UNIQUE KEY `PromoteCode_UNIQUE` (`PromoteCode`),
+  KEY `PromoteCode FK_idx` (`PromoteCode`),
+  KEY `PromoteCode FK index` (`PromoteCode`),
   KEY `CartID FK_idx` (`CartUUID`),
   CONSTRAINT `CartID FK` FOREIGN KEY (`CartUUID`) REFERENCES `shopping_cart` (`CartUUID`) ON UPDATE CASCADE,
-  CONSTRAINT `PromoteID FK` FOREIGN KEY (`PromoteCodeID`) REFERENCES `promotecode` (`PromoteCodeID`) ON UPDATE CASCADE
+  CONSTRAINT `PromoteCode FK` FOREIGN KEY (`PromoteCode`) REFERENCES `promotecode` (`PromoteCodeName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -773,13 +774,13 @@ DROP TABLE IF EXISTS `store_products_in_stock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `store_products_in_stock` (
-  `StoreID` int unsigned NOT NULL,
   `ProductID` char(15) NOT NULL,
+  `StoreID` int unsigned NOT NULL,
   `Quantity` int unsigned NOT NULL,
   `LocalPrice` decimal(15,0) unsigned NOT NULL,
-  PRIMARY KEY (`StoreID`),
-  KEY `ProductIdentifier FK_idx` (`ProductID`),
-  CONSTRAINT `New ProductIdentifier FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
+  PRIMARY KEY (`ProductID`),
+  KEY `StoreID FK_idx` (`StoreID`),
+  CONSTRAINT `ProductID FKK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
   CONSTRAINT `StoreID FK` FOREIGN KEY (`StoreID`) REFERENCES `store` (`StoreID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -859,4 +860,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-23 15:25:43
+-- Dump completed on 2022-06-21 16:15:49
