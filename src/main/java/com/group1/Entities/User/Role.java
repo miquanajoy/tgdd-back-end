@@ -1,4 +1,4 @@
-package com.group1.Entities;
+package com.group1.Entities.User;
 
 import java.io.Serializable;
 

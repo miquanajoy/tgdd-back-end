@@ -1,16 +1,17 @@
-package com.group1.Entities;
+package com.group1.Entities.Product;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "product_variant")
 public class ProductVariant implements Serializable{
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer ID;
 	private Product ProductVariantID;
 	private Product OriginalProductID;

@@ -1,10 +1,12 @@
-package com.group1.Entities;
+package com.group1.Entities.Store;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.group1.Entities.Product.Product;
 
 @Entity
 @Table(name = "store_products_in_stock")
@@ -13,12 +15,12 @@ public class StoreProductInStock implements Serializable{
 	private Product ProductID;
 	private Store StoreID;
 	private Integer Quantity;
-	private Double LocalPrice;
+	private int LocalPrice;
 
 	public StoreProductInStock() {
 	}
 
-	public StoreProductInStock(Product productID, Store storeID, Integer quantity, Double localPrice) {
+	public StoreProductInStock(Product productID, Store storeID, Integer quantity, int localPrice) {
 		super();
 		ProductID = productID;
 		StoreID = storeID;
@@ -50,11 +52,11 @@ public class StoreProductInStock implements Serializable{
 		Quantity = quantity;
 	}
 
-	public Double getLocalPrice() {
+	public int getLocalPrice() {
 		return LocalPrice;
 	}
 
-	public void setLocalPrice(Double localPrice) {
+	public void setLocalPrice(int localPrice) {
 		LocalPrice = localPrice;
 	}
 

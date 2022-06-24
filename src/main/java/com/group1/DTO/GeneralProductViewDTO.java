@@ -1,12 +1,11 @@
 package com.group1.DTO;
 
-import java.math.BigDecimal;
-
-public class GeneralProductViewDTO {
+public class GeneralProductViewDTO{
+	
 	String pName;
-	BigDecimal pPrice;
+	int pPrice;
 	int pWarranty;
-	BigDecimal pInterestRate;
+	double pInterestRate;
 	boolean pExclusive;
 	String pAccessories;
 	boolean pEnabled;
@@ -15,7 +14,7 @@ public class GeneralProductViewDTO {
 		
 	}
 
-	public GeneralProductViewDTO(String pName, BigDecimal pPrice, int pWarranty, BigDecimal pInterestRate,
+	public GeneralProductViewDTO(String pName, int pPrice, int pWarranty, double pInterestRate,
 			boolean pExclusive, String pAccessories, boolean pEnabled) {
 		super();
 		this.pName = pName;
@@ -35,11 +34,11 @@ public class GeneralProductViewDTO {
 		this.pName = pName;
 	}
 
-	public BigDecimal getpPrice() {
+	public int getpPrice() {
 		return pPrice;
 	}
 
-	public void setpPrice(BigDecimal pPrice) {
+	public void setpPrice(int pPrice) {
 		this.pPrice = pPrice;
 	}
 
@@ -51,11 +50,11 @@ public class GeneralProductViewDTO {
 		this.pWarranty = pWarranty;
 	}
 
-	public BigDecimal getpInterestRate() {
+	public double getpInterestRate() {
 		return pInterestRate;
 	}
 
-	public void setpInterestRate(BigDecimal pInterestRate) {
+	public void setpInterestRate(double pInterestRate) {
 		this.pInterestRate = pInterestRate;
 	}
 
@@ -83,6 +82,11 @@ public class GeneralProductViewDTO {
 		this.pEnabled = pEnabled;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "GeneralProductViewDTO:\n\tpName=" + pName + " \n\tpPrice=" + pPrice + " \n\tpWarranty=" + pWarranty
+				+ " \n\tpInterestRate=" + pInterestRate + " \n\tpExclusive=" + pExclusive + " \n\tpAccessories="
+				+ pAccessories + " \n\tpEnabled=" + pEnabled;
+	}
 
 }

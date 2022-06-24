@@ -1,4 +1,4 @@
-package com.group1.Entities;
+package com.group1.Entities.Shopping;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

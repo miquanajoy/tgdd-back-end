@@ -1,24 +1,25 @@
-package com.group1.Entities;
+package com.group1.Entities.Product;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "product_unboxing_review")
-public class ProductUnboxingReview implements Serializable{
-	@Id @GeneratedValue
+@Table(name = "product_camera_shots")
+public class ProductCameraShot implements Serializable{
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer ID;
 	private Product ProductID;
 	private String ImageGalleryPath;
 
-	public ProductUnboxingReview() {
+	public ProductCameraShot() {
 	}
 
-	public ProductUnboxingReview(Integer iD, Product productID, String imageGalleryPath) {
+	public ProductCameraShot(Integer iD, Product productID, String imageGalleryPath) {
 		super();
 		ID = iD;
 		ProductID = productID;
@@ -50,4 +51,5 @@ public class ProductUnboxingReview implements Serializable{
 	}
 
 	
+
 }
