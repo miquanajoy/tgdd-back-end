@@ -264,12 +264,12 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `ProductID` char(15) NOT NULL,
   `ProductName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
-  `Price` decimal(15,0) unsigned DEFAULT NULL,
+  `Price` int unsigned DEFAULT NULL,
   `ManufacturerID` int unsigned NOT NULL,
   `CategoryID` int unsigned NOT NULL,
   `ProductWarranty` int NOT NULL,
   `Image` varchar(300) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `InterestRate` decimal(3,3) unsigned NOT NULL,
+  `InterestRate` double(3,2) unsigned NOT NULL,
   `Exclusive` tinyint unsigned NOT NULL,
   `AccessoriesIncluded` varchar(200) NOT NULL,
   `Enabled` tinyint unsigned NOT NULL,
@@ -288,7 +288,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES ('AP13456','Apple Iphone 13 Pro Max',25890000,2,2,24,'cvszcsdfgdsgdsgdfs',0.500,0,'Box, manual guide, SIM picker, Lightning-Type C charger',1),('SSGA123','SamSung Galaxy A12',12500000,1,2,24,'sdfgsdfgsdghdfgjdfhdg',0.000,1,'Ear-phone, Type C charger, manual guide, touch pen',1);
+INSERT INTO `product` VALUES ('AP13456','Apple Iphone 13 Pro Max',25890000,2,2,24,'cvszcsdfgdsgdsgdfs',0.50,0,'Box, manual guide, SIM picker, Lightning-Type C charger',1),('SSGA123','SamSung Galaxy A12',12500000,1,2,24,'sdfgsdfgsdghdfgjdfhdg',0.00,1,'Ear-phone, Type C charger, manual guide, touch pen',1);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,14 +383,14 @@ DROP TABLE IF EXISTS `product_discount`;
 CREATE TABLE `product_discount` (
   `DiscountID` int unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` char(15) NOT NULL,
-  `DiscountedPrice` decimal(15,0) unsigned NOT NULL,
+  `DiscountedPrice` int unsigned NOT NULL,
   `DiscountPercent` int unsigned NOT NULL,
   `StartDate` datetime NOT NULL,
   `EndDate` datetime NOT NULL,
   PRIMARY KEY (`DiscountID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `ProductDiscount FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -399,6 +399,7 @@ CREATE TABLE `product_discount` (
 
 LOCK TABLES `product_discount` WRITE;
 /*!40000 ALTER TABLE `product_discount` DISABLE KEYS */;
+INSERT INTO `product_discount` VALUES (1,'SSGA123',10400000,17,'2022-06-24 17:08:00','2022-06-30 23:59:59');
 /*!40000 ALTER TABLE `product_discount` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -627,7 +628,7 @@ CREATE TABLE `promotecode` (
   `PromoteCodeName` char(50) DEFAULT NULL,
   `PromoteCodeDescription` varchar(400) DEFAULT NULL,
   `PromotionType` enum('Percent','Amount') NOT NULL,
-  `Discount` decimal(10,0) unsigned NOT NULL,
+  `Discount` int unsigned NOT NULL,
   `StartDate` datetime NOT NULL,
   `EndDate` datetime NOT NULL,
   `Enabled` tinyint unsigned NOT NULL,
@@ -776,7 +777,7 @@ CREATE TABLE `store_products_in_stock` (
   `StoreID` int unsigned NOT NULL,
   `ProductID` char(15) NOT NULL,
   `Quantity` int unsigned NOT NULL,
-  `LocalPrice` decimal(15,0) unsigned NOT NULL,
+  `LocalPrice` int unsigned NOT NULL,
   PRIMARY KEY (`StoreID`),
   KEY `ProductIdentifier FK_idx` (`ProductID`),
   CONSTRAINT `New ProductIdentifier FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
@@ -859,4 +860,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-23 15:25:43
+-- Dump completed on 2022-06-24 23:14:59

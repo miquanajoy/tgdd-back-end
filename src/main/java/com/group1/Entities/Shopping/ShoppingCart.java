@@ -1,16 +1,17 @@
-package com.group1.Entities;
+package com.group1.Entities.Shopping;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "shopping_cart")
 public class ShoppingCart implements Serializable{
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private Integer cartUUId;// Universal unique ID
 	private Boolean active;

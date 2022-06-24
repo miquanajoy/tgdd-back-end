@@ -1,27 +1,30 @@
-package com.group1.Entities;
+package com.group1.Entities.Product;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "product_camera_shots")
-public class ProductCameraShot implements Serializable{
-	@Id @GeneratedValue
+@Table(name = "product_color_variant")
+public class ProductColorVariant implements Serializable{
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer ID;
 	private Product ProductID;
+	private Color ColorID;
 	private String ImageGalleryPath;
 
-	public ProductCameraShot() {
+	public ProductColorVariant() {
 	}
 
-	public ProductCameraShot(Integer iD, Product productID, String imageGalleryPath) {
+	public ProductColorVariant(Integer iD, Product productID, Color colorID, String imageGalleryPath) {
 		super();
 		ID = iD;
 		ProductID = productID;
+		ColorID = colorID;
 		ImageGalleryPath = imageGalleryPath;
 	}
 
@@ -39,6 +42,14 @@ public class ProductCameraShot implements Serializable{
 
 	public void setProductID(Product productID) {
 		ProductID = productID;
+	}
+
+	public Color getColorID() {
+		return ColorID;
+	}
+
+	public void setColorID(Color colorID) {
+		ColorID = colorID;
 	}
 
 	public String getImageGalleryPath() {

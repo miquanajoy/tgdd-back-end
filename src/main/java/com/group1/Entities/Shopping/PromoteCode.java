@@ -1,20 +1,21 @@
-package com.group1.Entities;
+package com.group1.Entities.Shopping;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class PromoteCode implements Serializable{
-	@Id @GeneratedValue
-	private Integer PromoteCodeID;
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int PromoteCodeID;
 	private String PromoteCodeName;
 	private String PromoteCodeDescription;
 	private Enum PromotionType;
-	private Double Discount;
+	private int Discount;
 	private LocalDateTime StartDate;
 	private LocalDateTime EndDate;
 	private Boolean Enabled;
@@ -22,8 +23,8 @@ public class PromoteCode implements Serializable{
 	public PromoteCode() {
 	}
 
-	public PromoteCode(Integer promoteCodeID, String promoteCodeName, String promoteCodeDescription, Enum promotionType,
-			Double discount, LocalDateTime startDate, LocalDateTime endDate, Boolean enabled) {
+	public PromoteCode(int promoteCodeID, String promoteCodeName, String promoteCodeDescription, Enum promotionType,
+			int discount, LocalDateTime startDate, LocalDateTime endDate, Boolean enabled) {
 		super();
 		PromoteCodeID = promoteCodeID;
 		PromoteCodeName = promoteCodeName;
@@ -35,11 +36,11 @@ public class PromoteCode implements Serializable{
 		Enabled = enabled;
 	}
 
-	public Integer getPromoteCodeID() {
+	public int getPromoteCodeID() {
 		return PromoteCodeID;
 	}
 
-	public void setPromoteCodeID(Integer promoteCodeID) {
+	public void setPromoteCodeID(int promoteCodeID) {
 		PromoteCodeID = promoteCodeID;
 	}
 
@@ -67,11 +68,11 @@ public class PromoteCode implements Serializable{
 		PromotionType = promotionType;
 	}
 
-	public Double getDiscount() {
+	public int getDiscount() {
 		return Discount;
 	}
 
-	public void setDiscount(Double discount) {
+	public void setDiscount(int discount) {
 		Discount = discount;
 	}
 

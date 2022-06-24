@@ -1,14 +1,15 @@
-package com.group1.Entities;
+package com.group1.Entities.Store;
 
 import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Store implements Serializable{
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer StoreID;
 	private String StoreName;
 	private String Address;
@@ -17,13 +18,13 @@ public class Store implements Serializable{
 	private City CityID;
 	private District DistrictID;
 	private Ward WardID;
-	private Boolean Enable;
+	private Boolean Enabled;
 
 	public Store() {
 	}
 
 	public Store(Integer storeID, String storeName, String address, String openingHours, String imageGalleryPath,
-			City cityID, District districtID, Ward wardID, Boolean enable) {
+			City cityID, District districtID, Ward wardID, Boolean enabled) {
 		super();
 		StoreID = storeID;
 		StoreName = storeName;
@@ -33,7 +34,7 @@ public class Store implements Serializable{
 		CityID = cityID;
 		DistrictID = districtID;
 		WardID = wardID;
-		Enable = enable;
+		Enabled = enabled;
 	}
 
 	public Integer getStoreID() {
@@ -100,12 +101,12 @@ public class Store implements Serializable{
 		WardID = wardID;
 	}
 
-	public Boolean getEnable() {
-		return Enable;
+	public Boolean getEnabled() {
+		return Enabled;
 	}
 
-	public void setEnable(Boolean enable) {
-		Enable = enable;
+	public void setEnable(Boolean enabled) {
+		Enabled = enabled;
 	}
 
 	

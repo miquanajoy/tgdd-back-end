@@ -1,4 +1,4 @@
-package com.group1.Entities;
+package com.group1.Entities.Product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -7,22 +7,25 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Product implements Serializable{
 	@Id 
 	private String ProductID;
 	private String ProductName;
-	private BigDecimal Price;
+	private int Price;
 	@ManyToOne
 	@JoinColumn(name = "ManufacturerID")
 	private Manufacturer ManufacturerID;
 	@ManyToOne
 	@JoinColumn(name = "CategoryID")
 	private Category CategoryID;
-	private Integer ProductWarranty;
+	@OneToOne(mappedBy = "ProductIdentifier")
+	private ProductDiscount discount;
+	private int ProductWarranty;
 	private String Image;
-	private BigDecimal InterestRate;
+	private double InterestRate;
 	private Boolean Exclusive;
 	private String AccessoriesIncluded;
 	private Boolean Enabled;
@@ -30,8 +33,8 @@ public class Product implements Serializable{
 	public Product() {
 	}
 
-	public Product(String productID, String productName, BigDecimal price, Manufacturer manufacturerID, Category categoryID,
-			Integer productWarranty, String image, BigDecimal interestRate, Boolean exclusive, String accessoriesIncluded,
+	public Product(String productID, String productName, int price, Manufacturer manufacturerID, Category categoryID,
+			int productWarranty, String image, double interestRate, Boolean exclusive, String accessoriesIncluded,
 			Boolean enabled) {
 		super();
 		ProductID = productID;
@@ -63,11 +66,11 @@ public class Product implements Serializable{
 		ProductName = productName;
 	}
 
-	public BigDecimal getPrice() {
+	public int getPrice() {
 		return Price;
 	}
 
-	public void setPrice(BigDecimal price) {
+	public void setPrice(int price) {
 		Price = price;
 	}
 
@@ -87,11 +90,11 @@ public class Product implements Serializable{
 		CategoryID = categoryID;
 	}
 
-	public Integer getProductWarranty() {
+	public int getProductWarranty() {
 		return ProductWarranty;
 	}
 
-	public void setProductWarranty(Integer productWarranty) {
+	public void setProductWarranty(int productWarranty) {
 		ProductWarranty = productWarranty;
 	}
 
@@ -103,11 +106,11 @@ public class Product implements Serializable{
 		Image = image;
 	}
 
-	public BigDecimal getInterestRate() {
+	public double getInterestRate() {
 		return InterestRate;
 	}
 
-	public void setInterestRate(BigDecimal interestRate) {
+	public void setInterestRate(double interestRate) {
 		InterestRate = interestRate;
 	}
 
@@ -133,14 +136,6 @@ public class Product implements Serializable{
 
 	public void setEnabled(Boolean enabled) {
 		Enabled = enabled;
-	}
-
-	@Override
-	public String toString() {
-		return "Product:\n\tProductID=" + ProductID + " \n\tProductName=" + ProductName + " \n\tPrice=" + Price
-				+ " \n\tManufacturerID=" + ManufacturerID + " \n\tCategoryID=" + CategoryID + " \n\tProductWarranty="
-				+ ProductWarranty + " \n\tImage=" + Image + " \n\tInterestRate=" + InterestRate + " \n\tExclusive="
-				+ Exclusive + " \n\tAccessoriesIncluded=" + AccessoriesIncluded + " \n\tEnabled=" + Enabled;
 	}
 
 	
