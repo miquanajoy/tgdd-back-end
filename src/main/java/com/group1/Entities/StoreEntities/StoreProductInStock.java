@@ -1,4 +1,4 @@
-package com.group1.Entities.Store;
+package com.group1.Entities.StoreEntities;
 
 import java.io.Serializable;
 
@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.group1.Entities.Product.Product;
+import com.group1.Entities.ProductEntities.Product;
 
 @Entity
 @Table(name = "store_products_in_stock")

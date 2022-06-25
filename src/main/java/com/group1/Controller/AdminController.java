@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.group1.DTO.GeneralProductViewDTO;
 import com.group1.DTO.ProductDiscountDTO;
-import com.group1.Entities.Product.Product;
+import com.group1.Entities.ProductEntities.Product;
 import com.group1.Service.ProductService;
 
 @Controller

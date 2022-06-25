@@ -7,22 +7,22 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.group1.DTO.GeneralProductViewDTO;
 import com.group1.DTO.ProductDiscountDTO;
-import com.group1.Entities.Product.Product;
+import com.group1.Entities.ProductEntities.Product;
 
 
 public interface ProductRepo extends JpaRepository<Product, String>{
 
-	@Query("Select new com.group1.DTO.GeneralProductViewDTO(p.ProductName, p.Price, p.ProductWarranty, p.InterestRate, p.Exclusive"
-			+ ", p.AccessoriesIncluded, p.Enabled) "
+	@Query("Select new com.group1.DTO.GeneralProductViewDTO(p.productName, p.price, p.productWarranty, p.interestRate, p.exclusive"
+			+ ", p.accessoriesIncluded, p.enabled) "
 			+ "From Product p")
 	List<GeneralProductViewDTO> showAllProduct();
 	
-	@Query("Select new com.group1.DTO.ProductDiscountDTO(p.ProductID, p.ProductName, p.Price, m.ManufacturerName, c.CategoryName, "
-			+ "d.DiscountedPrice, d.DiscountPercent, d.StartDate, d.EndDate) "
+	@Query("Select new com.group1.DTO.ProductDiscountDTO(p.productID, p.productName, p.price, m.manufacturerName, c.categoryName, "
+			+ "d.discountedPrice, d.discountPercent, d.startDate, d.endDate) "
 			+ "From Product p "
-			+ "Join p.ManufacturerID m "
-			+ "join p.CategoryID c "
+			+ "Join p.manufacturerID m "
+			+ "join p.categoryID c "
 			+ "join p.discount d "
-			+ "Where m.ManufacturerID=?1 AND c.CategoryID=?2 And p.ProductID=?3 ")
+			+ "Where m.manufacturerID=?1 AND c.categoryID=?2 And p.productID=?3 ")
 	List<ProductDiscountDTO> showProductDiscount(int brandID, int cateID, String pID);
 }

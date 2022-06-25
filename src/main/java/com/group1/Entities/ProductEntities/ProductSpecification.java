@@ -1,4 +1,4 @@
-package com.group1.Entities.Product;
+package com.group1.Entities.ProductEntities;
 
 import java.io.Serializable;
 
