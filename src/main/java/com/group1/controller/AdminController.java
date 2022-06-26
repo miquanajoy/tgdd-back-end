@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.group1.entities.productEntities.Product;
+import com.group1.Entities.productEntities.Product;
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.service.ProductService;
