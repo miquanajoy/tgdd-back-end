@@ -1,4 +1,4 @@
-package com.group1.entities.productEntities;
+package com.group1.Entities.productEntities;
 
 import java.io.Serializable;
 //mqfixed
