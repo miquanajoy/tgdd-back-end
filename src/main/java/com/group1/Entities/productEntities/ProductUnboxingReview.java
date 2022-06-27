@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 //mqfixed
@@ -17,17 +19,26 @@ public class ProductUnboxingReview implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
+	
+	@OneToOne
+	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
+	private Product productUnboxingReviewIdentifier;
+	
 	@Column(name = "ProductID")
-	private Product productId;
+	private String productID;
+	
 	@Column(name = "ImageGalleryPath")
 	private String imageGalleryPath;
 
 	public ProductUnboxingReview() {
 	}
 
-	public ProductUnboxingReview(Integer id, Product productId, String imageGalleryPath) {
+	public ProductUnboxingReview(Integer id, Product productUnboxingReviewIdentifier, String productID,
+			String imageGalleryPath) {
+		super();
 		this.id = id;
-		this.productId = productId;
+		this.productUnboxingReviewIdentifier = productUnboxingReviewIdentifier;
+		this.productID = productID;
 		this.imageGalleryPath = imageGalleryPath;
 	}
 
@@ -39,12 +50,20 @@ public class ProductUnboxingReview implements Serializable {
 		this.id = id;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Product getProductUnboxingReviewIdentifier() {
+		return productUnboxingReviewIdentifier;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setProductUnboxingReviewIdentifier(Product productUnboxingReviewIdentifier) {
+		this.productUnboxingReviewIdentifier = productUnboxingReviewIdentifier;
+	}
+
+	public String getProductID() {
+		return productID;
+	}
+
+	public void setProductID(String productID) {
+		this.productID = productID;
 	}
 
 	public String getImageGalleryPath() {
@@ -55,4 +74,11 @@ public class ProductUnboxingReview implements Serializable {
 		this.imageGalleryPath = imageGalleryPath;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductUnboxingReview:\n\tid=" + id + " \n\tproductID=" + productID + " \n\timageGalleryPath="
+				+ imageGalleryPath;
+	}
+
+	
 }

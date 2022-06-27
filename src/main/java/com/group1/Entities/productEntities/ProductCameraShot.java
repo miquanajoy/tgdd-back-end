@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 //mqfixed
 @Entity
@@ -16,17 +18,26 @@ public class ProductCameraShot implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
+	
+	@OneToOne
+	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
+	private Product productCameraShotIdentifier;
+	
 	@Column(name = "ProductID")
-	private Product productId;
+	private String productID;
+	
 	@Column(name = "ImageGalleryPath")
 	private String imageGalleryPath;
 
 	public ProductCameraShot() {
 	}
 
-	public ProductCameraShot(Integer id, Product productId, String imageGalleryPath) {
+	public ProductCameraShot(Integer id, Product productCameraShotIdentifier, String productID,
+			String imageGalleryPath) {
+		super();
 		this.id = id;
-		this.productId = productId;
+		this.productCameraShotIdentifier = productCameraShotIdentifier;
+		this.productID = productID;
 		this.imageGalleryPath = imageGalleryPath;
 	}
 
@@ -38,12 +49,20 @@ public class ProductCameraShot implements Serializable{
 		this.id = id;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Product getProductCameraShotIdentifier() {
+		return productCameraShotIdentifier;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setProductCameraShotIdentifier(Product productCameraShotIdentifier) {
+		this.productCameraShotIdentifier = productCameraShotIdentifier;
+	}
+
+	public String getProductID() {
+		return productID;
+	}
+
+	public void setProductID(String productID) {
+		this.productID = productID;
 	}
 
 	public String getImageGalleryPath() {
@@ -54,8 +73,11 @@ public class ProductCameraShot implements Serializable{
 		this.imageGalleryPath = imageGalleryPath;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "ProductCameraShot:\n\tid=" + id + " \n\tproductID=" + productID + " \n\timageGalleryPath="
+				+ imageGalleryPath;
+	}
 
 	
-
 }

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 //mqfixed
 @Entity
@@ -16,19 +18,29 @@ public class ProductFeature implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
+	
+	@OneToOne
+	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
+	private Product productFeatureIdentifier;
+	
 	@Column(name = "ProductID")
-	private Product productId;
+	private String productID;
+	
 	@Column(name = "FeaturesVideoLink")
 	private String featuresVideoLink;
+	
 	@Column(name = "FeaturesGalleryPath")
 	private String featuresGalleryPath;
 
 	public ProductFeature() {
 	}
 
-	public ProductFeature(Integer id, Product productId, String featuresVideoLink, String featuresGalleryPath) {
+	public ProductFeature(Integer id, Product productFeatureIdentifier, String productID, String featuresVideoLink,
+			String featuresGalleryPath) {
+		super();
 		this.id = id;
-		this.productId = productId;
+		this.productFeatureIdentifier = productFeatureIdentifier;
+		this.productID = productID;
 		this.featuresVideoLink = featuresVideoLink;
 		this.featuresGalleryPath = featuresGalleryPath;
 	}
@@ -41,12 +53,20 @@ public class ProductFeature implements Serializable{
 		this.id = id;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Product getProductFeatureIdentifier() {
+		return productFeatureIdentifier;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setProductFeatureIdentifier(Product productFeatureIdentifier) {
+		this.productFeatureIdentifier = productFeatureIdentifier;
+	}
+
+	public String getProductID() {
+		return productID;
+	}
+
+	public void setProductID(String productID) {
+		this.productID = productID;
 	}
 
 	public String getFeaturesVideoLink() {
@@ -64,5 +84,12 @@ public class ProductFeature implements Serializable{
 	public void setFeaturesGalleryPath(String featuresGalleryPath) {
 		this.featuresGalleryPath = featuresGalleryPath;
 	}
+
+	@Override
+	public String toString() {
+		return "ProductFeature:\n\tid=" + id + " \n\tproductID=" + productID + " \n\tfeaturesVideoLink="
+				+ featuresVideoLink + " \n\tfeaturesGalleryPath=" + featuresGalleryPath;
+	}
+
 	
 }

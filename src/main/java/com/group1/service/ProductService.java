@@ -30,14 +30,18 @@ public class ProductService {
 		return pList;
 	}
 	
-	public List<ProductDiscountDTO> getProductDiscount(int a, int b, String c)
+	public ProductDiscountDTO getProductDiscount(int a, int b, String c)
 	{
-		List<ProductDiscountDTO> dList = productReposit.showProductDiscount(a,b,c);
-		for(ProductDiscountDTO d: dList) 
-		{
-			System.out.println(d);
-		}
+		ProductDiscountDTO pDiscount = productReposit.showProductDiscount(a,b,c);
+			System.out.println(pDiscount);
 		
-		return dList;
+		return pDiscount;
+	}
+	
+	public void saveNewProduct(Product toSaveProduct) 
+	{
+		System.out.println("Persist product review:");
+		System.out.println(toSaveProduct.toString());
+		productReposit.save(toSaveProduct);
 	}
 }

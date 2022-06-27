@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 //mqfixed
@@ -17,20 +20,35 @@ public class ProductVariant implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
+	
+	@OneToOne
+	@JoinColumn(name = "ProductVariantID", referencedColumnName = "ProductID", insertable = false, updatable = false)
+	private Product productVariantIdentifier;
+	
 	@Column(name = "ProductVariantID")
-	private Product productVariantId;
+	private String productVariantID;
+	
+	@ManyToOne
+	@JoinColumn(name="OriginalProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
+	private Product productOrigin;
+	
 	@Column(name = "OriginalProductID")
-	private Product originalProductId;
+	private String productOriginalIdentifier;
+	
 	@Column(name = "ProductVariantName")
 	private String productVariantName;
 
 	public ProductVariant() {
 	}
 
-	public ProductVariant(Integer id, Product productVariantId, Product originalProductId, String productVariantName) {
+	public ProductVariant(Integer id, Product productVariantIdentifier, String productVariantID, Product productOrigin,
+			String productOriginalIdentifier, String productVariantName) {
+		super();
 		this.id = id;
-		this.productVariantId = productVariantId;
-		this.originalProductId = originalProductId;
+		this.productVariantIdentifier = productVariantIdentifier;
+		this.productVariantID = productVariantID;
+		this.productOrigin = productOrigin;
+		this.productOriginalIdentifier = productOriginalIdentifier;
 		this.productVariantName = productVariantName;
 	}
 
@@ -42,20 +60,36 @@ public class ProductVariant implements Serializable {
 		this.id = id;
 	}
 
-	public Product getProductVariantId() {
-		return productVariantId;
+	public Product getProductVariantIdentifier() {
+		return productVariantIdentifier;
 	}
 
-	public void setProductVariantId(Product productVariantId) {
-		this.productVariantId = productVariantId;
+	public void setProductVariantIdentifier(Product productVariantIdentifier) {
+		this.productVariantIdentifier = productVariantIdentifier;
 	}
 
-	public Product getOriginalProductId() {
-		return originalProductId;
+	public String getProductVariantID() {
+		return productVariantID;
 	}
 
-	public void setOriginalProductId(Product originalProductId) {
-		this.originalProductId = originalProductId;
+	public void setProductVariantID(String productVariantID) {
+		this.productVariantID = productVariantID;
+	}
+
+	public Product getProductOrigin() {
+		return productOrigin;
+	}
+
+	public void setProductOrigin(Product productOrigin) {
+		this.productOrigin = productOrigin;
+	}
+
+	public String getProductOriginalIdentifier() {
+		return productOriginalIdentifier;
+	}
+
+	public void setProductOriginalIdentifier(String productOriginalIdentifier) {
+		this.productOriginalIdentifier = productOriginalIdentifier;
 	}
 
 	public String getProductVariantName() {
@@ -66,4 +100,12 @@ public class ProductVariant implements Serializable {
 		this.productVariantName = productVariantName;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductVariant:\n\tid=" + id + " \n\tproductVariantID=" + productVariantID
+				+ " \n\tproductOriginalIdentifier=" + productOriginalIdentifier + " \n\tproductVariantName="
+				+ productVariantName;
+	}
+
+	
 }

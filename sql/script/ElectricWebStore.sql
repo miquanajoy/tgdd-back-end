@@ -4,7 +4,7 @@ USE `electronicwebstore`;
 --
 -- Host: localhost    Database: electronicwebstore
 -- ------------------------------------------------------
--- Server version	8.0.29
+-- Server version	8.0.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -81,7 +81,7 @@ DROP TABLE IF EXISTS `category`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
   `CategoryID` int unsigned NOT NULL AUTO_INCREMENT,
-  `CategoryName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `CategoryName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `ParentID` int unsigned NOT NULL,
   PRIMARY KEY (`CategoryID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -128,10 +128,10 @@ DROP TABLE IF EXISTS `color`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `color` (
-  `ColorID` char(20) NOT NULL,
+  `ColorID` int unsigned NOT NULL AUTO_INCREMENT,
   `ColorName` varchar(50) NOT NULL,
   PRIMARY KEY (`ColorID`),
-  UNIQUE KEY `ColorID_UNIQUE` (`ColorID`)
+  UNIQUE KEY `ColorName_UNIQUE` (`ColorName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -153,13 +153,13 @@ DROP TABLE IF EXISTS `customer`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customer` (
   `CustomerID` int unsigned NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `PhoneNumber` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `FullName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `PhoneNumber` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `Gender` char(10) NOT NULL,
-  `Address` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `CIty` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `District` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `Ward` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `Address` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `CIty` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `District` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Ward` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `Active` tinyint NOT NULL,
   PRIMARY KEY (`CustomerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -184,6 +184,7 @@ DROP TABLE IF EXISTS `district`;
 CREATE TABLE `district` (
   `DistrictID` int unsigned NOT NULL AUTO_INCREMENT,
   `DistrictName` varchar(100) NOT NULL,
+  `DistricName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`DistrictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -209,7 +210,7 @@ CREATE TABLE `manufacturer` (
   `ManufacturerName` varchar(50) NOT NULL,
   PRIMARY KEY (`ManufacturerID`),
   UNIQUE KEY `ManufacturerName_UNIQUE` (`ManufacturerName`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,7 +219,7 @@ CREATE TABLE `manufacturer` (
 
 LOCK TABLES `manufacturer` WRITE;
 /*!40000 ALTER TABLE `manufacturer` DISABLE KEYS */;
-INSERT INTO `manufacturer` VALUES (2,'Apple\n'),(4,'OPPO'),(5,'RealMe'),(1,'SamSung'),(3,'XiaoMi');
+INSERT INTO `manufacturer` VALUES (2,'Apple\n'),(4,'OPPO'),(5,'RealMe'),(1,'Samsung'),(3,'XiaoMi');
 /*!40000 ALTER TABLE `manufacturer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -263,12 +264,12 @@ DROP TABLE IF EXISTS `product`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
   `ProductID` char(15) NOT NULL,
-  `ProductName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
+  `ProductName` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `Price` int unsigned DEFAULT NULL,
   `ManufacturerID` int unsigned NOT NULL,
   `CategoryID` int unsigned NOT NULL,
   `ProductWarranty` int NOT NULL,
-  `Image` varchar(300) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `Image` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `InterestRate` double(3,2) unsigned NOT NULL,
   `Exclusive` tinyint unsigned NOT NULL,
   `AccessoriesIncluded` varchar(200) NOT NULL,
@@ -288,7 +289,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES ('AP13456','Apple Iphone 13 Pro Max',25890000,2,2,24,'cvszcsdfgdsgdsgdfs',0.50,0,'Box, manual guide, SIM picker, Lightning-Type C charger',1),('SSGA123','SamSung Galaxy A12',12500000,1,2,24,'sdfgsdfgsdghdfgjdfhdg',0.00,1,'Ear-phone, Type C charger, manual guide, touch pen',1);
+INSERT INTO `product` VALUES ('AP13456','Apple Iphone 13 Pro Max',25890000,2,2,24,'cvszcsdfgdsgdsgdfs',0.50,0,'Box, manual guide, SIM picker, Lightning-Type C charger',1),('SSGA123','SamSung Galaxy A12',12500000,1,2,24,'sdfgsdfgsdghdfgjdfhdg',0.00,1,'Ear-phone, Type C charger, manual guide, touch pen',1),('SSGN1234','Samsung Galaxy Note A7',14680000,1,2,24,'aasdklfjaklsfj',4.20,1,'Charger, mnanualguide, earphone',1);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +307,7 @@ CREATE TABLE `product_article` (
   PRIMARY KEY (`ArticleID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `ProductID FK2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,6 +316,7 @@ CREATE TABLE `product_article` (
 
 LOCK TABLES `product_article` WRITE;
 /*!40000 ALTER TABLE `product_article` DISABLE KEYS */;
+INSERT INTO `product_article` VALUES (7,'SSGN1234','LinkURL');
 /*!40000 ALTER TABLE `product_article` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,7 +334,7 @@ CREATE TABLE `product_camera_shots` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `ProductIDENTIFIER FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,6 +343,7 @@ CREATE TABLE `product_camera_shots` (
 
 LOCK TABLES `product_camera_shots` WRITE;
 /*!40000 ALTER TABLE `product_camera_shots` DISABLE KEYS */;
+INSERT INTO `product_camera_shots` VALUES (1,'SSGN1234','slfghsdkl');
 /*!40000 ALTER TABLE `product_camera_shots` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,12 +357,12 @@ DROP TABLE IF EXISTS `product_color_variant`;
 CREATE TABLE `product_color_variant` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` char(15) NOT NULL,
-  `ColorID` char(20) NOT NULL,
+  `ColorID` int unsigned NOT NULL,
   `ImageGalleryPath` varchar(300) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ProductID FK 3_idx` (`ProductID`),
   KEY `ColorID FK_idx` (`ColorID`),
-  CONSTRAINT `ColorID FK` FOREIGN KEY (`ColorID`) REFERENCES `color` (`ColorID`) ON UPDATE CASCADE,
+  CONSTRAINT `ColorID FK1` FOREIGN KEY (`ColorID`) REFERENCES `color` (`ColorID`) ON UPDATE CASCADE,
   CONSTRAINT `ProductID FK 3` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -418,7 +421,7 @@ CREATE TABLE `product_feature` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `FK ProductID ` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -427,6 +430,7 @@ CREATE TABLE `product_feature` (
 
 LOCK TABLES `product_feature` WRITE;
 /*!40000 ALTER TABLE `product_feature` DISABLE KEYS */;
+INSERT INTO `product_feature` VALUES (1,'SSGN1234','asdfasdf','slasdf');
 /*!40000 ALTER TABLE `product_feature` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -549,7 +553,7 @@ CREATE TABLE `product_specification` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `FK1 ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -558,6 +562,7 @@ CREATE TABLE `product_specification` (
 
 LOCK TABLES `product_specification` WRITE;
 /*!40000 ALTER TABLE `product_specification` DISABLE KEYS */;
+INSERT INTO `product_specification` VALUES (2,'SSGN1234','asdlfasdfklas');
 /*!40000 ALTER TABLE `product_specification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -575,7 +580,7 @@ CREATE TABLE `product_unboxing_review` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `Product Identifier FK` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -584,6 +589,7 @@ CREATE TABLE `product_unboxing_review` (
 
 LOCK TABLES `product_unboxing_review` WRITE;
 /*!40000 ALTER TABLE `product_unboxing_review` DISABLE KEYS */;
+INSERT INTO `product_unboxing_review` VALUES (1,'SSGN1234','asdlfkasfskl');
 /*!40000 ALTER TABLE `product_unboxing_review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -604,7 +610,7 @@ CREATE TABLE `product_variant` (
   KEY `OriginalProductID FK_idx` (`OriginalProductID`),
   CONSTRAINT `OriginalProductID FK` FOREIGN KEY (`OriginalProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE,
   CONSTRAINT `ProductVariantID FK` FOREIGN KEY (`ProductVariantID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -613,6 +619,7 @@ CREATE TABLE `product_variant` (
 
 LOCK TABLES `product_variant` WRITE;
 /*!40000 ALTER TABLE `product_variant` DISABLE KEYS */;
+INSERT INTO `product_variant` VALUES (1,'SSGA123','SSGN1234','256GB');
 /*!40000 ALTER TABLE `product_variant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -655,7 +662,7 @@ DROP TABLE IF EXISTS `role`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role` (
   `RoleID` char(10) NOT NULL,
-  `RoleName` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
+  `RoleName` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   PRIMARY KEY (`RoleID`),
   UNIQUE KEY `RoleID_UNIQUE` (`RoleID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -803,10 +810,10 @@ DROP TABLE IF EXISTS `user`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
   `UserID` char(10) NOT NULL,
-  `FirstName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
-  `LastName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci DEFAULT NULL,
-  `UserName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
-  `PassWord` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8_general_ci NOT NULL,
+  `FirstName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `LastName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `UserName` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `PassWord` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `RoleID` char(10) NOT NULL,
   `Enabled` tinyint DEFAULT NULL,
   `Status` tinyint DEFAULT NULL,
@@ -860,4 +867,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-24 23:14:59
+-- Dump completed on 2022-06-27 12:57:50

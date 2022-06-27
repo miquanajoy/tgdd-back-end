@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 //mqfixed
@@ -17,20 +19,33 @@ public class ProductColorVariant implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name="ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false) 
+	private Product productColorVariantIdentifier;
+	
 	@Column(name = "ProductID")
-	private Product productId;
+	private String productID;
+	
+	@ManyToOne
+	@JoinColumn(name="ColorID", referencedColumnName = "ColorID", insertable = false, updatable = false) 
+	private Color color;
+	
 	@Column(name = "ColorID")
-	private Color colorId;
+	private Integer colorID;
+	
 	@Column(name = "ImageGalleryPath")
 	private String imageGalleryPath;
 
 	public ProductColorVariant() {
 	}
 
-	public ProductColorVariant(Integer id, Product productId, Color colorId, String imageGalleryPath) {
+	public ProductColorVariant(Integer id, Product productColorVariantIdentifier, String productID, Integer colorId, String imageGalleryPath) {
+		super();
 		this.id = id;
-		this.productId = productId;
-		this.colorId = colorId;
+		this.productColorVariantIdentifier = productColorVariantIdentifier;
+		this.productID = productID;
+		this.colorID = colorId;
 		this.imageGalleryPath = imageGalleryPath;
 	}
 
@@ -42,20 +57,28 @@ public class ProductColorVariant implements Serializable {
 		this.id = id;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Product getProductColorVariantIdentifier() {
+		return productColorVariantIdentifier;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setProductColorVariantIdentifier(Product productColorVariantIdentifier) {
+		this.productColorVariantIdentifier = productColorVariantIdentifier;
 	}
 
-	public Color getColorId() {
-		return colorId;
+	public String getProductID() {
+		return productID;
 	}
 
-	public void setColorId(Color colorId) {
-		this.colorId = colorId;
+	public void setProductID(String productID) {
+		this.productID = productID;
+	}
+
+	public Integer getColorID() {
+		return colorID;
+	}
+
+	public void setColorID(Integer colorID) {
+		this.colorID = colorID;
 	}
 
 	public String getImageGalleryPath() {
@@ -65,5 +88,13 @@ public class ProductColorVariant implements Serializable {
 	public void setImageGalleryPath(String imageGalleryPath) {
 		this.imageGalleryPath = imageGalleryPath;
 	}
+
+	@Override
+	public String toString() {
+		return "ProductColorVariant:\n\tid=" + id + " \n\tproductID=" + productID + " \n\tcolorId=" + colorID
+				+ " \n\timageGalleryPath=" + imageGalleryPath;
+	}
+
+	
 
 }

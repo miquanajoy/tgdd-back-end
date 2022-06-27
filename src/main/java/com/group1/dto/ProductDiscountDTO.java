@@ -7,11 +7,11 @@ public class ProductDiscountDTO {
 
 	String productID;
 	String productName;
-	int productPrice;
+	Integer productPrice;
 	String brandName;
 	String categoryName;
-	int discountedPrice;
-	int discountPercent;
+	Integer discountedPrice;
+	Integer discountPercent;
 	LocalDateTime discountStart;
 	LocalDateTime discountEnd;
 	
@@ -19,8 +19,8 @@ public class ProductDiscountDTO {
 		
 	}
 
-	public ProductDiscountDTO(String productID, String productName, int productPrice, String brandName,
-			String categoryName, int discountedPrice, int discountPercent, LocalDateTime discountStart,
+	public ProductDiscountDTO(String productID, String productName, Integer productPrice, String brandName,
+			String categoryName, Integer discountedPrice, Integer discountPercent, LocalDateTime discountStart,
 			LocalDateTime discountEnd) {
 		super();
 		this.productID = productID;
@@ -50,11 +50,11 @@ public class ProductDiscountDTO {
 		this.productName = productName;
 	}
 
-	public int getProductPrice() {
+	public Integer getProductPrice() {
 		return productPrice;
 	}
 
-	public void setProductPrice(int productPrice) {
+	public void setProductPrice(Integer productPrice) {
 		this.productPrice = productPrice;
 	}
 
@@ -74,39 +74,35 @@ public class ProductDiscountDTO {
 		this.categoryName = categoryName;
 	}
 
-	public int getDiscountedPrice() {
+	public Integer getDiscountedPrice() {
 		return discountedPrice;
 	}
 
-	public void setDiscountedPrice(int discountedPrice) {
+	public void setDiscountedPrice(Integer discountedPrice) {
 		this.discountedPrice = discountedPrice;
 	}
 
-	public int getDiscountPercent() {
+	public Integer getDiscountPercent() {
 		return discountPercent;
 	}
 
-	public void setDiscountPercent(int discountPercent) {
+	public void setDiscountPercent(Integer discountPercent) {
 		this.discountPercent = discountPercent;
 	}
 
 	public LocalDateTime getDiscountStart() {
-		
 		return discountStart;
 	}
 
 	public void setDiscountStart(LocalDateTime discountStart) {
-		this.discountStart =  discountStart;
+		this.discountStart = discountStart;
 	}
 
 	public LocalDateTime getDiscountEnd() {
-		
-		
 		return discountEnd;
 	}
 
 	public void setDiscountEnd(LocalDateTime discountEnd) {
-		
 		this.discountEnd = discountEnd;
 	}
 
