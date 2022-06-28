@@ -15,24 +15,24 @@ public class District implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "DistrictID")
-	private Integer districtId;
-	@Column(name = "DistricName")
+	private Integer districtID;
+	@Column(name = "DistrictName")
 	private String districtName;
 
 	public District() {
 	}
 
-	public District(Integer districtId, String districtName) {
-		this.districtId = districtId;
+	public District(Integer districtID, String districtName) {
+		this.districtID = districtID;
 		this.districtName = districtName;
 	}
 
-	public Integer getDistrictId() {
-		return districtId;
+	public Integer getDistrictID() {
+		return districtID;
 	}
 
-	public void setDistrictId(Integer districtId) {
-		this.districtId = districtId;
+	public void setDistrictID(Integer districtID) {
+		this.districtID = districtID;
 	}
 
 	public String getDistrictName() {

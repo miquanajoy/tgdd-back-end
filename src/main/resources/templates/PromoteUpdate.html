@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	Update promotion
+	<a th:href="@{/Admin/ViewPromote}">Back</a>
+	<div>
+		<form th:action="@{/Admin/UpdatePromote}" th:object="${PromoteUpdateForm}" method="post">
+			<br>
+			<div>
+				<span>Promotion Code ID</span>
+				<input type="text" th:field="*{promoteCodeID}" required maxlength="20" value="*{promoteCodeID}" readonly="readonly">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Name</span>
+				<input type="text" th:field="*{promoteCodeName}" required maxlength="20" value="*{promoteCodeName}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Description</span>
+				<input type="text" th:field="*{promoteCodeDescription}" required minlength="10" value="*{promoteCodeDescription}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Discount Percent</span>
+				<input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1" value="*{discountPercent}">
+			</div><br>
+			<div>
+				<span>Promotion Code Max Discount Amount</span>
+				<input type="number" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000" value="*{discountMaxAmount}">
+			</div><br>
+			<div>
+				<span>Promotion Code End Date</span>
+				<input type="datetime-local" th:field="*{endDateInput}" required value="*{endDateInput}">
+			</div><br>
+			<div>
+				<span>Promotion Code Enabling</span>
+				<input th:if="${PromoteUpdateForm.enabled == true}" type="radio" name="EnableCheck" value="Enable" required="required" checked="checked" 
+				id="enableButton">
+				<input th:unless="${PromoteUpdateForm.enabled == true}" type="radio" name="EnableCheck" value="Enable" required="required" 
+				id="enableButton">
+				<label for="enableButton">Enable</label> 
+          	  	<input th:if="${PromoteUpdateForm.enabled == false}" type="radio" name="EnableCheck" value="Disable" checked="checked" 
+				id="disableButton">
+				<input th:unless="${PromoteUpdateForm.enabled == false}" type="radio" name="EnableCheck" value="Disable" id="disableButton">
+				<label for="disableButton">Disable</label>
+			</div>
+			<input type="submit" value="Update Promote Code">
+			
+		</form>
+	</div>
+</body>
+</html>

@@ -15,24 +15,24 @@ public class City implements Serializable{
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CityID")
-	private String cityId;
+	private Integer cityID;
 	@Column(name = "CityName")
 	private String cityName;
 
 	public City() {
 	}
 
-	public City(String cityId, String cityName) {
-		this.cityId = cityId;
+	public City(Integer cityID, String cityName) {
+		this.cityID = cityID;
 		this.cityName = cityName;
 	}
 
-	public String getCityId() {
-		return cityId;
+	public Integer getCityID() {
+		return cityID;
 	}
 
-	public void setCityId(String cityId) {
-		this.cityId = cityId;
+	public void setCityID(Integer cityID) {
+		this.cityID = cityID;
 	}
 
 	public String getCityName() {
