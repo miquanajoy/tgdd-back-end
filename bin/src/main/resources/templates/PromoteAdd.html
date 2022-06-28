@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Add a promotion</title>
+</head>
+<body>
+	<span>Add a promotion</span>
+	<a th:href="@{/Admin/ViewPromote}">Back</a>
+	<div>
+		<form th:action="@{/Admin/CreatePromote}" th:object="${PromoteForm}" method="post">
+			<br>
+			<div>
+				<span>Promotion Code Name</span>
+				<input type="text" th:field="*{promoteCodeName}" required maxlength="20">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Description</span>
+				<input type="text" th:field="*{promoteCodeDescription}" required minlength="10">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Discount Percent</span>
+				<input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1">
+			</div><br>
+			<div>
+				<span>Promotion Code Max Discount Amount</span>
+				<input type="number" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000">
+			</div><br>
+			<div>
+				<span>Promotion Code End Date</span>
+				<input type="datetime-local" th:field="*{endDateInput}" required>
+			</div><br>
+			<div>
+				<span>Promotion Code Enabling</span>
+				<input type="radio" name="EnableCheck" value="Enable" required="required"> Enable
+          	  	<input type="radio" name="EnableCheck" value="Disable" > Disable
+			</div>
+			<input type="submit" value="Create Promote Code">
+			
+		</form>
+	</div>
+</body>
+</html>
