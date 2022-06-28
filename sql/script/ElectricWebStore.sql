@@ -128,10 +128,10 @@ DROP TABLE IF EXISTS `color`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `color` (
-  `ColorID` int unsigned NOT NULL AUTO_INCREMENT,
+  `ColorID` char(20) NOT NULL,
   `ColorName` varchar(50) NOT NULL,
   PRIMARY KEY (`ColorID`),
-  UNIQUE KEY `ColorName_UNIQUE` (`ColorName`)
+  UNIQUE KEY `ColorID_UNIQUE` (`ColorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -141,6 +141,7 @@ CREATE TABLE `color` (
 
 LOCK TABLES `color` WRITE;
 /*!40000 ALTER TABLE `color` DISABLE KEYS */;
+INSERT INTO `color` VALUES ('1','Blue'),('2','Yellow');
 /*!40000 ALTER TABLE `color` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,7 +185,6 @@ DROP TABLE IF EXISTS `district`;
 CREATE TABLE `district` (
   `DistrictID` int unsigned NOT NULL AUTO_INCREMENT,
   `DistrictName` varchar(100) NOT NULL,
-  `DistricName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`DistrictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -307,7 +307,7 @@ CREATE TABLE `product_article` (
   PRIMARY KEY (`ArticleID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `ProductID FK2` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -316,7 +316,7 @@ CREATE TABLE `product_article` (
 
 LOCK TABLES `product_article` WRITE;
 /*!40000 ALTER TABLE `product_article` DISABLE KEYS */;
-INSERT INTO `product_article` VALUES (7,'SSGN1234','LinkURL');
+INSERT INTO `product_article` VALUES (1,'SSGN1234','LinkURL');
 /*!40000 ALTER TABLE `product_article` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -357,14 +357,14 @@ DROP TABLE IF EXISTS `product_color_variant`;
 CREATE TABLE `product_color_variant` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `ProductID` char(15) NOT NULL,
-  `ColorID` int unsigned NOT NULL,
+  `ColorID` char(20) NOT NULL,
   `ImageGalleryPath` varchar(300) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `ProductID FK 3_idx` (`ProductID`),
   KEY `ColorID FK_idx` (`ColorID`),
-  CONSTRAINT `ColorID FK1` FOREIGN KEY (`ColorID`) REFERENCES `color` (`ColorID`) ON UPDATE CASCADE,
+  CONSTRAINT `ColorID FK` FOREIGN KEY (`ColorID`) REFERENCES `color` (`ColorID`) ON UPDATE CASCADE,
   CONSTRAINT `ProductID FK 3` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -373,6 +373,7 @@ CREATE TABLE `product_color_variant` (
 
 LOCK TABLES `product_color_variant` WRITE;
 /*!40000 ALTER TABLE `product_color_variant` DISABLE KEYS */;
+INSERT INTO `product_color_variant` VALUES (1,'SSGN1234','1','asdlfkasdfkla'),(2,'SSGN1234','2','telkjdsfa'),(3,'SSGA123','1','ertlkasdf');
 /*!40000 ALTER TABLE `product_color_variant` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -553,7 +554,7 @@ CREATE TABLE `product_specification` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ProductID_UNIQUE` (`ProductID`),
   CONSTRAINT `FK1 ProductID` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -562,7 +563,7 @@ CREATE TABLE `product_specification` (
 
 LOCK TABLES `product_specification` WRITE;
 /*!40000 ALTER TABLE `product_specification` DISABLE KEYS */;
-INSERT INTO `product_specification` VALUES (2,'SSGN1234','asdlfasdfklas');
+INSERT INTO `product_specification` VALUES (1,'SSGN1234','asdlfasdfklas');
 /*!40000 ALTER TABLE `product_specification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -634,14 +635,14 @@ CREATE TABLE `promotecode` (
   `PromoteCodeID` int unsigned NOT NULL AUTO_INCREMENT,
   `PromoteCodeName` char(50) DEFAULT NULL,
   `PromoteCodeDescription` varchar(400) DEFAULT NULL,
-  `PromotionType` enum('Percent','Amount') NOT NULL,
-  `Discount` int unsigned NOT NULL,
+  `DiscountPercent` int unsigned NOT NULL,
+  `DiscountMaxAmount` int unsigned NOT NULL,
   `StartDate` datetime NOT NULL,
   `EndDate` datetime NOT NULL,
   `Enabled` tinyint unsigned NOT NULL,
   PRIMARY KEY (`PromoteCodeID`),
   UNIQUE KEY `PromoteCode_UNIQUE` (`PromoteCodeName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -650,6 +651,7 @@ CREATE TABLE `promotecode` (
 
 LOCK TABLES `promotecode` WRITE;
 /*!40000 ALTER TABLE `promotecode` DISABLE KEYS */;
+INSERT INTO `promotecode` VALUES (1,'THSK412','Get a 10% discount in your shopping cart(Maximum 200 000đ))',10,200000,'2022-06-28 19:38:55','2022-07-30 19:59:00',1),(2,'GHIA224','10% percent off for all Samsung products maximum 200000',10,100000,'2022-06-28 19:36:38','2022-07-30 23:59:00',1),(3,'RKLAI','Get a 10% discount in your shopping cart',10,100000,'2022-06-28 19:35:29','2022-07-30 23:59:00',1);
 /*!40000 ALTER TABLE `promotecode` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -867,4 +869,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-27 12:57:50
+-- Dump completed on 2022-06-28 20:25:35

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<span>List of promotions</span>
+	<div>
+		<a th:href="@{/Admin/CreatePromote}">
+		Add a new promotion
+		</a>
+	</div>
+	<div>
+		<table>
+    		<tr>
+      	  		<th >No.</th>
+      	  		<th >Name</th>
+      	  		<th >Description</th>
+      	  		<th >Discount Percent</th>
+      	  		<th >Discount Amount</th>
+      	  		<th >Description</th>
+      	  		<th >Start Date</th>
+      	  		<th >End Date</th>
+      	  		<th >Action</th>
+      	 	 </tr>
+          	<tr th:if="${PromoteList!= null}" th:each="promote:${PromoteList}">
+          		<td th:utext="${promote.promoteCodeID}"></td>
+          		<td th:utext="${promote.promoteCodeName}"></td>
+          		<td th:utext="${promote.promoteCodeDescription}"></td>
+          		<td th:utext="${promote.discountPercent}+'%'"></td>
+          		<td th:utext="${#numbers.formatCurrency(promote.discountMaxAmount)}"></td>
+          		<td th:utext="${#temporals.format(promote.startDate, 'dd-MM-yyyy HH:mm')}"></td>
+          		<td th:utext="${#temporals.format(promote.endDate, 'dd-MM-yyyy HH:mm')}"></td>
+          		<td th:if="${promote.enabled== true}" th:utext="Enabled"></td>
+          		<td th:if="${promote.enabled== false}" th:utext="Disabled"></td>
+          		<td>
+          			<form th:action="@{/Admin/UpdatePromote/{promote} (promote=${promote.promoteCodeName}) }" method="get">
+          				<input type="submit" value="Update">
+          			</form>
+          		</td>
+          	</tr>
+      	</table>
+	</div>
+</body>
+</html>

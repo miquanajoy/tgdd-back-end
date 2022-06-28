@@ -9,51 +9,74 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+//import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-//mqfixed
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "promotecode")
+@DynamicInsert
+@DynamicUpdate
 public class PromoteCode implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "PromoteCodeID")
-	private Integer promoteCodeId;
+	private Integer promoteCodeID;
+	
 	@Column(name = "PromoteCodeName")
 	private String promoteCodeName;
+	
 	@Column(name = "PromoteCodeDescription")
 	private String promoteCodeDescription;
-	@Column(name = "PromotionType")
-	private Enum promotionType;
-	@Column(name = "Discount")
-	private Integer discount;
+	
+	@Column(name = "DiscountPercent")
+	private Integer discountPercent;
+	
+	@Column(name = "DiscountMaxAmount")
+	private Integer discountMaxAmount;
+	
 	@Column(name = "StartDate")
 	private LocalDateTime startDate;
+	
 	@Column(name = "EndDate")
 	private LocalDateTime endDate;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime endDateInput;
+	
 	@Column(name = "Enabled")
 	private Boolean enabled;
 
 	public PromoteCode() {
 	}
 
-	public PromoteCode(Integer promoteCodeId, String promoteCodeName, String promoteCodeDescription, Enum promotionType,
-			Integer discount, LocalDateTime startDate, LocalDateTime endDate, Boolean enabled) {
-		this.promoteCodeId = promoteCodeId;
+	public PromoteCode(Integer promoteCodeID, String promoteCodeName, String promoteCodeDescription,
+			Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate, LocalDateTime endDate,
+			LocalDateTime endDateInput, Boolean enabled) {
+		super();
+		this.promoteCodeID = promoteCodeID;
 		this.promoteCodeName = promoteCodeName;
 		this.promoteCodeDescription = promoteCodeDescription;
-		this.promotionType = promotionType;
-		this.discount = discount;
+		this.discountPercent = discountPercent;
+		this.discountMaxAmount = discountMaxAmount;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.endDateInput = endDateInput;
 		this.enabled = enabled;
 	}
 
-	public Integer getPromoteCodeId() {
-		return promoteCodeId;
+	public Integer getPromoteCodeID() {
+		return promoteCodeID;
 	}
 
-	public void setPromoteCodeId(Integer promoteCodeId) {
-		this.promoteCodeId = promoteCodeId;
+	public void setPromoteCodeID(Integer promoteCodeID) {
+		this.promoteCodeID = promoteCodeID;
 	}
 
 	public String getPromoteCodeName() {
@@ -72,20 +95,20 @@ public class PromoteCode implements Serializable {
 		this.promoteCodeDescription = promoteCodeDescription;
 	}
 
-	public Enum getPromotionType() {
-		return promotionType;
+	public Integer getDiscountPercent() {
+		return discountPercent;
 	}
 
-	public void setPromotionType(Enum promotionType) {
-		this.promotionType = promotionType;
+	public void setDiscountPercent(Integer discountPercent) {
+		this.discountPercent = discountPercent;
 	}
 
-	public Integer getDiscount() {
-		return discount;
+	public Integer getDiscountMaxAmount() {
+		return discountMaxAmount;
 	}
 
-	public void setDiscount(Integer discount) {
-		this.discount = discount;
+	public void setDiscountMaxAmount(Integer discountMaxAmount) {
+		this.discountMaxAmount = discountMaxAmount;
 	}
 
 	public LocalDateTime getStartDate() {
@@ -104,6 +127,14 @@ public class PromoteCode implements Serializable {
 		this.endDate = endDate;
 	}
 
+	public LocalDateTime getEndDateInput() {
+		return endDateInput;
+	}
+
+	public void setEndDateInput(LocalDateTime endDateInput) {
+		this.endDateInput = endDateInput;
+	}
+
 	public Boolean getEnabled() {
 		return enabled;
 	}
@@ -112,4 +143,13 @@ public class PromoteCode implements Serializable {
 		this.enabled = enabled;
 	}
 
+	@Override
+	public String toString() {
+		return "PromoteCode:\n\tpromoteCodeID=" + promoteCodeID + " \n\tpromoteCodeName=" + promoteCodeName
+				+ " \n\tpromoteCodeDescription=" + promoteCodeDescription + " \n\tdiscountPercent=" + discountPercent
+				+ " \n\tdiscountMaxAmount=" + discountMaxAmount + " \n\tstartDate=" + startDate + " \n\tendDate="
+				+ endDate + " \n\tenabled=" + enabled;
+	}
+
+	
 }
