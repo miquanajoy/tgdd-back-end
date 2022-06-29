@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Update Product</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./updatepromotion.css">
+  </head>
+  <body>
+    <div class="container-xl">
+      <div class="table-responsive">
+        <div class="table-wrapper">
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-5">
+                <h2>Update <b>Promotion</b></h2>
+                <a href="MainController?action=admin" class="btn btn-success">
+                  <span>Back Admin Page</span></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="editEmployeeModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form
+                action="UpdatePromotionController"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="modal-header">
+                  <h4 class="modal-title">Update Promotion</h4>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <c:set var="error" value="${requestScope.ERROR_CREATE}" />
+                <c:set value="${requestScope.PROMOTION}" var="pm" />
+                <div class="modal-body">
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <label>Promote ID</label>
+                      <input
+                        type="text"
+                        name="promoteCodeID"
+                        value="${pm.promoteCodeID}"
+                        class="form-control"
+                        required
+                        readonly
+                      />
+			<font color="red">${error.romoteCodeIDError}</font>
+                    </div>
+                    <div class="form-group">
+                      <label>Promote Name</label>
+                      <input
+                        type="text"
+                        name="promoteCodeName"
+                        value="${pm.promoteCodeName}"
+                        class="form-control"
+                        required
+                      />
+                      <font color="red">${error.promoteCodeNameError}</font>
+                    </div>
+                    <div class="form-group">
+                                        <label>Promote Description</label>
+                                        <input
+                                          type="text"
+                                          name="PromoteCodeDescription"
+                                          value="${pm.PromoteCodeDescription}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.promoteDescriptionError}</font
+                                        >
+                                      </div>
+                                      
+                                      
+                                      <div class="form-group">
+                                        <label>Discount Percent</label>
+					<input
+                                          type="text"
+                                          name="DiscountPercent"
+                                          value="${pm.DiscountPercent}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.DiscountPercentError}</font
+                                        >
+                                      </div>
+					<div class="form-group">
+					<label>Discount Max Amount</label>
+                                        <input
+                                          type="text"
+                                          name="DiscountMaxAmount"
+                                          value="${pm.DiscountMaxAmount}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.DiscountMaxAmountError}</font
+                                        >
+                                      </div>
+
+					<div class="form-group">
+					<label for="startDate">Choose a start date of promotion :</label>
+					<input type="datetime-local" id="startDate"
+       					name="startDate" value="2022-06-29T19:30"
+       					min="2022-06-30T00:00" max="2030-06-30T00:00">
+					</div>
+					<div class="form-group">
+					<label for="endDate">Choose a end date of promotion :</label>
+					<input type="datetime-local" id="endDate"
+       					name="endDate" value="2022-06-29T19:30"
+       					min="2022-07-01T00:00" max="2030-07-01T00:00">
+					</div>
+
+                </div>
+                <div class="modal-footer">
+                  <input type="submit" class="btn btn-info" value="Save" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

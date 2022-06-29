@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Create Promotion Page</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container-xl">
+      <div class="table-responsive">
+        <div class="table-wrapper">
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-5">
+                <h2>Add new <b>Promotions</b></h2>
+                <a href="MainController?action=Addnewpromotion" class="btn btn-success">
+                  <span>Back Admin Page</span></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="addEmployeeModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <c:set var="error" value="${requestScope.ERROR_CREATE}" />
+              <c:set var="p" value="${requestScope.PRODUCT}" />
+              <form
+                action="AddPromotionController"
+                method="POST"
+                enctype="multipart/form-data"
+              >
+                <div class="modal-header">
+                  <h4 class="modal-title">Add new promotion</h4>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <!DOCTYPE html>
+                    <html>
+                      <head>
+                        <meta
+                          http-equiv="Content-Type"
+                          content="text/html; charset=UTF-8"
+                        />
+                        <title>Create Promotion Page</title>
+                        <link
+                          rel="stylesheet"
+                          href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+                        />
+                        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                        <link
+                          rel="stylesheet"
+                          href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+                        />
+                        <link
+                          rel="stylesheet"
+                          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+                        />
+                        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                        <link rel="stylesheet" href="./createpromotion.css" />
+                      </head>
+                      <body>
+                        <div class="container-xl">
+                          <div class="table-responsive">
+                            <div class="table-wrapper">
+                              <div class="table-title">
+                                <div class="row">
+                                  <div class="col-sm-5">
+                                    <h2>Add new <b>Promotions</b></h2>
+                                    <a href="MainController?aciton=admin" class="btn btn-success">
+                                      <span>Back Admin Page</span></a
+                                    >
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div id="addEmployeeModal">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <c:set
+                                    var="error"
+                                    value="${requestScope.ERROR_CREATE}"
+                                  />
+                                  <c:set
+                                    var="pm"
+                                    value="${requestScope.PROMOTECODE}"
+                                  />
+                                  <form
+                                    action="AddPromotionController"
+                                    method="POST"
+                                    enctype="multipart/form-data"
+                                  >
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">
+                                        Add new promotions
+                                      </h4>
+                                      <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                        aria-hidden="true"
+                                      >
+                                        &times;
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="form-group">
+                                        <label>Promote ID</label>
+                                        <input
+                                          type="text"
+                                          name="promoteCodeID"
+                                          value="${pm.promoteCodeID}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.promoteCodeIDError}</font
+                                        >
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Promote Name</label>
+                                        <input
+                                          type="text"
+                                          name="PromoteCodeName"
+                                          value="${pm.PromoteCodeName}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.PromoteCodeNameError}</font
+                                        >
+                                      </div>
+                                      <div class="form-group">
+                                        <label>Promote Description</label>
+                                        <input
+                                          type="text"
+                                          name="PromoteCodeDescription"
+                                          value="${pm.PromoteCodeDescription}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.promoteDescriptionError}</font
+                                        >
+                                      </div>
+                                      
+                                      
+                                      <div class="form-group">
+                                        <label>Discount Percent</label>
+					<input
+                                          type="text"
+                                          name="DiscountPercent"
+                                          value="${pm.DiscountPercent}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.DiscountPercentError}</font
+                                        >
+                                      </div>
+					<div class="form-group">
+					<label>Discount Max Amount</label>
+                                        <input
+                                          type="text"
+                                          name="DiscountMaxAmount"
+                                          value="${pm.DiscountMaxAmount}"
+                                          class="form-control"
+                                          required
+                                        />
+                                        <font color="red"
+                                          >${error.DiscountMaxAmountError}</font
+                                        >
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <input
+                                        type="button"
+                                        class="btn btn-default"
+                                        data-dismiss="modal"
+                                        value="Cancel"
+                                      />
+                                      <input
+                                        type="submit"
+                                        class="btn btn-success"
+                                        value="Add promotion"
+                                      />
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </body>
+                    </html>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
