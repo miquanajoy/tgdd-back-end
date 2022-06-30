@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,21 +50,17 @@ public class AdminController {
 	PromoteCodeRepo promotionServ;
 	
 	List<PromoteCode> promoteList = new ArrayList<PromoteCode>();
+	List<Product> productList = new ArrayList<Product>();
 	boolean loadPromoteList = false;
 	int promoteIndex = 0;
 	
-	
+	@Value("${updateFailedPage.errmsg}")
+	private String errormessage;
 	public LocalDateTime converttoLocalDateTime(LocalDateTime toConvertTime) 
 	{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		System.out.println("Date time:"+toConvertTime);
-		
-		String formatedDateTime = toConvertTime.format(dtf);
-		System.out.println("Formatted date time:"+formatedDateTime);
-		
+		String formatedDateTime = toConvertTime.format(dtf);	
 		LocalDateTime finalFormatedTime = LocalDateTime.parse(formatedDateTime, dtf); 
-		
-		System.out.println("Formatted end time in objec:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
 	
@@ -83,73 +80,7 @@ public class AdminController {
 	}
 	@GetMapping("/CreatePromote")
 	public ModelAndView addNewPromotion(ModelAndView model) {
-		/*Product saveproduct = new Product();
-		saveproduct.setProductID("SSGN1234");
-		saveproduct.setProductName("Samsung Galaxy Note A7");
-		saveproduct.setPrice(14680000);
-		saveproduct.setManufacturerID(1);
-		saveproduct.setCategoryID(2);
-		saveproduct.setProductWarranty(24);
-		saveproduct.setExclusive(true);
-		saveproduct.setImage("aasdklfjaklsfj");
-		saveproduct.setInterestRate(4.2);
-		saveproduct.setAccessoriesIncluded("Charger, mnanualguide, earphone");
-		saveproduct.setEnabled(true);*/
-		
-		/*ProductArticle article = new ProductArticle();
-		article.setProductID("SSGN1234");
-		article.setArticleUrl("LinkURL");
-		saveproduct.setArticle(article);
-		
-		ProductCameraShot camerShots = new ProductCameraShot();
-		camerShots.setProductID("SSGN1234");
-		camerShots.setImageGalleryPath("slfghsdkl");
-		
-		ProductFeature feature = new ProductFeature();
-		feature.setProductID("SSGN1234");
-		feature.setFeaturesGalleryPath("slasdf");
-		feature.setFeaturesVideoLink("asdfasdf");
-		
-		ProductSpecification spec = new ProductSpecification();
-		spec.setProductID("SSGN1234");
-		spec.setProductSpecifications("asdlfasdfklas");
-		
-		ProductUnboxingReview unboxing = new ProductUnboxingReview();
-		unboxing.setProductID("SSGN1234");
-		unboxing.setImageGalleryPath("asdlfkasfskl");
-		
-		ProductVariant variant = new ProductVariant();
-		variant.setProductVariantID("SSGA123");
-		variant.setProductOriginalIdentifier("SSGN1234");
-		variant.setProductVariantName("256GB");
-		
-		saveproduct.setArticle(article);
-		saveproduct.setCameraShots(camerShots);
-		saveproduct.setFeatures(feature);
-		saveproduct.setSpecifications(spec);
-		saveproduct.setUnboxing(unboxing);
-		saveproduct.setVariant(variant);*/
-		
-		/*ProductColorVariant colorVariant = new  ProductColorVariant();
-		Set<ProductColorVariant> pColors = new HashSet<ProductColorVariant>();
-		colorVariant.setProductID("SSGN1234");
-		colorVariant.setColorID(2);
-		colorVariant.setImageGalleryPath("telkjdsfa");
-		pColors.add(colorVariant);
-		
-		colorVariant = new  ProductColorVariant();
-		colorVariant.setProductID("SSGA123");
-		colorVariant.setColorID(1);
-		colorVariant.setImageGalleryPath("ertlkasdf");
-		pColors.add(colorVariant);
-		
-		saveproduct.setColorVariant(pColors);
-		productServ.saveNewProduct(saveproduct);
-		List<GeneralProductViewDTO> productlist = productServ.getAllProducts();
-		ProductDiscountDTO productdiscountlist = productServ.getProductDiscount(1,2,"SSGA123");
-		
-		//ManufacturerPersistenceDTO brand = new ManufacturerPersistenceDTO(1,"Samsung");
-		//manuServ.updateBrand(6,brand);*/
+	
 		PromoteCode promotecode = new PromoteCode();
 		String enableButton = "";
 
@@ -186,7 +117,7 @@ public class AdminController {
 	public ModelAndView UpdatePromotion(ModelAndView model, @PathVariable("promote") String promoteName) 
 	{
 		boolean breakLoop = false;
-		int checkEnabled = 0;
+
 		PromoteCode form = new PromoteCode();
 		for(PromoteCode promotion: promoteList) 
 		{
@@ -200,8 +131,6 @@ public class AdminController {
 			
 		}
 		System.out.println("promoteID before is:"+form.getPromoteCodeID() );
-		/* if(form.getEnabled()) checkEnabled =1;
-		model.addObject("Enabling", checkEnabled);*/
 		model.addObject("PromoteUpdateForm", form);
 		model.setViewName("PromoteUpdate");
 		return model;
@@ -209,7 +138,7 @@ public class AdminController {
 	
 	@PostMapping("/UpdatePromote")
 	public ModelAndView processUpdatePromotion(ModelAndView model, @ModelAttribute("PromoteUpdateForm") PromoteCode updateform, 
-			@ModelAttribute("EnableCheck") String checkEnable/*, RedirectAttributes rediAttr*/) 
+			@ModelAttribute("EnableCheck") String checkEnable) 
 	{
 		if(checkEnable.equals("Enable")) updateform.setEnabled(true);
 		if(checkEnable.equals("Disable")) updateform.setEnabled(false);
@@ -218,6 +147,7 @@ public class AdminController {
 		int loopIndex = 0;
 		Integer promoteID = 0;
 		boolean breakFindLoop = false;
+		
 		LocalDateTime currentTime = LocalDateTime.now();
 		
 		LocalDateTime convertedCurrentTime= converttoLocalDateTime(currentTime);
@@ -226,6 +156,8 @@ public class AdminController {
 		updateform.setStartDate(convertedCurrentTime);
 		updateform.setEndDate(convertedEndTime);
 		//form.setPromoteCodeID(1);
+		
+		
 		for(PromoteCode promotion: promoteList) 
 		{
 			
@@ -235,10 +167,21 @@ public class AdminController {
 				foundForm = loopIndex;
 				promoteID = promotion.getPromoteCodeID();
 			}
-			if(breakFindLoop) break;
-			loopIndex+=1;
-			
+			if(breakFindLoop) {
+				break;
+			}
+			loopIndex=+1;
 		}
+		for(int i =0;i< promoteList.size();i++) {
+			if(updateform.getPromoteCodeName().equalsIgnoreCase(promoteList.get(i).getPromoteCodeName())){
+				model.setViewName("PromoteUpdate");
+				model.addObject("errorMessage", errormessage);
+				return model;
+			}
+			System.out.println(updateform.getPromoteCodeName());
+			}
+		
+		
 		System.out.println("promoteID after is:"+promoteID);
 		promoteList.set(foundForm, updateform);
 		updateform.setPromoteCodeID(promoteID);
