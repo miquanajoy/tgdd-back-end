@@ -50,6 +50,7 @@
 				<label for="disableButton">Disable</label>
 			</div>
 			<input type="submit" value="Update Promote Code">
+			<span class="errMsg" th:if="${errorMessage}" th:utext="${errorMessage}">Update failed</span>
 			
 		</form>
 	</div>
