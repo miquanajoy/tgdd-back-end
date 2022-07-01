@@ -38,6 +38,7 @@
           	  	<input type="radio" name="EnableCheck" value="Disable" > Disable
 			</div>
 			<input type="submit" value="Create Promote Code">
+			<span class="errMsg" th:if="${errorMessage}" th:utext="${errorMessage}">Created failed</span>
 			
 		</form>
 	</div>

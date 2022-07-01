@@ -73,7 +73,10 @@ public class AdminController {
 			loadPromoteList = true;
 			promoteIndex = promoteList.get(promoteList.size()-1).getPromoteCodeID();
 		}
-		
+		for (PromoteCode promoteCode : promoteList) {
+			LocalDateTime datetime= converttoLocalDateTime(promoteCode.getEndDate());
+			promoteCode.setEndDateInput(datetime);
+		}
 		model.addObject("PromoteList", promoteList);
 		model.setViewName("Promoteview");
 		return model;
@@ -104,10 +107,18 @@ public class AdminController {
 		
 		form.setStartDate(convertedCurrentTime);
 		form.setEndDate(convertedEndTime);
+		for (PromoteCode promoteCode : promoteList) {
+			if(form.getPromoteCodeName().equalsIgnoreCase(promoteCode.getPromoteCodeName())){
+				model.setViewName("PromoteAdd");
+				model.addObject("errorMessage", errormessage);
+				return model;
+			}
+		}
 		promoteIndex+=1;
 		form.setPromoteCodeID(promoteIndex);
-		promotionServ.save(form);
 		promoteList.add(form);
+		promotionServ.save(form);
+		
 		//model.addObject("PromoteForm", form);
 		model.setViewName("redirect:/Admin/ViewPromote");
 		return model;
@@ -172,14 +183,13 @@ public class AdminController {
 			}
 			loopIndex=+1;
 		}
-		for(int i =0;i< promoteList.size();i++) {
-			if(updateform.getPromoteCodeName().equalsIgnoreCase(promoteList.get(i).getPromoteCodeName())){
+		for (PromoteCode promoteCode : promoteList) {
+			if(updateform.getPromoteCodeName().equalsIgnoreCase(promoteCode.getPromoteCodeName())){
 				model.setViewName("PromoteUpdate");
 				model.addObject("errorMessage", errormessage);
 				return model;
 			}
-			System.out.println(updateform.getPromoteCodeName());
-			}
+		}
 		
 		
 		System.out.println("promoteID after is:"+promoteID);
