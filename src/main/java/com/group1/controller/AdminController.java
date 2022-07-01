@@ -1,14 +1,25 @@
 package com.group1.controller;
 
+import java.io.BufferedReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +28,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.group1.dto.Attributes;
+import com.group1.dto.CategoryBasedSpecification;
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.PromoteForm;
+import com.group1.dto.SpecSection;
+import com.group1.repositories.CategoryRepo;
+import com.group1.repositories.ColorRepo;
+import com.group1.repositories.ManufacturerRepo;
+import com.group1.repositories.ProductRepo;
 import com.group1.repositories.PromoteCodeRepo;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.group1.Entities.productEntities.Category;
+import com.group1.Entities.productEntities.Color;
 import com.group1.Entities.productEntities.Manufacturer;
 import com.group1.Entities.productEntities.Product;
 import com.group1.Entities.productEntities.ProductArticle;
@@ -43,15 +68,106 @@ public class AdminController {
 	ProductService productServ;
 	
 	@Autowired
+	ProductRepo productRepo;
+	
+	@Autowired
 	ManufacturerService manuServ;
 	
 	@Autowired
 	PromoteCodeRepo promotionServ;
 	
-	List<PromoteCode> promoteList = new ArrayList<PromoteCode>();
+	@Autowired
+	CategoryRepo cateRepo;
+	
+	@Autowired
+	ManufacturerRepo manuRepo;
+	
+	@Autowired
+	ColorRepo colorRepo;
+	
+	boolean loadProductList = false;
 	boolean loadPromoteList = false;
+	boolean loadCateList = false;
+	boolean loadManuList = false;
+	boolean loadColorList = false;
+	boolean loadCateBasedSpecForm = false;
 	int promoteIndex = 0;
 	
+	List<Product> productList = new ArrayList<Product>();
+	List<PromoteCode> promoteList = new ArrayList<PromoteCode>();
+	List<Category> categoryList = new ArrayList<Category>();
+	List<Manufacturer> manuList = new ArrayList<Manufacturer>();
+	List<CategoryBasedSpecification> specFormList =new ArrayList<CategoryBasedSpecification>();
+	List<Color> colorList =new  ArrayList<Color>();
+	
+	public void loadAllCateBasedSpecificationForm() throws IOException 
+	{
+		List<String> txtFile = new ArrayList<String>();
+		File file =ResourceUtils.getFile("classpath:TGDD_Cate");
+		FileReader fr = new FileReader(file); 
+		BufferedReader br = new BufferedReader(fr);
+		//StringBuffer sb = new StringBuffer();
+		String line;
+		
+		List<SpecSection> sectionList =new ArrayList<SpecSection>();
+		List<Attributes> attrList =new ArrayList<Attributes>();
+		CategoryBasedSpecification specForm = new CategoryBasedSpecification();
+		SpecSection section =new SpecSection();
+		while((line=br.readLine()) != null) 
+		{
+			txtFile.add(line);
+		}
+		fr.close();
+		//int count = 0;
+		for(String txtline: txtFile) 
+		{
+			//System.out.println(txtline);
+			if(txtline.contains("endcate")) 
+			{
+				specForm.setSection(sectionList);
+				specFormList.add(specForm);
+				/*for(CategoryBasedSpecification f: specFormList) 
+				{
+					f.toString();
+				}*/
+				sectionList = new ArrayList<SpecSection>();
+				specForm =new CategoryBasedSpecification();
+			}
+			if(txtline.contains("startcate")) 
+			{
+				String[] cateSplit = txtline.split("-");
+				specForm.setCategory(cateSplit[1]);
+				//specFormList.add(specForm);
+			} 
+			if(txtline.contains("endsection")) 
+			{
+				section.setAttributes(attrList);
+				sectionList.add(section);
+				section =new SpecSection();
+				attrList =new ArrayList<Attributes>();
+			}
+			if(txtline.contains("startsection")) 
+			{
+				String[] cateSectionSplit = txtline.split("-");
+				//section = new SpecSection();
+				section.setSectionHeader(cateSectionSplit[1]);
+				//specFormList.get(specFormList.size()-1).;
+			}
+			if(txtline.contains(",") )
+			{
+				
+				String[] cateKeyValPairSplit = txtline.split(",");
+				for(String key: cateKeyValPairSplit) 
+				{
+					Attributes attr = new Attributes();
+					attr.setKey(key);
+					attr.setValue("split multiple values with ;");
+					attrList.add(attr);
+				}
+			}
+			
+		}
+	}
 	
 	public LocalDateTime converttoLocalDateTime(LocalDateTime toConvertTime) 
 	{
@@ -65,6 +181,295 @@ public class AdminController {
 		
 		System.out.println("Formatted end time in objec:"+finalFormatedTime);
 		return finalFormatedTime;
+	}
+	
+	@GetMapping("/AddProductChooseCategory")
+	public ModelAndView chooseProductCategory(ModelAndView model) 
+	{
+		String chosenCategory = "";
+		if(!loadCateList) 
+		{
+			categoryList = cateRepo.findAll();
+			loadCateList = true;
+		}
+		if(!loadManuList) 
+		{
+			manuList = manuRepo.findAll();
+			loadManuList = true;
+		}
+		if(!loadColorList) 
+		{
+			colorList = colorRepo.findAll();
+			loadManuList = true;
+		}
+		if(!loadCateBasedSpecForm) 
+		{
+			try {
+				loadAllCateBasedSpecificationForm();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			loadCateBasedSpecForm =true;
+		}
+		
+		//Collections.sort(categoryList);
+		model.setViewName("Show");
+		model.addObject("Categorychosen", chosenCategory);
+		model.addObject("CategoryList", categoryList);
+		return model;
+	}
+	
+	/*String json = "";
+	ObjectMapper mapper = new ObjectMapper();
+	mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+	try {
+		json = mapper.writeValueAsString(specFormList.get(0));
+	} catch (JsonProcessingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	Product p= productRepo.findByProductID("SSGN1234");
+	ProductSpecification pSpec = new ProductSpecification();
+	pSpec.setProductID("SSGN1234");
+	pSpec.setProductSpecifications(json);
+	
+	p.setSpecifications(pSpec);
+	productRepo.save(p);
+	
+	Product newP= productRepo.findByProductID("SSGN1234");
+	try {
+		currSpec = mapper.readValue(newP.getSpecifications().getProductSpecifications().getBytes(), CategoryBasedSpecification.class);
+		System.out.println(currSpec.toString().replace("[", "").replace("]", "") );
+	} catch (JsonParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (JsonMappingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}*/
+	
+	@PostMapping("/CreateProductStep1")
+	public ModelAndView AddProductStep1(ModelAndView model, @ModelAttribute("Categorychosen") String catechosen) 
+	{
+		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
+		//else System.out.println("Category is empty");
+		Product productInputForm = new Product();
+		String Exclusive = "";
+		String Enabled = "";
+		int categoryID = 0;
+		for(Category cate: categoryList) 
+		{
+			if(cate.getCategoryName().equals(catechosen) ) 
+			{
+				categoryID = cate.getCategoryID();
+			}
+		}
+		productInputForm.setCategoryID(categoryID);
+		
+		ProductArticle article = new ProductArticle();
+		productInputForm.setArticle(article);
+		
+		ProductCameraShot camShots = new ProductCameraShot();
+		productInputForm.setCameraShots(camShots);
+		
+		
+		ProductFeature feature = new ProductFeature();
+		productInputForm.setFeatures(feature);
+		
+		
+		ProductUnboxingReview unboxing = new ProductUnboxingReview();
+		productInputForm.setUnboxing(unboxing);
+		
+		ProductVariant variant = new ProductVariant();
+		productInputForm.setVariant(variant);
+		
+		model.addObject("ProductInputForm", productInputForm);
+		model.setViewName("Show");
+		model.addObject("CateChosen", catechosen);
+		model.addObject("CheckExclusive", Exclusive);
+		model.addObject("CheckEnabled", Enabled);
+		//model.addObject("SpecInputForm", specInputForm);
+		model.addObject("ManuList", manuList);
+		//model.addObject("ColorList", colorList);
+		//model.addObject("CategoryList", categoryList);
+		return model;
+	}
+	
+	/*@PostMapping("/CreateProductStep2")
+	public ModelAndView AddProductStep2(ModelAndView model, @ModelAttribute("ProductInputForm") Product productForm, @ModelAttribute("CheckExclusive") String exclusive,
+			@ModelAttribute("CheckEnabled") String enabled, @ModelAttribute("CateChosen") String catechosen) 
+	{
+		
+		
+		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
+		//else System.out.println("Category is empty");
+		//ProductColorVariant colorVariant = new  ProductColorVariant();
+		//productForm.getColorVariant().add(colorVariant);
+		String pID =productForm.getProductID();
+		
+		//productForm.getSpecifications().setProductID(pID);
+		System.out.println("At create product step 2"+productForm.toString());
+		
+		model.addObject("ProductInputForm1", productForm);
+		model.setViewName("Show");
+		model.addObject("SelectedCate", catechosen);
+		//model.addObject("SpecInputForm", specInputForm);
+		//model.addObject("CategoryList", categoryList);
+		return model;
+	}*/
+	
+	/*@PostMapping("/CreateProductStep3")
+	public ModelAndView AddProductStep3(ModelAndView model, @ModelAttribute("ProductInputForm") Product productForm, @ModelAttribute("CheckExclusive") String exclusive,
+			@ModelAttribute("CheckEnabled") String enabled, @ModelAttribute("SelectedCate") String selectedCate) 
+	{
+		if(exclusive.contains("Exclusive")) productForm.setExclusive(true);
+		if(exclusive.contains("NotExclusive")) productForm.setExclusive(false);
+		
+		if(enabled.contains("Enable")) productForm.setEnabled(true);
+		if(enabled.contains("Disable")) productForm.setEnabled(false);
+		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
+		//else System.out.println("Category is empty");
+		//ProductColorVariant colorVariant = new  ProductColorVariant();
+		//productForm.getColorVariant().add(colorVariant);
+		CategoryBasedSpecification specInputForm = new CategoryBasedSpecification();
+		if(specFormList != null) 
+		{
+			for(CategoryBasedSpecification specForm: specFormList) 
+			{
+				if(specForm.getCategory().equals(selectedCate)) 
+				{
+					specInputForm = specForm;
+				}
+			}
+			if(specInputForm == null) System.out.println("No suitable Spec form found");
+			else System.out.println(specInputForm.toString().replace("[", "").replace("]", ""));
+		}
+		else System.out.println("Spec form is null");
+		String proID = productForm.getProductID();
+		if(proID.isEmpty()) System.out.println("Product ID is null");
+		else System.out.println("Product ID="+proID);
+		//model.addObject("ProductInputForm2", productForm);
+		model.setViewName("ProductView");
+		model.addObject("SpecInputForm", specInputForm);
+		model.addObject("ColorList", colorList);
+		model.addObject("ProductID", proID);
+		//model.addObject("CategoryList", categoryList);
+		return model;
+	}*/
+	
+	@PostMapping("/CreateProduct")
+	public ModelAndView AddProductProcess(ModelAndView model, @ModelAttribute("ProductInputForm1") Product productForm,
+			/*@ModelAttribute("SpecInputForm1") CategoryBasedSpecification specform1,*/ @ModelAttribute("CheckExclusive") String exclusive,
+			@ModelAttribute("CheckEnabled") String enabled) 
+	{
+
+		if(exclusive.contains("Exclusive")) productForm.setExclusive(true);
+		if(exclusive.contains("NotExclusive")) productForm.setExclusive(false);
+		
+		if(enabled.contains("Enable")) productForm.setEnabled(true);
+		if(enabled.contains("Disable")) productForm.setEnabled(false);
+		
+		String pID = productForm.getProductID();
+		//productForm.setCategoryID(cateID);
+		
+		if(productForm.getArticle().getArticleUrl().isEmpty()) 
+		{
+			System.out.println("Article is null");
+			productForm.setArticle(null);
+		} 
+		else productForm.getArticle().setProductID(pID);
+		
+		if(productForm.getCameraShots().getImageGalleryPath().isEmpty()) 
+		{
+			System.out.println("Camera shots is null");
+			productForm.setCameraShots(null);
+		} 
+		else productForm.getCameraShots().setProductID(pID);
+		/*for(Iterator<ProductColorVariant> t = productForm.getColorVariant().iterator(); t.hasNext();) 
+		{
+			ProductColorVariant el = t.next();
+			if()
+		}
+		colorVariant.setProductID(pID);*/
+		//if(productForm.getDiscount().get().isEmpty()) 
+		//productForm.getDiscount().setProductID(pID);
+		if(productForm.getFeatures().getFeaturesVideoLink().isEmpty() 
+				|| productForm.getFeatures().getFeaturesGalleryPath().isEmpty()) {
+			System.out.println("Feature is null");
+			productForm.setFeatures(null);
+		}
+		else productForm.getFeatures().setProductID(pID);
+		/*boolean stopLoop =false;
+		boolean addSpec =true;
+		for(SpecSection sect: specform1.getSection()) 
+		{
+			for(Attributes kvpair : sect.getAttributes()) 
+			{
+				if(kvpair.getValue().toString().contains("split multiple values with ;") )
+				{
+					stopLoop =true;
+					addSpec = false;
+					break;
+				}
+				if(stopLoop) break;
+			}
+		}
+		if(addSpec) 
+		{
+			String json = "";
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+			try {
+				json = mapper.writeValueAsString(specform1);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			productForm.getSpecifications().setProductSpecifications(json);
+		}*/
+		
+		if(productForm.getUnboxing().getImageGalleryPath().isEmpty()) 
+		{
+			System.out.println("Unboxing is null");
+			productForm.setUnboxing(null);
+		}
+		else productForm.getUnboxing().setProductID(pID);
+		if(productForm.getVariant().getProductOriginalIdentifier().isEmpty()) 
+		{
+			System.out.println("Variant is null");
+			productForm.setVariant(null);
+		}
+		else productForm.getVariant().setProductVariantID(pID);
+		System.out.println("At final create product step"+productForm.toString());
+		productRepo.save(productForm);
+		//model.addObject("ProductInputForm1", productForm);
+		model.setViewName("ProductView");
+		//model.addObject("SpecInputForm1", specform);
+		//model.addObject("ColorList", colorList);
+		//model.addObject("CategoryList", categoryList);
+		return model;
+	}
+	
+	@GetMapping("/ViewProduct")
+	public ModelAndView viewProducts(ModelAndView model) {
+		
+		if(!loadProductList) 
+		{
+			System.out.println("Loading product list from Db:");
+			productList = productRepo.findAll();
+			loadProductList = true;
+			//promoteIndex = promoteList.get(promoteList.size()-1).getPromoteCodeID();
+		}
+		//Product p = productRepo.findByProductID("XR123");
+		//System.out.println(p.toString());
+		model.addObject("ProductList", productList);
+		//model.addObject("ProductList", productList);
+		model.setViewName("ProductView");
+		return model;
 	}
 	
 	@GetMapping("/ViewPromote")
@@ -81,6 +486,66 @@ public class AdminController {
 		model.setViewName("Promoteview");
 		return model;
 	}
+	
+	@GetMapping("/ViewDetailsOrUpdateProduct/{proID}")
+	public ModelAndView viewOrUpdateProducts(ModelAndView model, @PathVariable("proID") String productIdentity) {
+		
+		Product p = productRepo.findByProductID(productIdentity);
+		//System.out.println(p.toString());
+		model.addObject("ProductUpdateForm", p);
+		//model.addObject("ProductList", productList);
+		model.setViewName("ProductDetailsOrUpdate");
+		return model;
+	}
+	
+	@PostMapping("/UpdateProduct")
+	public ModelAndView UpdateProduct(ModelAndView model, @ModelAttribute("ProductUpdateForm") Product toUpdateForm,
+			@ModelAttribute("CheckExclusive") String exclusiveSetter, @ModelAttribute("CheckEnable") String enableSetter) {
+		
+		//System.out.println(p.toString());
+		if(exclusiveSetter.contains("Exclusive")) toUpdateForm.setExclusive(true);
+		if(exclusiveSetter.contains("NotExclusive")) toUpdateForm.setExclusive(false);
+		
+		if(enableSetter.contains("Enable")) toUpdateForm.setEnabled(true);
+		if(enableSetter.contains("Disable")) toUpdateForm.setEnabled(false);
+		
+		int foundForm = 0;
+		int loopIndex = 0;
+		String productIdentifier = "";
+		boolean breakFindLoop = false;
+		//LocalDateTime currentTime = LocalDateTime.now();
+		
+		//LocalDateTime convertedCurrentTime= converttoLocalDateTime(currentTime);
+		//LocalDateTime convertedEndTime= converttoLocalDateTime(updateform.getEndDateInput());
+		
+		//updateform.setStartDate(convertedCurrentTime);
+		//updateform.setEndDate(convertedEndTime);
+		
+		//form.setPromoteCodeID(1);
+		for(Product productEl: productList) 
+		{
+			
+			if(toUpdateForm.getProductID() == productEl.getProductID()) 
+			{
+				breakFindLoop =true;
+				foundForm = loopIndex;
+				productIdentifier = productEl.getProductID();
+			}
+			if(breakFindLoop) break;
+			loopIndex+=1;
+			
+		}
+		System.out.println("product after update is:"+toUpdateForm);
+		
+		//productList.set(foundForm, toUpdateForm);
+		//toUpdateform.setPromoteCodeID(promoteID);
+		//productRepo.save(toUpdateForm);
+		//model.addObject("PromoteForm", form);
+		model.setViewName("redirect:/Admin/ViewProduct");
+		//model.addObject("ProductList", productList);
+		return model;
+	}
+	
 	@GetMapping("/CreatePromote")
 	public ModelAndView addNewPromotion(ModelAndView model) {
 		/*Product saveproduct = new Product();

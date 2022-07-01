@@ -5,41 +5,198 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<span>Hello you made it here</span>
+	<div th:if="${CategoryList != null && Specification == null}">
+		<span>Choose product category</span>
+		<div>
+			<form th:action="@{/Admin/CreateProductStep1}" method="post">
+				<select name="Categorychosen">
+					<div th:each="category :${CategoryList}">
+						<option th:if="${category.parentID !=0}" th:value="${category.categoryName}"  
+						th:utext="${category.categoryName}"></option>
+					</div>
+				</select>
+				<input type="submit" value="Create">
+			</form>
+		</div>
+	</div>
 	
-	<div>
-		<form th:action="@{/Admin/CreatePromote}" th:object="${PromoteForm}" method="post">
+	<div th:if="${ProductInputForm != null}">
+		<form th:action="@{/Admin/CreateProduct}" th:object="${ProductInputForm}" method="post">
 			<br>
+			<input type="hidden" name="CateChosen"  th:value ="${CateChosen}">
+			<span>Product main attributes</span>
 			<div>
-				<span>Promotion Code Name</span>
-				<input type="text" th:field="*{promoteCodeName}" required>
+				<span>Product ID</span>
+				<input type="text" th:field="*{productID}" required>
 			</div>
 			<br>
 			<div>
-				<span>Promotion Code Description</span>
-				<input type="text" th:field="*{promoteCodeDescription}" required>
+				<span>Product Name</span>
+				<input type="text" th:field="*{productName}" required>
 			</div>
 			<br>
 			<div>
-				<span>Promotion Code Discount Percent</span>
-				<input type="number" th:field="*{discountPercent}" required>
-			</div><br>
+				<span>Product Price</span>
+				<input type="number" th:field="*{price}" required min="50000" max="999000000" step="1000">
+			</div>
+			<br>
 			<div>
-				<span>Promotion Code Max Discount Amount</span>
-				<input type="number" th:field="*{discountMaxAmount}" required>
-			</div><br>
+				<span>Product ManufacturerID</span>
+				<select th:field="*{manufacturerID}">
+						<div th:each="brand :${ManuList}">
+							<option th:value="${brand.manufacturerID}"  
+							th:utext="${brand.manufacturerName}"></option>
+						</div>
+				</select>
+				<br>
+			</div>
+			<br>
 			<div>
-				<span>Promotion Code End Date</span>
-				<input type="datetime-local" th:field="*{endDateInput}" required>
-			</div><br>
+				<span>Product CategoryID</span>
+				<input type="number" th:field="*{categoryID}" required readonly="readonly">
+			</div>
+			<br>
+			<div>
+				<span>Product Warranty</span>
+				<input type="number" th:field="*{productWarranty}" required>
+			</div>
+			<br>
+			<div>
+				<span>Product Image</span>
+				<input type="text" th:field="*{image}" required>
+			</div>
+			<br>
+			<div>
+				<span>Product Interest Rate</span>
+				<input type="number" th:field="*{interestRate}" required min="0" max="20" step="0.01">
+			</div>
+			<br>
+			<div>
+				<span>Product Exclusive</span>
+				<input type="radio" name="CheckExclusive" value="Exclusive" required="required"> Yes
+          	  	<input type="radio" name="CheckExclusive" value="NotExclusive" > No
+			</div>
+			<br>
+			<div>
+				<span>Product Accessories Included</span>
+				<input type="text" th:field="*{accessoriesIncluded}" required>
+			</div>
+			<br>
 			<div>
 				<span>Promotion Code Enabling</span>
-				<input type="radio" name="EnableCheck" value="Enable" required="required"> Enable
-          	  	<input type="radio" name="EnableCheck" value="Disable" > Disable
+				<input type="radio" name="CheckEnabled" value="Enable" required="required"> Enable
+          	  	<input type="radio" name="CheckEnabled" value="Disable" > Disable
 			</div>
-			<input type="submit" value="Create Promote Code">
+			<br>
+			<span>Product Article</span>
+			<br>
+			<div>
+				<span>Article URL</span>
+				<input type="text" th:field="*{article.articleUrl}">
+			</div>
+			<br>
 			
+			<span>Product Camerashots</span>
+			<br>
+			<div>
+				<span>Camerashot Gallery Path</span>
+				<input type="text" th:field="*{cameraShots.imageGalleryPath}">
+			</div>
+			<br>
+			
+			<!--span>Product Color Variants</span>
+			<br>
+			<div th:each="colorVar: *{colorVariant}">
+				<div>
+					<span>ProductID</span>
+					<input type="text" th:field="*{productID}" readonly="readonly">
+				</div>
+				<br>
+				<span>Product color variant</span>
+				<select th:field="${colorVar.colorID}">
+						<div th:each="color :${ColorList}">
+							<option th:value="${color.colorID}"  
+							th:utext="${color.colorName}"></option>
+						</div>
+				</select>
+				<br>
+				<div>
+					<span>Color Variant Gallery Path</span>
+					<input type="text" th:field="*{colorVar.imageGalleryPath}">
+				</div>
+				<br>
+			</div>
+			<br>
+			
+			<span>Product Discount</span>
+			<br>
+			<div>
+				<span>Discount productID</span>
+				<input type="text" th:field="*{discount.productID}" readonly="readonly">
+			</div>
+			<br>
+			<div>
+				<span>Discount Price</span>
+				<input type="number" th:field="*{discount.discountedPrice}">
+			</div>
+			<br>
+			<div>
+				<span>Discount Percent</span>
+				<input type="number" th:field="*{discount.discountPercent}">
+			</div>
+			<br>
+			<div>
+				<span>Discount Price</span>
+				<input type="number" th:field="*{discount.discountedPrice}">
+			</div>
+			<br>
+			<div>
+				<span>Discount End Date</span>
+				<input type="datetime-local" th:field="*{discount.endDate}">
+			</div>
+			<br-->
+			<span>Product Feature</span>
+			<br>
+			<div>
+				<span>Feature Video Link</span>
+				<input type="text" th:field="*{features.featuresVideoLink}">
+			</div>
+			<br>
+			<div>
+				<span>Feature Gallery Path</span>
+				<input type="text" th:field="*{features.featuresGalleryPath}">
+			</div>
+			
+			<br>
+			<span>Product Unboxing Review</span>
+			<br>
+			<div>
+				<span>Unboxing Review Image Gallery Path</span>
+				<input type="text" th:field="*{unboxing.imageGalleryPath}">
+			</div>
+			<br>
+			<span>Product Variant</span>
+			<br>
+			<div>
+				<span>Original product ID</span>
+				<input type="text" th:field="*{variant.productOriginalIdentifier}">
+			</div>
+			<br><div>
+				<span>Product variant Name</span>
+				<input type="text" th:field="*{variant.productVariantName}">
+			</div>
+			<br>
+			<input type="submit" value="Next">
 		</form>
 	</div>
+		<!--table th:each="sect : ${Specification.section}">
+          	<tr>
+          		<td th:utext="${sect.sectionHeader}"></td>
+          	</tr>
+          	<tr th:each="attr : ${sect.attributes}">
+          		<td th:utext="${attr.key}"></td>
+          		<td th:utext="${attr.value}"></td>
+          	</tr>
+      	</table-->
 </body>
 </html>

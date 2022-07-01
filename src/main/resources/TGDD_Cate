@@ -1,0 +1,104 @@
+startcate-Điện thoại
+startsection-Màn hình
+Công nghệ màn hình,Độ phân giải,Màn hình rộng,Độ sáng tối đa,Mặt kính cảm ứng
+endsection
+startsection-Camera sau
+Độ phân giải,Quay phim,Đèn flash,Tính năng
+endsection
+startsection-Camera trước
+Độ phân giải,Tính năng
+endsection
+startsection-Hệ điều hành & CPU
+Hệ điều hành,Chip xử lí(CPU),Tốc độ CPU,Chip đồ họa(GPU)
+endsection
+startsection-Bộ nhớ & Lưu trữ
+RAM,Bộ nhớ trong,Bộ nhớ còn lại(khả dụng) khoảng,Danh bạ
+endsection
+startsection-Kết nối
+Mạng di động,SIM,Wifi,GPS,Bluetooth,Cổng kết nối/sạc,Jack tai nghe,Kết nối khác
+endsection
+startsection-Pin & sạc
+Dung lượng pin,Loại pin,Hỗ trợ sạc tối đa,Sạc kèm theo máy,Công nghệ pin
+endsection
+startsection-Tiện ích
+Bảo mật nâng cao,Tính năng đặc biệt,Kháng nước/bụi,Ghi âm, Xem phim,Nghe nhạc
+endsection
+startsection-Thông tin chung
+Thiết kế,Chất liệu,Kích thước - Khối lượng,Thời điểm ra mắt,Hãng
+endsection
+endcate
+
+startcate-Laptop
+startsection-Bộ xử lý
+Công nghệ CPU,Số nhân,Số luồng,Tốc độ CPU,Tốc độ tối đa,Bộ nhớ đệm
+endsection
+startsection-Bộ nhớ RAM & Ổ cứng
+RAM,Loại Ram,Tốc độ Bus RAM,Hỗ trợ RAM tối đa,Ổ cứng
+endsection
+startsection-Màn hình
+Màn hình,Độ phân giải,Tần số quét,Công nghệ màn hình
+endsection
+startsection-Đồ họa và Âm thanh
+Card màn hình,Công nghệ âm thanh
+endsection
+startsection-Cổng kết nối & tính năng mở rộng
+Cổng giao tiếp,Kết nối không dây,Khe đọc thẻ nhớ,Webcam,Tính năng khác,Đèn bàn phím
+endsection
+startsection-Kích thước & trọng lượng
+Kích thước - Trọng lượng,Chất liệu
+endsection
+startsection-Thông tin khác
+Thông tin Pin,Hệ điều hành,Thời điểm ra mắt,Hãng
+endsection
+endcate
+    
+startcate-Tablet
+startsection-Màn hình
+Công nghệ màn hình,Độ phân giải,Màn hình rộng
+endsection
+startsection-Hệ điều hành & CPU
+Hệ điều hành,Chip xử lý(CPU),Tốc độ CPU,Chip đồ họa(GPU)
+endsection
+startsection-Bộ nhớ & Lưu trữ
+RAM,Bộ nhớ trong,Bộ nhớ còn lại(khả dụng) khoảng,Thẻ nhớ ngoài
+endsection
+startsection-Camera sau
+Độ phân giải,Quay phim,Tính năng
+endsection
+startsection-Camera trước
+Độ phân giải,Tính năng
+endsection
+startsection-Kết nối
+Mạng di động,SIM,Thực hiên cuộc gọi,Wifi,GPS,Bluetooth,Cổng kết nối/sạc,Jack tai nghe
+endsection
+startsection-Tiện ích
+Tính năng đặc biệt,ghi âm
+endsection
+startsection-Pin & Sạc
+Dung lượng pin,Loại pin,Công nghê pin,Hỗ trợ sạc tối đa
+endsection
+startsection-Thông tin chung
+Chất liệu,kích thước - Khối lượng,Thời điểm ra mắt,Hãng
+endsection
+endcate
+   
+startcate-SmartWatch
+startsection-Màn hình 
+Công nghệ màn hình,Kích thước màn hình,Độ phân giải
+endsection
+startsection-Thiết kế
+Chất liệu mặt,Chất liệu khung viền,Chất liệu dây,Độ rộng dây,Độ dài dây,Khả năng thay dây,Kích thước - Khối Lượng
+endsection
+startsection-Pin
+Thời gian sử dụng pin,Thời gian sạc,Dung lượng pin,Cổng sạc
+endsection
+startsection-Tiện ích
+Chống nước / Kháng nước,Tiện ích khác,Tính năng cho sức khỏe,Hiện thị thông báo
+endsection
+startsection-Cấu hình & Kết nối
+CPU,Bộ nhớ trong,Hệ điều hành,Kết nối được với hệ điều hành,Ứng dụng quản lý,Kết nối, Cảm biến
+endsection
+startsection-Thông tin khác
+Thời gian ra mắt,Ngôn ngữ,Hãng
+endsection
+endcate
