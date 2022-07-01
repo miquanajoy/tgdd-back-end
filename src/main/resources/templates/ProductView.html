@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<span>Product View Page</span>
+	<!--div th:if="${SpecInputForm != null}">
+			<form th:action="@{/Admin/CreateProduct}" th:object="${SpecInputForm}" method="post">
+				<br>
+				<span>Product Specifications</span>
+				<br>
+				<div>
+					<span>ProductID</span>
+					<input type="text" th:field="${ProductID}" readonly="readonly">
+				</div>
+				<br>
+				<span>Product Specification</span>
+					<div th:each="attrSection: ${SpecInputForm.section}">
+						<span th:utext="${attrSection.sectionHeader}"></span>
+						<div th:each="attrpair,stat : ${attrSection.attributes}">
+							<span th:utext="${attrpair.key}"></span>
+							<input type="text" th:field="*{section.attributes[__${stat.index}__].value}" th:value="${attrpair.value}">
+						</div>
+					</div>
+				<input type="submit" value="Create Product">
+			</form>
+			</div-->
+			<!-- th:each="promote:${PromoteList}" -->
+	<div>
+		<a th:href="@{/Admin/AddProductChooseCategory}">
+		Add a new Product
+		</a>
+	</div>
+	<div>
+		<table>
+    		<tr>
+      	  		<th >No.</th>
+      	  		<th >Name</th>
+      	  		<th >Price</th>
+      	  		<th >Warranty</th>
+      	  		<th >Image</th>
+      	  		<th >Interest Rate</th>
+      	  		<th >Exclusive</th>
+      	  		<th >Accessories</th>
+      	  		<th >Enabled</th>
+      	 	 </tr>
+          	<tr th:each="product, stat: ${ProductList}">
+          		<td th:utext="${product.productID}"></td>
+          		<td th:utext="${product.productName}"></td>
+          		<td th:utext="${#numbers.formatCurrency(product.price)}"></td>
+          		<td th:utext="${product.productWarranty}"></td>
+          		<td th:utext="${product.image}"></td>
+          		<td th:utext="${product.interestRate}"></td>
+          		<td th:if="${product.exclusive== true}" th:utext="Yes"></td>
+          		<td th:if="${product.exclusive== false}" th:utext="No"></td>
+          		<td th:utext="${product.accessoriesIncluded}"></td>
+          		<td th:if="${product.enabled== true}" th:utext="Yes"></td>
+          		<td th:if="${product.enabled== false}" th:utext="No"></td>
+          		<td>
+          			<form th:action="@{/Admin/ViewDetailsOrUpdateProduct/{proID} (proID=${product.productID}) }" method="get">
+          				<input type="submit" value="Details">
+          			</form>
+          		</td>
+          	</tr>
+      	</table>
+	</div>
+</body>
+</html>

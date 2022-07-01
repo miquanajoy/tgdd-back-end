@@ -23,8 +23,11 @@ public class ProductDiscount implements Serializable {
 	Integer discountID;
 
 	@OneToOne
-	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID")
+	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
 	Product productIdentifier;
+	
+	@Column(name = "ProductID")
+	String productID;
 
 	@Column(name = "DiscountedPrice")
 	Integer discountedPrice;
@@ -42,10 +45,12 @@ public class ProductDiscount implements Serializable {
 
 	}
 
-	public ProductDiscount(Integer discountID, Product productIdentifier, Integer discountedPrice,
+	public ProductDiscount(Integer discountID, Product productIdentifier, String productID, Integer discountedPrice,
 			Integer discountPercent, LocalDateTime startDate, LocalDateTime endDate) {
+		super();
 		this.discountID = discountID;
 		this.productIdentifier = productIdentifier;
+		this.productID = productID;
 		this.discountedPrice = discountedPrice;
 		this.discountPercent = discountPercent;
 		this.startDate = startDate;
@@ -66,6 +71,14 @@ public class ProductDiscount implements Serializable {
 
 	public void setProductIdentifier(Product productIdentifier) {
 		this.productIdentifier = productIdentifier;
+	}
+
+	public String getProductID() {
+		return productID;
+	}
+
+	public void setProductID(String productID) {
+		this.productID = productID;
 	}
 
 	public Integer getDiscountedPrice() {
@@ -100,4 +113,11 @@ public class ProductDiscount implements Serializable {
 		this.endDate = endDate;
 	}
 
+	@Override
+	public String toString() {
+		return "discountID=" + discountID + "\n       productID=" + productID + "\n       discountedPrice="
+				+ discountedPrice + "\n       discountPercent=" + discountPercent + "\n       startDate=" + startDate
+				+ "\n       endDate=" + endDate;
+	}
+	
 }

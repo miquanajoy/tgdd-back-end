@@ -15,25 +15,25 @@ public class Color implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ColorID")
-	private String colorId;
+	private Integer colorID;
 	@Column(name = "ColorName")
 	private String colorName;
 
 	public Color() {
 	}
 
-	public Color(String colorId, String colorName) {
+	public Color(Integer colorID, String colorName) {
 		super();
-		this.colorId = colorId;
+		this.colorID = colorID;
 		this.colorName = colorName;
 	}
 
-	public String getColorId() {
-		return colorId;
+	public Integer getColorID() {
+		return colorID;
 	}
 
-	public void setColorId(String colorId) {
-		this.colorId = colorId;
+	public void setColorID(Integer colorID) {
+		this.colorID = colorID;
 	}
 
 	public String getColorName() {
