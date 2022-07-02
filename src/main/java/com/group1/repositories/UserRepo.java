@@ -8,6 +8,6 @@ import com.group1.Entities.userEntities.User;
 
 public interface UserRepo extends JpaRepository<User, Integer> {
 	
-	@Query("SELECT u FROM User u WHERE u.username =?1")
+	@Query("SELECT u FROM User u WHERE u.userName =?1")
 	User findByUsername(String username);
 }

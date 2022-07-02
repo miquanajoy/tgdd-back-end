@@ -54,7 +54,7 @@ public class AdminController {
 		saveproduct.setAccessoriesIncluded("Charger, mnanualguide, earphone");
 		saveproduct.setEnabled(true);
 		
-		/*ProductArticle article = new ProductArticle();
+		ProductArticle article = new ProductArticle();
 		article.setProductID("SSGN1234");
 		article.setArticleUrl("LinkURL");
 		saveproduct.setArticle(article);
@@ -86,7 +86,7 @@ public class AdminController {
 		saveproduct.setFeatures(feature);
 		saveproduct.setSpecifications(spec);
 		saveproduct.setUnboxing(unboxing);
-		saveproduct.setVariant(variant);*/
+		saveproduct.setVariant(variant);
 		
 		ProductColorVariant colorVariant = new  ProductColorVariant();
 		Set<ProductColorVariant> pColors = new HashSet<ProductColorVariant>();
@@ -111,5 +111,22 @@ public class AdminController {
 		model.setViewName("Show");
 		return model;
 	}
+	
+	@GetMapping("/home")
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("")
+	public String viewHomePage() {
+		return "index";
+	}
+	
+	@GetMapping("/login")
+	public ModelAndView showLoginPage() {
+
+		return new ModelAndView("loginPage");
+	}
+
 
 }
