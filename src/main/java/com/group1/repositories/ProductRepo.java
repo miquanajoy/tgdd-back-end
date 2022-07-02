@@ -37,4 +37,7 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 			+ ":#{#product.categoryID}, :#{#product.productWarranty}, :#{#product.image}, :#{#product.interestRate}, :#{#product.exclusive}, "
 			+ ":#{#product.accessoriesIncluded}, :#{#product.enabled})")
 	public void saveNewProduct(@Param("product") Product saveProduct);
+	public Product findByProductID(String productID);
+	
 }
+

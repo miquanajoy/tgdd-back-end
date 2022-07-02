@@ -1,18 +1,25 @@
 package com.group1.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
-
+import com.group1.repositories.ProductRepo;
 import com.group1.Entities.productEntities.Manufacturer;
 import com.group1.Entities.productEntities.Product;
 import com.group1.Entities.productEntities.ProductArticle;
@@ -36,79 +43,64 @@ public class AdminController {
 	@Autowired
 	ManufacturerService manuServ;
 	
-	//@Autowired
-	//CategoryService cateServ;
+	@Autowired
+	ProductRepo prodcutRepo;
+	List<Product> productList = new ArrayList<Product>();
+	public LocalDateTime converttoLocalDateTime(LocalDateTime toConvertTime) 
+	{
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		System.out.println("Date time:"+toConvertTime);
+		
+		String formatedDateTime = toConvertTime.format(dtf);
+		System.out.println("Formatted date time:"+formatedDateTime);
+		
+		LocalDateTime finalFormatedTime = LocalDateTime.parse(formatedDateTime, dtf); 
+		
+		System.out.println("Formatted end time in objec:"+finalFormatedTime);
+		return finalFormatedTime;
+	}
 	
-	@GetMapping("/ViewProduct")
-	public ModelAndView showProduct(ModelAndView model) {
-		Product saveproduct = new Product();
-		saveproduct.setProductID("SSGN1234");
-		saveproduct.setProductName("Samsung Galaxy Note A7");
-		saveproduct.setPrice(14680000);
-		saveproduct.setManufacturerID(1);
-		saveproduct.setCategoryID(2);
-		saveproduct.setProductWarranty(24);
-		saveproduct.setExclusive(true);
-		saveproduct.setImage("aasdklfjaklsfj");
-		saveproduct.setInterestRate(4.2);
-		saveproduct.setAccessoriesIncluded("Charger, mnanualguide, earphone");
-		saveproduct.setEnabled(true);
-		
-		/*ProductArticle article = new ProductArticle();
-		article.setProductID("SSGN1234");
-		article.setArticleUrl("LinkURL");
-		saveproduct.setArticle(article);
-		
-		ProductCameraShot camerShots = new ProductCameraShot();
-		camerShots.setProductID("SSGN1234");
-		camerShots.setImageGalleryPath("slfghsdkl");
-		
-		ProductFeature feature = new ProductFeature();
-		feature.setProductID("SSGN1234");
-		feature.setFeaturesGalleryPath("slasdf");
-		feature.setFeaturesVideoLink("asdfasdf");
-		
-		ProductSpecification spec = new ProductSpecification();
-		spec.setProductID("SSGN1234");
-		spec.setProductSpecifications("asdlfasdfklas");
-		
-		ProductUnboxingReview unboxing = new ProductUnboxingReview();
-		unboxing.setProductID("SSGN1234");
-		unboxing.setImageGalleryPath("asdlfkasfskl");
-		
-		ProductVariant variant = new ProductVariant();
-		variant.setProductVariantID("SSGA123");
-		variant.setProductOriginalIdentifier("SSGN1234");
-		variant.setProductVariantName("256GB");
-		
-		saveproduct.setArticle(article);
-		saveproduct.setCameraShots(camerShots);
-		saveproduct.setFeatures(feature);
-		saveproduct.setSpecifications(spec);
-		saveproduct.setUnboxing(unboxing);
-		saveproduct.setVariant(variant);*/
-		
-		ProductColorVariant colorVariant = new  ProductColorVariant();
-		Set<ProductColorVariant> pColors = new HashSet<ProductColorVariant>();
-		colorVariant.setProductID("SSGN1234");
-		colorVariant.setColorID(2);
-		colorVariant.setImageGalleryPath("telkjdsfa");
-		pColors.add(colorVariant);
-		
-		colorVariant = new  ProductColorVariant();
-		colorVariant.setProductID("SSGA123");
-		colorVariant.setColorID(1);
-		colorVariant.setImageGalleryPath("ertlkasdf");
-		pColors.add(colorVariant);
-		
-		saveproduct.setColorVariant(pColors);
-		productServ.saveNewProduct(saveproduct);
-		List<GeneralProductViewDTO> productlist = productServ.getAllProducts();
-		ProductDiscountDTO productdiscountlist = productServ.getProductDiscount(1,2,"SSGA123");
-		
-		//ManufacturerPersistenceDTO brand = new ManufacturerPersistenceDTO(1,"Samsung");
-		//manuServ.updateBrand(6,brand);
-		model.setViewName("Show");
+	@GetMapping("/EditProduct")
+	public ModelAndView editProduct(ModelAndView model,@PathVariable("proID") String productId) {
+		Product p = prodcutRepo.findByProductID(productId);
+		System.out.println(p.toString());
+		model.addObject("ProductUpdateForm", p);
+		model.addObject("ProductList", productList);
+		model.setViewName("ProductEdit");
+		return model;
+	}
+	@PostMapping("/UpdateProduct")
+	public ModelAndView UpdateProduct(ModelAndView model, @ModelAttribute("ProductUpdateForm") Product toUpdateForm,
+			@ModelAttribute("CheckExclusive") String exclusiveSetter, @ModelAttribute("CheckEnable") String enableSetter) {
+		if(exclusiveSetter.contains("Exclusive")) toUpdateForm.setExclusive(true);
+		if(exclusiveSetter.contains("NotExclusive")) toUpdateForm.setExclusive(false);
+		if(enableSetter.contains("Enable")) toUpdateForm.setEnabled(true);
+		if(enableSetter.contains("Disable")) toUpdateForm.setEnabled(false);
+		int foundForm = 0;
+		int loopIndex = 0;
+		String productId = "";
+		boolean breakFindLoop = false;
+		//LocalDateTime currentTime = LocalDateTime.now();
+		//LocalDateTime convertedCurrentTime= converttoLocalDateTime(currentTime);
+		//LocalDateTime convertedEndTime= converttoLocalDateTime(updateform.getEndDateInput());
+		//updateform.setStartDate(convertedCurrentTime);
+		//updateform.setEndDate(convertedEndTime);
+		for(Product pro: productList) 
+		{
+			if(toUpdateForm.getProductID() == pro.getProductID()) 
+			{
+				breakFindLoop =true;
+				foundForm = loopIndex;
+				productId = pro.getProductID();
+			}
+			if(breakFindLoop) break;
+			loopIndex+=1;
+		}
+		System.out.println("product after update is:"+toUpdateForm);
+		productList.set(foundForm, toUpdateForm);
+	    prodcutRepo.save(toUpdateForm);
+		model.setViewName("redirect:/Admin/ViewProduct");
+		model.addObject("ProductList", productList);
 		return model;
 	}
 
