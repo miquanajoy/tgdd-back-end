@@ -34,34 +34,35 @@ import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.PromoteForm;
 import com.group1.dto.SpecSection;
-import com.group1.repositories.CategoryRepo;
-import com.group1.repositories.ColorRepo;
-import com.group1.repositories.ManufacturerRepo;
-import com.group1.repositories.ProductRepo;
-import com.group1.repositories.PromoteCodeRepo;
+import com.group1.entities.product.Category;
+import com.group1.entities.product.Color;
+import com.group1.entities.product.Manufacturer;
+import com.group1.entities.product.Product;
+import com.group1.entities.product.ProductArticle;
+import com.group1.entities.product.ProductCameraShot;
+import com.group1.entities.product.ProductColorVariant;
+import com.group1.entities.product.ProductFeature;
+import com.group1.entities.product.ProductSpecification;
+import com.group1.entities.product.ProductUnboxingReview;
+import com.group1.entities.product.ProductVariant;
+import com.group1.entities.shopping.PromoteCode;
+import com.group1.repositories.product.CategoryRepo;
+import com.group1.repositories.product.ColorRepo;
+import com.group1.repositories.product.ManufacturerRepo;
+import com.group1.repositories.product.ProductRepo;
+import com.group1.repositories.shopping.PromoteCodeRepo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.group1.Entities.productEntities.Category;
-import com.group1.Entities.productEntities.Color;
-import com.group1.Entities.productEntities.Manufacturer;
-import com.group1.Entities.productEntities.Product;
-import com.group1.Entities.productEntities.ProductArticle;
-import com.group1.Entities.productEntities.ProductCameraShot;
-import com.group1.Entities.productEntities.ProductColorVariant;
-import com.group1.Entities.productEntities.ProductFeature;
-import com.group1.Entities.productEntities.ProductSpecification;
-import com.group1.Entities.productEntities.ProductUnboxingReview;
-import com.group1.Entities.productEntities.ProductVariant;
-import com.group1.Entities.shoppingEntities.PromoteCode;
-import com.group1.service.CategoryService;
-import com.group1.service.ManufacturerService;
-import com.group1.service.ProductService;
+import com.group1.service.product.CategoryService;
+import com.group1.service.product.ManufacturerService;
+import com.group1.service.product.ProductService;
+import com.group1.service.shopping.PromoteCodeService;
 
 @Controller
-@RequestMapping("/Admin")
+@RequestMapping("/admin")
 public class AdminController {
 	
 	@Autowired
@@ -74,7 +75,7 @@ public class AdminController {
 	ManufacturerService manuServ;
 	
 	@Autowired
-	PromoteCodeRepo promotionServ;
+	PromoteCodeService promotionServ;
 	
 	@Autowired
 	CategoryRepo cateRepo;
@@ -85,20 +86,10 @@ public class AdminController {
 	@Autowired
 	ColorRepo colorRepo;
 	
-	boolean loadProductList = false;
-	boolean loadPromoteList = false;
-	boolean loadCateList = false;
-	boolean loadManuList = false;
-	boolean loadColorList = false;
 	boolean loadCateBasedSpecForm = false;
 	int promoteIndex = 0;
 	
-	List<Product> productList = new ArrayList<Product>();
-	List<PromoteCode> promoteList = new ArrayList<PromoteCode>();
-	List<Category> categoryList = new ArrayList<Category>();
-	List<Manufacturer> manuList = new ArrayList<Manufacturer>();
 	List<CategoryBasedSpecification> specFormList =new ArrayList<CategoryBasedSpecification>();
-	List<Color> colorList =new  ArrayList<Color>();
 	
 	public void loadAllCateBasedSpecificationForm() throws IOException 
 	{
@@ -183,25 +174,10 @@ public class AdminController {
 		return finalFormatedTime;
 	}
 	
-	@GetMapping("/AddProductChooseCategory")
+	@GetMapping("/products-management/create-product/choose-category")
 	public ModelAndView chooseProductCategory(ModelAndView model) 
 	{
 		String chosenCategory = "";
-		if(!loadCateList) 
-		{
-			categoryList = cateRepo.findAll();
-			loadCateList = true;
-		}
-		if(!loadManuList) 
-		{
-			manuList = manuRepo.findAll();
-			loadManuList = true;
-		}
-		if(!loadColorList) 
-		{
-			colorList = colorRepo.findAll();
-			loadManuList = true;
-		}
 		if(!loadCateBasedSpecForm) 
 		{
 			try {
@@ -211,7 +187,7 @@ public class AdminController {
 			}
 			loadCateBasedSpecForm =true;
 		}
-		
+		List<Category> categoryList = cateRepo.findAll();
 		//Collections.sort(categoryList);
 		model.setViewName("Show");
 		model.addObject("Categorychosen", chosenCategory);
@@ -251,7 +227,7 @@ public class AdminController {
 		e.printStackTrace();
 	}*/
 	
-	@PostMapping("/CreateProductStep1")
+	@GetMapping("/products-management/create-product/step-1")
 	public ModelAndView AddProductStep1(ModelAndView model, @ModelAttribute("Categorychosen") String catechosen) 
 	{
 		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
@@ -260,6 +236,8 @@ public class AdminController {
 		String Exclusive = "";
 		String Enabled = "";
 		int categoryID = 0;
+		List<Category> categoryList = cateRepo.findAll();
+		List<Manufacturer> manuList = manuRepo.findAll();
 		for(Category cate: categoryList) 
 		{
 			if(cate.getCategoryName().equals(catechosen) ) 
@@ -360,7 +338,7 @@ public class AdminController {
 		return model;
 	}*/
 	
-	@PostMapping("/CreateProduct")
+	@PostMapping("/products-management/create-product")
 	public ModelAndView AddProductProcess(ModelAndView model, @ModelAttribute("ProductInputForm1") Product productForm,
 			/*@ModelAttribute("SpecInputForm1") CategoryBasedSpecification specform1,*/ @ModelAttribute("CheckExclusive") String exclusive,
 			@ModelAttribute("CheckEnabled") String enabled) 
@@ -454,40 +432,29 @@ public class AdminController {
 		return model;
 	}
 	
-	@GetMapping("/ViewProduct")
+	@GetMapping("/products-management/view-products")
 	public ModelAndView viewProducts(ModelAndView model) {
 		
-		if(!loadProductList) 
-		{
-			System.out.println("Loading product list from Db:");
-			productList = productRepo.findAll();
-			loadProductList = true;
-			//promoteIndex = promoteList.get(promoteList.size()-1).getPromoteCodeID();
-		}
+		String path ="/images/3x4.jpg";
+		List<Product> productList = productServ.showAllProducts();
 		//Product p = productRepo.findByProductID("XR123");
 		//System.out.println(p.toString());
 		model.addObject("ProductList", productList);
-		//model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
 		model.setViewName("ProductView");
 		return model;
 	}
 	
-	@GetMapping("/ViewPromote")
+	@GetMapping("/promotions-management/view-promotions")
 	public ModelAndView viewPromotions(ModelAndView model) {
-		
-		if(!loadPromoteList) 
-		{
-			promoteList = promotionServ.findAll();
-			loadPromoteList = true;
-			promoteIndex = promoteList.get(promoteList.size()-1).getPromoteCodeID();
-		}
-		
+	
+		List<PromoteCode> promoteList = promotionServ.getAllPromotes();
 		model.addObject("PromoteList", promoteList);
 		model.setViewName("Promoteview");
 		return model;
 	}
 	
-	@GetMapping("/ViewDetailsOrUpdateProduct/{proID}")
+	@GetMapping("/products-management/view-or-update-product/{proID}")
 	public ModelAndView viewOrUpdateProducts(ModelAndView model, @PathVariable("proID") String productIdentity) {
 		
 		Product p = productRepo.findByProductID(productIdentity);
@@ -498,7 +465,7 @@ public class AdminController {
 		return model;
 	}
 	
-	@PostMapping("/UpdateProduct")
+	@PostMapping("/products-management/update-product/")
 	public ModelAndView UpdateProduct(ModelAndView model, @ModelAttribute("ProductUpdateForm") Product toUpdateForm,
 			@ModelAttribute("CheckExclusive") String exclusiveSetter, @ModelAttribute("CheckEnable") String enableSetter) {
 		
@@ -511,7 +478,7 @@ public class AdminController {
 		
 		int foundForm = 0;
 		int loopIndex = 0;
-		String productIdentifier = "";
+		/*String productIdentifier = "";
 		boolean breakFindLoop = false;
 		//LocalDateTime currentTime = LocalDateTime.now();
 		
@@ -534,7 +501,7 @@ public class AdminController {
 			if(breakFindLoop) break;
 			loopIndex+=1;
 			
-		}
+		}*/
 		System.out.println("product after update is:"+toUpdateForm);
 		
 		//productList.set(foundForm, toUpdateForm);
@@ -546,7 +513,7 @@ public class AdminController {
 		return model;
 	}
 	
-	@GetMapping("/CreatePromote")
+	@GetMapping("/promotions-management/create-promotion")
 	public ModelAndView addNewPromotion(ModelAndView model) {
 		/*Product saveproduct = new Product();
 		saveproduct.setProductID("SSGN1234");
@@ -624,7 +591,7 @@ public class AdminController {
 		return model;
 	}
 
-	@PostMapping("/CreatePromote")
+	@PostMapping("/promotions-management/create-promotion")
 	public ModelAndView processAddNewPromotion(ModelAndView model, @ModelAttribute("PromoteForm") PromoteCode form, 
 			@ModelAttribute("EnableCheck") String checkEnable/*, RedirectAttributes rediAttr*/) 
 	{
@@ -640,19 +607,20 @@ public class AdminController {
 		form.setEndDate(convertedEndTime);
 		promoteIndex+=1;
 		form.setPromoteCodeID(promoteIndex);
-		promotionServ.save(form);
-		promoteList.add(form);
+		promotionServ.savePromote(form);
+		//promoteList.add(form);
 		//model.addObject("PromoteForm", form);
 		model.setViewName("redirect:/Admin/ViewPromote");
 		return model;
 	}
 	
-	@GetMapping("/UpdatePromote/{promote}")
+	@GetMapping("/promotions-management/update-promotion/{promote}")
 	public ModelAndView UpdatePromotion(ModelAndView model, @PathVariable("promote") String promoteName) 
 	{
 		boolean breakLoop = false;
 		int checkEnabled = 0;
-		PromoteCode form = new PromoteCode();
+		PromoteCode promote= promotionServ.getPromoteByName(promoteName);
+		/*PromoteCode form = new PromoteCode();
 		for(PromoteCode promotion: promoteList) 
 		{
 			
@@ -663,16 +631,16 @@ public class AdminController {
 			}
 			if(breakLoop) break;
 			
-		}
-		System.out.println("promoteID before is:"+form.getPromoteCodeID() );
+		}*/
+		//System.out.println("promoteID before is:"+form.getPromoteCodeID() );
 		/* if(form.getEnabled()) checkEnabled =1;
 		model.addObject("Enabling", checkEnabled);*/
-		model.addObject("PromoteUpdateForm", form);
+		model.addObject("PromoteUpdateForm", promote);
 		model.setViewName("PromoteUpdate");
 		return model;
 	}
 	
-	@PostMapping("/UpdatePromote")
+	@PostMapping("/promotions-management/update-promotion")
 	public ModelAndView processUpdatePromotion(ModelAndView model, @ModelAttribute("PromoteUpdateForm") PromoteCode updateform, 
 			@ModelAttribute("EnableCheck") String checkEnable/*, RedirectAttributes rediAttr*/) 
 	{
@@ -691,7 +659,7 @@ public class AdminController {
 		updateform.setStartDate(convertedCurrentTime);
 		updateform.setEndDate(convertedEndTime);
 		//form.setPromoteCodeID(1);
-		for(PromoteCode promotion: promoteList) 
+		/*for(PromoteCode promotion: promoteList) 
 		{
 			
 			if(updateform.getPromoteCodeID() == promotion.getPromoteCodeID()) 
@@ -703,11 +671,11 @@ public class AdminController {
 			if(breakFindLoop) break;
 			loopIndex+=1;
 			
-		}
+		}*/
 		System.out.println("promoteID after is:"+promoteID);
-		promoteList.set(foundForm, updateform);
+		//promoteList.set(foundForm, updateform);
 		updateform.setPromoteCodeID(promoteID);
-		promotionServ.save(updateform);
+		promotionServ.savePromote(updateform);
 		//model.addObject("PromoteForm", form);
 		model.setViewName("redirect:/Admin/ViewPromote");
 		return model;
