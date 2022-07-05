@@ -8,7 +8,7 @@
 	<div th:if="${CategoryList != null && Specification == null}">
 		<span>Choose product category</span>
 		<div>
-			<form th:action="@{/Admin/CreateProductStep1}" method="post">
+			<form th:action="@{/Admin/product-management/create-product/step-1}" method="get">
 				<select name="Categorychosen">
 					<div th:each="category :${CategoryList}">
 						<option th:if="${category.parentID !=0}" th:value="${category.categoryName}"  
@@ -21,7 +21,7 @@
 	</div>
 	
 	<div th:if="${ProductInputForm != null}">
-		<form th:action="@{/Admin/CreateProduct}" th:object="${ProductInputForm}" method="post">
+		<form th:action="@{/Admin/product-management/create-product}" th:object="${ProductInputForm}" method="post">
 			<br>
 			<input type="hidden" name="CateChosen"  th:value ="${CateChosen}">
 			<span>Product main attributes</span>

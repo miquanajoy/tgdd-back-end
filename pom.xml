@@ -12,6 +12,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tgdd_backend</name>
 	<description>Backend tgdd</description>
+	<packaging>war</packaging>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -101,7 +102,7 @@
   	</dependency>
 	</dependencies>
 
-	<build>
+	<build> 
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
