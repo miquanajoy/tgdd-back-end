@@ -1,5 +1,17 @@
 package com.group1.controller;
 
+<<<<<<< Updated upstream
+=======
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+>>>>>>> Stashed changes
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -7,14 +19,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+<<<<<<< Updated upstream
+=======
+import javax.servlet.http.HttpServletRequest;
+
+>>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+<<<<<<< Updated upstream
+=======
+import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
+>>>>>>> Stashed changes
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -199,5 +222,78 @@ public class AdminController {
 		//model.addObject("PromoteForm", form);
 		model.setViewName("redirect:/Admin/ViewPromote");
 		return model;
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/uploadFile")
+	public String uploadOneFile(Model model) {
+
+		UploadForm myUploadForm = new UploadForm();
+		model.addAttribute("UploadForm", myUploadForm);
+		return "UploadPage";
+	}
+
+	@PostMapping(value = "/uploadFile")
+	public String uploadOneFileHandler(HttpServletRequest request, //
+			Model model, //
+			@ModelAttribute("UploadForm") UploadForm uploadForm) throws IOException {
+
+		return this.doUpload(request, model, uploadForm);
+
+	}
+
+	private String doUpload(HttpServletRequest request, Model model, UploadForm myUploadForm) throws IOException {
+		try {
+			File imgresource = new ClassPathResource("/static/images/**").getFile();
+			String imglink = imgresource.getAbsolutePath();
+			System.out.println("Test file location: " + imglink);
+			String text = new String(Files.readAllBytes(imgresource.toPath()));
+			System.out.println("Test file content: " + text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// Thư mục gốc upload file.
+		String uploadRootPath = "D:\\Photos";
+		// request.getServletContext().getRealPath("uploadDir");
+		System.out.println("Upload Root Path" + uploadRootPath);
+		File uploadRootDir = new File(uploadRootPath);
+		// Tạo thư mục gốc upload nếu nó không tồn tại.
+		if (!uploadRootDir.exists()) {
+			uploadRootDir.mkdirs();
+		}
+		MultipartFile[] fileDatas = myUploadForm.getFileDatas();
+		//
+		List<File> uploadedFiles = new ArrayList<File>();
+		List<String> failedFiles = new ArrayList<String>();
+
+		for (MultipartFile fileData : fileDatas) {
+
+			// Tên file gốc tại Client.
+			String name = fileData.getOriginalFilename();
+			System.out.println("Client File Name = " + name);
+
+			if (name != null && name.length() > 0) {
+				try {
+					// Tạo file tại Server.
+					File serverFile = new File(uploadRootDir.getAbsolutePath() + File.separator + name);
+
+					BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+					stream.write(fileData.getBytes());
+					stream.close();
+					//
+					uploadedFiles.add(serverFile);
+					System.out.println("Write file: " + serverFile);
+				} catch (Exception e) {
+					System.out.println("Error Write file: " + name);
+					failedFiles.add(name);
+				}
+			}
+		}
+		model.addAttribute("uploadedFiles", uploadedFiles);
+		model.addAttribute("failedFiles", failedFiles);
+		return "uploadResult";
 	}
 }
