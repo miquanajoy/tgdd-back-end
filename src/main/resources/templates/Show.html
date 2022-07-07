@@ -4,6 +4,36 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<script >
+function previewFiles() {
+
+const preview = document.querySelector('#preview');
+const files   = document.querySelector('input[type=file]').files;
+
+function readAndPreview(file) {
+
+  // Make sure `file.name` matches our extensions criteria
+  if ( /\.(jpe?g|png|gif)$/i.test(file.name) ) {
+	const reader = new FileReader();
+
+	reader.addEventListener("load", function () {
+	  const image = new Image();
+	  image.height = 100;
+	  image.title = file.name;
+	  image.src = this.result;
+	  preview.appendChild( image );
+	}, false);
+
+	reader.readAsDataURL(file);
+  }
+
+}
+
+if (files) {
+  [].forEach.call(files, readAndPreview);
+}
+
+}</script>
 <body>
 	<span>Hello you made it here</span>
 	
@@ -21,9 +51,49 @@
 			</div>
 			<br>
 			<div>
+<<<<<<< Updated upstream
 				<span>Promotion Code Discount Percent</span>
 				<input type="number" th:field="*{discountPercent}" required>
 			</div><br>
+=======
+				<span>Product Price</span>
+				<input type="number" th:field="*{price}" required min="50000" max="999000000" step="1000">
+			</div>
+			<br>
+			<div>
+				<span>Product ManufacturerID</span>
+				<select th:field="*{manufacturerID}">
+						<div th:each="brand :${ManuList}">
+							<option th:value="${brand.manufacturerID}"  
+							th:utext="${brand.manufacturerName}"></option>
+						</div>
+				</select>
+				<br>
+			</div>
+			<br>
+			<div>
+				<span>Product CategoryID</span>
+				<input type="number" th:field="*{categoryID}" required readonly="readonly">
+			</div>
+			<br>
+			<div>
+				<span>Product Warranty</span>
+				<input type="number" th:field="*{productWarranty}" required>
+			</div>
+			<br>
+			<div>
+				<span>Product Image</span>
+			<!-- <input type="text" th:field="*{image}" required> -->				
+          	    <input  id="browse" type="file" onchange="previewFiles()" th:field="*{image}" required="required" >
+  				<div id="preview"></div>
+			</div>
+			<br>
+			<div>
+				<span>Product Interest Rate</span>
+				<input type="number" th:field="*{interestRate}" required min="0" max="20" step="0.01">
+			</div>
+			<br>
+>>>>>>> Stashed changes
 			<div>
 				<span>Promotion Code Max Discount Amount</span>
 				<input type="number" th:field="*{discountMaxAmount}" required>
