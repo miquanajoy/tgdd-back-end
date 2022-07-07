@@ -1,6 +1,7 @@
 package com.group1.entities.product;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 //mqfixed
 @Entity
@@ -34,19 +39,34 @@ public class ProductColorVariant implements Serializable {
 	@Column(name = "ColorID")
 	private Integer colorID;
 	
-	@Column(name = "ImageGalleryPath")
-	private String imageGalleryPath;
-
+	@Lob
+	@Column(name = "Image", columnDefinition = "BLOB")
+	private byte[] image;
+	
+	@Column(name = "ImageType")
+	private String imageType;
+	
+	@Transient
+	private MultipartFile[] fileDatas;
+	
+	@Transient
+	private String toShowImage;
+	
 	public ProductColorVariant() {
 	}
 
-	public ProductColorVariant(Integer id, Product productColorVariantIdentifier, String productID, Integer colorId, String imageGalleryPath) {
+	public ProductColorVariant(Integer id, Product productColorVariantIdentifier, String productID, Color color,
+			Integer colorID, byte[] image, String imageType, MultipartFile[] fileDatas, String toShowImage) {
 		super();
 		this.id = id;
 		this.productColorVariantIdentifier = productColorVariantIdentifier;
 		this.productID = productID;
-		this.colorID = colorId;
-		this.imageGalleryPath = imageGalleryPath;
+		this.color = color;
+		this.colorID = colorID;
+		this.image = image;
+		this.imageType = imageType;
+		this.fileDatas = fileDatas;
+		this.toShowImage = toShowImage;
 	}
 
 	public Integer getId() {
@@ -73,6 +93,14 @@ public class ProductColorVariant implements Serializable {
 		this.productID = productID;
 	}
 
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
 	public Integer getColorID() {
 		return colorID;
 	}
@@ -81,18 +109,42 @@ public class ProductColorVariant implements Serializable {
 		this.colorID = colorID;
 	}
 
-	public String getImageGalleryPath() {
-		return imageGalleryPath;
+	public byte[] getImage() {
+		return image;
 	}
 
-	public void setImageGalleryPath(String imageGalleryPath) {
-		this.imageGalleryPath = imageGalleryPath;
+	public void setImage(byte[] image) {
+		this.image = image;
+	}
+	
+	public String getImageType() {
+		return imageType;
+	}
+
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
+	}
+
+	public MultipartFile[] getFileDatas() {
+		return fileDatas;
+	}
+
+	public void setFileDatas(MultipartFile[] fileDatas) {
+		this.fileDatas = fileDatas;
+	}
+	
+	public String getToShowImage() {
+		return toShowImage;
+	}
+
+	public void setToShowImage(String toShowImage) {
+		this.toShowImage = toShowImage;
 	}
 
 	@Override
 	public String toString() {
-		return "ProductColorVariant:\n\tid=" + id + " \n\tproductID=" + productID + " \n\tcolorId=" + colorID
-				+ " \n\timageGalleryPath=" + imageGalleryPath;
+		return "id=" + id + "\n       productID=" + productID + "\n       colorID="
+				+ colorID + "\n       imageType=" + imageType;
 	}
 
 	
