@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 //fixed
 @Entity
@@ -40,13 +43,25 @@ public class ProductDiscount implements Serializable {
 
 	@Column(name = "EndDate")
 	LocalDateTime endDate;
+	
+	@Column(name = "Enabled")
+	boolean enabled;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime endDateInput;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime startDateInput;
 
 	public ProductDiscount() {
 
 	}
 
 	public ProductDiscount(Integer discountID, Product productIdentifier, String productID, Integer discountedPrice,
-			Integer discountPercent, LocalDateTime startDate, LocalDateTime endDate) {
+			Integer discountPercent, LocalDateTime startDate, LocalDateTime endDate, boolean enabled, LocalDateTime endDateInput, 
+			LocalDateTime startDateInput) {
 		super();
 		this.discountID = discountID;
 		this.productIdentifier = productIdentifier;
@@ -55,6 +70,9 @@ public class ProductDiscount implements Serializable {
 		this.discountPercent = discountPercent;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.enabled = enabled;
+		this.endDateInput = endDateInput;
+		this.startDateInput = startDateInput;
 	}
 
 	public Integer getDiscountID() {
@@ -112,12 +130,37 @@ public class ProductDiscount implements Serializable {
 	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public LocalDateTime getEndDateInput() {
+		return endDateInput;
+	}
+
+	public void setEndDateInput(LocalDateTime endDateInput) {
+		this.endDateInput = endDateInput;
+	}
+	
+	public LocalDateTime getStartDateInput() {
+		return startDateInput;
+	}
+
+	public void setStartDateInput(LocalDateTime startDateInput) {
+		this.startDateInput = startDateInput;
+	}
 
 	@Override
 	public String toString() {
 		return "discountID=" + discountID + "\n       productID=" + productID + "\n       discountedPrice="
 				+ discountedPrice + "\n       discountPercent=" + discountPercent + "\n       startDate=" + startDate
-				+ "\n       endDate=" + endDate;
+				+ "\n       endDate=" + endDate + "\n       enabled=" + enabled + "\n       endDateInput="
+				+ endDateInput + "\n       startDateInput=" + startDateInput;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.group1.entities.product;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.group1.dto.SpecSection;
 //mqfixed
 @Entity
 @Table(name = "product_specification")
@@ -39,6 +43,7 @@ public class ProductSpecification implements Serializable{
 		this.productSpecificationIdentifier = productSpecificationIdentifier;
 		this.productID = productID;
 		this.productSpecifications = productSpecifications;
+		
 	}
 
 	public Integer getId() {
@@ -75,10 +80,8 @@ public class ProductSpecification implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ProductSpecification:\n\tid=" + id + " \n\tproductID=" + productID + " \n\tproductSpecifications="
-				+ productSpecifications;
+		return "id=" + id + "\n       productID=" + productID + "\n       productSpecifications="
+				+ productSpecifications ;
 	}
-
-	
 	
 }

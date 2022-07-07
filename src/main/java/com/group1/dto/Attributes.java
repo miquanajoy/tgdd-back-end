@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class Attributes implements Serializable{
 	
-	String key;
-	Object value;
+	public String key;
+	public Object value;
 
 	public Attributes() {
 	

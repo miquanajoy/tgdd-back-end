@@ -1,6 +1,7 @@
 package com.group1.entities.product;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 //mqfixed
 @Entity
 @Table(name = "product_feature")
@@ -19,30 +23,35 @@ public class ProductFeature implements Serializable{
 	@Column(name = "ID")
 	private Integer id;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
 	private Product productFeatureIdentifier;
 	
 	@Column(name = "ProductID")
 	private String productID;
 	
-	@Column(name = "FeaturesVideoLink")
-	private String featuresVideoLink;
+	@Lob
+	@Column(name = "Image", columnDefinition = "BLOB")
+	private byte[] image;
 	
-	@Column(name = "FeaturesGalleryPath")
-	private String featuresGalleryPath;
-
+	@Column(name = "ImageType")
+	private String imageType;
+	
+	@Transient
+	private String toShowImage;
+	
 	public ProductFeature() {
 	}
 
-	public ProductFeature(Integer id, Product productFeatureIdentifier, String productID, String featuresVideoLink,
-			String featuresGalleryPath) {
+	public ProductFeature(Integer id, Product productFeatureIdentifier, String productID,
+			byte[] image, String imageType, String toShowImage) {
 		super();
 		this.id = id;
 		this.productFeatureIdentifier = productFeatureIdentifier;
 		this.productID = productID;
-		this.featuresVideoLink = featuresVideoLink;
-		this.featuresGalleryPath = featuresGalleryPath;
+		this.image = image;
+		this.imageType = imageType ;
+		this.toShowImage = toShowImage;
 	}
 
 	public Integer getId() {
@@ -69,26 +78,33 @@ public class ProductFeature implements Serializable{
 		this.productID = productID;
 	}
 
-	public String getFeaturesVideoLink() {
-		return featuresVideoLink;
+	public byte[] getImage() {
+		return image;
 	}
 
-	public void setFeaturesVideoLink(String featuresVideoLink) {
-		this.featuresVideoLink = featuresVideoLink;
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
-	public String getFeaturesGalleryPath() {
-		return featuresGalleryPath;
+	public String getImageType() {
+		return imageType;
 	}
 
-	public void setFeaturesGalleryPath(String featuresGalleryPath) {
-		this.featuresGalleryPath = featuresGalleryPath;
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
+	}
+	
+	public String getToShowImage() {
+		return toShowImage;
+	}
+
+	public void setToShowImage(String toShowImage) {
+		this.toShowImage = toShowImage;
 	}
 
 	@Override
 	public String toString() {
-		return "ProductFeature:\n\tid=" + id + " \n\tproductID=" + productID + " \n\tfeaturesVideoLink="
-				+ featuresVideoLink + " \n\tfeaturesGalleryPath=" + featuresGalleryPath;
+		return "id=" + id + "\n       productID=" + productID + "\n       imageType=" + imageType;
 	}
 
 	
