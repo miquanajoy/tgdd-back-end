@@ -219,41 +219,11 @@ public class AdminController {
 		return model;
 	}
 	
-	/*String json = "";
-	ObjectMapper mapper = new ObjectMapper();
-	mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-	try {
-		json = mapper.writeValueAsString(specFormList.get(0));
-	} catch (JsonProcessingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	Product p= productRepo.findByProductID("SSGN1234");
-	ProductSpecification pSpec = new ProductSpecification();
-	pSpec.setProductID("SSGN1234");
-	pSpec.setProductSpecifications(json);
 	
-	p.setSpecifications(pSpec);
-	productRepo.save(p);
 	
-	Product newP= productRepo.findByProductID("SSGN1234");
-	try {
-		currSpec = mapper.readValue(newP.getSpecifications().getProductSpecifications().getBytes(), CategoryBasedSpecification.class);
-		System.out.println(currSpec.toString().replace("[", "").replace("]", "") );
-	} catch (JsonParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (JsonMappingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}*/
-	
-	@PostMapping("/CreateProductStep1")
+	@PostMapping("/CreateProductStep1") 
 	public ModelAndView AddProductStep1(ModelAndView model, @ModelAttribute("Categorychosen") String catechosen) 
-	{
+	{//side
 		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
 		//else System.out.println("Category is empty");
 		Product productInputForm = new Product();
@@ -297,69 +267,7 @@ public class AdminController {
 		//model.addObject("CategoryList", categoryList);
 		return model;
 	}
-	
-	/*@PostMapping("/CreateProductStep2")
-	public ModelAndView AddProductStep2(ModelAndView model, @ModelAttribute("ProductInputForm") Product productForm, @ModelAttribute("CheckExclusive") String exclusive,
-			@ModelAttribute("CheckEnabled") String enabled, @ModelAttribute("CateChosen") String catechosen) 
-	{
 		
-		
-		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
-		//else System.out.println("Category is empty");
-		//ProductColorVariant colorVariant = new  ProductColorVariant();
-		//productForm.getColorVariant().add(colorVariant);
-		String pID =productForm.getProductID();
-		
-		//productForm.getSpecifications().setProductID(pID);
-		System.out.println("At create product step 2"+productForm.toString());
-		
-		model.addObject("ProductInputForm1", productForm);
-		model.setViewName("Show");
-		model.addObject("SelectedCate", catechosen);
-		//model.addObject("SpecInputForm", specInputForm);
-		//model.addObject("CategoryList", categoryList);
-		return model;
-	}*/
-	
-	/*@PostMapping("/CreateProductStep3")
-	public ModelAndView AddProductStep3(ModelAndView model, @ModelAttribute("ProductInputForm") Product productForm, @ModelAttribute("CheckExclusive") String exclusive,
-			@ModelAttribute("CheckEnabled") String enabled, @ModelAttribute("SelectedCate") String selectedCate) 
-	{
-		if(exclusive.contains("Exclusive")) productForm.setExclusive(true);
-		if(exclusive.contains("NotExclusive")) productForm.setExclusive(false);
-		
-		if(enabled.contains("Enable")) productForm.setEnabled(true);
-		if(enabled.contains("Disable")) productForm.setEnabled(false);
-		//if(!catechosen.isEmpty()) System.out.println("Category is:"+catechosen);
-		//else System.out.println("Category is empty");
-		//ProductColorVariant colorVariant = new  ProductColorVariant();
-		//productForm.getColorVariant().add(colorVariant);
-		CategoryBasedSpecification specInputForm = new CategoryBasedSpecification();
-		if(specFormList != null) 
-		{
-			for(CategoryBasedSpecification specForm: specFormList) 
-			{
-				if(specForm.getCategory().equals(selectedCate)) 
-				{
-					specInputForm = specForm;
-				}
-			}
-			if(specInputForm == null) System.out.println("No suitable Spec form found");
-			else System.out.println(specInputForm.toString().replace("[", "").replace("]", ""));
-		}
-		else System.out.println("Spec form is null");
-		String proID = productForm.getProductID();
-		if(proID.isEmpty()) System.out.println("Product ID is null");
-		else System.out.println("Product ID="+proID);
-		//model.addObject("ProductInputForm2", productForm);
-		model.setViewName("ProductView");
-		model.addObject("SpecInputForm", specInputForm);
-		model.addObject("ColorList", colorList);
-		model.addObject("ProductID", proID);
-		//model.addObject("CategoryList", categoryList);
-		return model;
-	}*/
-	
 	@PostMapping("/CreateProduct")
 	public ModelAndView AddProductProcess(ModelAndView model, @ModelAttribute("ProductInputForm1") Product productForm,
 			/*@ModelAttribute("SpecInputForm1") CategoryBasedSpecification specform1,*/ @ModelAttribute("CheckExclusive") String exclusive,
@@ -402,35 +310,7 @@ public class AdminController {
 			productForm.setFeatures(null);
 		}
 		else productForm.getFeatures().setProductID(pID);
-		/*boolean stopLoop =false;
-		boolean addSpec =true;
-		for(SpecSection sect: specform1.getSection()) 
-		{
-			for(Attributes kvpair : sect.getAttributes()) 
-			{
-				if(kvpair.getValue().toString().contains("split multiple values with ;") )
-				{
-					stopLoop =true;
-					addSpec = false;
-					break;
-				}
-				if(stopLoop) break;
-			}
-		}
-		if(addSpec) 
-		{
-			String json = "";
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-			try {
-				json = mapper.writeValueAsString(specform1);
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			productForm.getSpecifications().setProductSpecifications(json);
-		}*/
+		
 		
 		if(productForm.getUnboxing().getImageGalleryPath().isEmpty()) 
 		{
