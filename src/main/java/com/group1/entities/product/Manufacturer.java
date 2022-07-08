@@ -90,7 +90,7 @@ public class Manufacturer implements Serializable{
 	@Override
 	public String toString() {
 		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName
-				+ "\n       ProductList=" + ProductList + "\n       categoryID=" + categoryID;
+				+"\n       categoryID=" + categoryID;
 	}
 
 	

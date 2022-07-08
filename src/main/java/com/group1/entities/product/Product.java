@@ -2,6 +2,8 @@ package com.group1.entities.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -9,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -17,6 +20,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.group1.dto.ColorVariantUpdateDTO;
+import com.group1.dto.SpecSection;
 //fixed
 @Entity
 @Table(name= "product")
@@ -33,7 +39,6 @@ public class Product implements Serializable{
 	@Column(name = "Price")
 	private Integer price;
 	
-	//@Transient
 	@ManyToOne
 	@JoinColumn(name="ManufacturerID", referencedColumnName = "ManufacturerID", insertable = false, updatable = false) 
 	private Manufacturer manufacturer;
@@ -41,7 +46,6 @@ public class Product implements Serializable{
 	@Column(name = "ManufacturerID")
 	private Integer manufacturerID;
 	
-	//@Transient
 	@ManyToOne
 	@JoinColumn(name="CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
 	private Category category;
@@ -49,27 +53,26 @@ public class Product implements Serializable{
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	
-	//@Transient
 	@OneToOne(mappedBy = "productIdentifier", cascade = CascadeType.ALL)
 	private ProductDiscount discount;
 	
 	@OneToOne(mappedBy = "productArticleIdentifier", cascade = CascadeType.ALL)
 	private ProductArticle article;
 	
-	@OneToOne(mappedBy = "productCameraShotIdentifier", cascade = CascadeType.ALL)
-	private ProductCameraShot cameraShots;
+	@OneToMany(mappedBy = "productCameraShotIdentifier", cascade = CascadeType.ALL)
+	private Set<ProductCameraShot> cameraShots;
 	
 	@OneToMany(mappedBy = "productColorVariantIdentifier", cascade = CascadeType.ALL)
 	private Set<ProductColorVariant> colorVariant;
 	
-	@OneToOne(mappedBy = "productFeatureIdentifier", cascade = CascadeType.ALL) 
-	private ProductFeature features;
+	@OneToMany(mappedBy = "productFeatureIdentifier", cascade = CascadeType.ALL) 
+	private Set<ProductFeature> features;
 	  
 	@OneToOne(mappedBy = "productSpecificationIdentifier", cascade = CascadeType.ALL) 
 	private ProductSpecification specifications;
 	  
-	@OneToOne(mappedBy = "productUnboxingReviewIdentifier", cascade = CascadeType.ALL) 
-	private ProductUnboxingReview unboxing;
+	@OneToMany(mappedBy = "productUnboxingReviewIdentifier", cascade = CascadeType.ALL) 
+	private Set<ProductUnboxingReview> unboxing;
 	  
 	@OneToOne(mappedBy = "productVariantIdentifier", cascade = CascadeType.ALL) 
 	private ProductVariant variant;
@@ -80,8 +83,12 @@ public class Product implements Serializable{
 	@Column(name = "ProductWarranty")
 	private Integer productWarranty;
 	
-	@Column(name = "Image")
-	private String image;
+	@Lob
+	@Column(name = "Image", columnDefinition = "BLOB")
+	private byte[] image;
+	
+	@Column(name = "ImageType")
+	private String imageType;
 	
 	@Column(name = "InterestRate")
 	private double interestRate;
@@ -94,17 +101,31 @@ public class Product implements Serializable{
 	
 	@Column(name = "Enabled")
 	private Boolean enabled;
+	
+	@Transient
+	private List<ProductColorVariant> colorVariantInputList;
+	
+	@Transient
+	private String imageToShow;
+	
+	@Transient 
+	private List<ColorVariantUpdateDTO> colorVarUpdateList;
 
+	@Transient
+	public List<SpecSection> specList;
+	
 	public Product() {
 		
 	}
 
 	public Product(String productID, String productName, Integer price, Manufacturer manufacturer,
 			Integer manufacturerID, Category category, Integer categoryID, ProductDiscount discount,
-			ProductArticle article, ProductCameraShot cameraShots, Set<ProductColorVariant> colorVariant,
-			ProductFeature features, ProductSpecification specifications, ProductUnboxingReview unboxing,
-			ProductVariant variant, Set<ProductVariant> original, Integer productWarranty, String image,
-			double interestRate, Boolean exclusive, String accessoriesIncluded, Boolean enabled) {
+			ProductArticle article, Set<ProductCameraShot> cameraShots, Set<ProductColorVariant> colorVariant,
+			Set<ProductFeature> features, ProductSpecification specifications, Set<ProductUnboxingReview> unboxing,
+			ProductVariant variant, Set<ProductVariant> original, Integer productWarranty, byte[] image, String imageType,
+			double interestRate, Boolean exclusive, String accessoriesIncluded, Boolean enabled,
+			List<ProductColorVariant> colorVariantInputList, String imageToShow, List<ColorVariantUpdateDTO> colorVarUpdateList
+			, List<SpecSection> specList) {
 		super();
 		this.productID = productID;
 		this.productName = productName;
@@ -124,10 +145,15 @@ public class Product implements Serializable{
 		this.original = original;
 		this.productWarranty = productWarranty;
 		this.image = image;
+		this.imageType = imageType ;
 		this.interestRate = interestRate;
 		this.exclusive = exclusive;
 		this.accessoriesIncluded = accessoriesIncluded;
 		this.enabled = enabled;
+		this.colorVariantInputList = colorVariantInputList;
+		this.imageToShow = imageToShow;
+		this.colorVarUpdateList = colorVarUpdateList;
+		this.specList = specList;
 	}
 
 	public String getProductID() {
@@ -202,11 +228,11 @@ public class Product implements Serializable{
 		this.article = article;
 	}
 
-	public ProductCameraShot getCameraShots() {
+	public Set<ProductCameraShot> getCameraShots() {
 		return cameraShots;
 	}
 
-	public void setCameraShots(ProductCameraShot cameraShots) {
+	public void setCameraShots(Set<ProductCameraShot> cameraShots) {
 		this.cameraShots = cameraShots;
 	}
 
@@ -218,11 +244,11 @@ public class Product implements Serializable{
 		this.colorVariant = colorVariant;
 	}
 
-	public ProductFeature getFeatures() {
+	public Set<ProductFeature> getFeatures() {
 		return features;
 	}
 
-	public void setFeatures(ProductFeature features) {
+	public void setFeatures(Set<ProductFeature> features) {
 		this.features = features;
 	}
 
@@ -234,11 +260,11 @@ public class Product implements Serializable{
 		this.specifications = specifications;
 	}
 
-	public ProductUnboxingReview getUnboxing() {
+	public Set<ProductUnboxingReview> getUnboxing() {
 		return unboxing;
 	}
 
-	public void setUnboxing(ProductUnboxingReview unboxing) {
+	public void setUnboxing(Set<ProductUnboxingReview> unboxing) {
 		this.unboxing = unboxing;
 	}
 
@@ -266,12 +292,20 @@ public class Product implements Serializable{
 		this.productWarranty = productWarranty;
 	}
 
-	public String getImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public String getImageType() {
+		return imageType;
+	}
+
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
 	}
 
 	public double getInterestRate() {
@@ -306,12 +340,45 @@ public class Product implements Serializable{
 		this.enabled = enabled;
 	}
 
+	public List<ProductColorVariant> getColorVariantInputList() {
+		return colorVariantInputList;
+	}
+
+	public void setColorVariantInputList(List<ProductColorVariant> colorVariantInputList) {
+		this.colorVariantInputList = colorVariantInputList;
+	}
+
+	public String getImageToShow() {
+		return imageToShow;
+	}
+
+	public void setImageToShow(String imageToShow) {
+		this.imageToShow = imageToShow;
+	}
+	
+	public List<ColorVariantUpdateDTO> getColorVarUpdateList() {
+		return colorVarUpdateList;
+	}
+
+	public void setColorVarUpdateList(List<ColorVariantUpdateDTO> colorVarUpdateList) {
+		this.colorVarUpdateList = colorVarUpdateList;
+	}
+
+	public List<SpecSection> getSpecList() {
+		return specList;
+	}
+
+	public void setSpecList(List<SpecSection> specList) {
+		this.specList = specList;
+	}
+	
 	public String toString1() {
 		return "productID=" + productID + "\n       productName=" + productName + "\n       price=" + price
 				+ "\n       manufacturerID=" + manufacturerID + "\n       categoryID=" + categoryID
-				+ "\n       productWarranty=" + productWarranty + "\n       image=" + image + "\n       interestRate="
-				+ interestRate + "\n       exclusive=" + exclusive + "\n       accessoriesIncluded="
-				+ accessoriesIncluded + "\n       enabled=" + enabled;
+				+ "\n       productWarranty=" + productWarranty + "\n       imageType=" + imageType
+				+ "\n       interestRate=" + interestRate + "\n       exclusive=" + exclusive
+				+ "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
+				+ "\n       specList=" + specList;
 	}
 
 	@Override
@@ -322,10 +389,14 @@ public class Product implements Serializable{
 				+ discount + "\n       article=" + article + "\n       cameraShots=" + cameraShots
 				+ "\n       colorVariant=" + colorVariant + "\n       features=" + features + "\n       specifications="
 				+ specifications + "\n       unboxing=" + unboxing + "\n       variant=" + variant
-				+ "\n       original=" + original + "\n       productWarranty=" + productWarranty + "\n       image="
-				+ image + "\n       interestRate=" + interestRate + "\n       exclusive=" + exclusive
-				+ "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled;
+				+ "\n       original=" + original + "\n       productWarranty=" + productWarranty
+				+ "\n       imageType=" + imageType + "\n       interestRate=" + interestRate + "\n       exclusive="
+				+ exclusive + "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
+				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       colorVarUpdateList="
+				+ colorVarUpdateList + "\n       specList=" + specList;
 	}
+
+	
 
 	
 }

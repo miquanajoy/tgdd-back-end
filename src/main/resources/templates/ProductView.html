@@ -6,31 +6,7 @@
 </head>
 <body>
 	<span>Product View Page</span>
-	<img th:src="@{${ImgPath}}" width="50px" height="50px">
-	<!--div th:if="${SpecInputForm != null}">
-			<form th:action="@{/Admin/CreateProduct}" th:object="${SpecInputForm}" method="post">
-				<br>
-				<span>Product Specifications</span>
-				<br>
-				<div>
-					<span>ProductID</span>
-					<input type="text" th:field="${ProductID}" readonly="readonly">
-				</div>
-				<br>
-				<span>Product Specification</span>
-					<div th:each="attrSection: ${SpecInputForm.section}">
-						<span th:utext="${attrSection.sectionHeader}"></span>
-						<div th:each="attrpair,stat : ${attrSection.attributes}">
-							<span th:utext="${attrpair.key}"></span>
-							<input type="text" th:field="*{section.attributes[__${stat.index}__].value}" th:value="${attrpair.value}">
-						</div>
-					</div>
-				<input type="submit" value="Create Product">
-			</form>
-			</div-->
-			<!-- th:each="promote:${PromoteList}" -->
-	<div>
-		<a th:href="@{/Admin/AddProductChooseCategory}">
+		<a th:href="@{/admin/products-management/create-product/choose-category}">
 		Add a new Product
 		</a>
 	</div>
@@ -52,7 +28,9 @@
           		<td th:utext="${product.productName}"></td>
           		<td th:utext="${#numbers.formatCurrency(product.price)}"></td>
           		<td th:utext="${product.productWarranty}"></td>
-          		<td th:utext="${product.image}"></td>
+          		<td>
+          			<img th:src="@{'data:image/;base64,'+${product.imageToShow}}" width="50px" height="50px">
+          		</td>
           		<td th:utext="${product.interestRate}"></td>
           		<td th:if="${product.exclusive== true}" th:utext="Yes"></td>
           		<td th:if="${product.exclusive== false}" th:utext="No"></td>
@@ -60,12 +38,13 @@
           		<td th:if="${product.enabled== true}" th:utext="Yes"></td>
           		<td th:if="${product.enabled== false}" th:utext="No"></td>
           		<td>
-          			<form th:action="@{/Admin/ViewDetailsOrUpdateProduct/{proID} (proID=${product.productID}) }" method="get">
+          			<form th:action="@{/admin/products-management/view-or-update-product/step-1/{proID} (proID=${product.productID}) }" method="get">
           				<input type="submit" value="Details">
           			</form>
           		</td>
           	</tr>
       	</table>
 	</div>
+	<!--img th:src="@{${ImgPath}}" width="50px" height="50px"-->
 </body>
 </html>
