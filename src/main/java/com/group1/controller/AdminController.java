@@ -4,15 +4,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
-
+import com.group1.repositories.ProductRepo;
+import com.group1.repositories.UserRepo;
 import com.group1.Entities.productEntities.Manufacturer;
 import com.group1.Entities.productEntities.Product;
 import com.group1.Entities.productEntities.ProductArticle;
@@ -22,6 +28,7 @@ import com.group1.Entities.productEntities.ProductFeature;
 import com.group1.Entities.productEntities.ProductSpecification;
 import com.group1.Entities.productEntities.ProductUnboxingReview;
 import com.group1.Entities.productEntities.ProductVariant;
+import com.group1.Entities.userEntities.User;
 import com.group1.service.CategoryService;
 import com.group1.service.ManufacturerService;
 import com.group1.service.ProductService;
@@ -127,6 +134,36 @@ public class AdminController {
 
 		return new ModelAndView("loginPage");
 	}
-
+	
+	
+	@PostMapping("/loginAction") 
+	  public ModelAndView checkLogin(@ModelAttribute("loginPage") User user, HttpSession session) {
+	  
+		  ModelAndView model =new ModelAndView();
+		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
+			  if (userdata != null) 
+			  {   
+				  Long createdTime= session.getCreationTime();
+				  System.out.println("Session created at:" + createdTime);
+				  session.setMaxInactiveInterval(60*30);
+				  int sessionage= session.getMaxInactiveInterval();
+				  System.out.println("Session will self-destroy in:" + sessionage);
+				  
+				  if (userdata.getRoleId().equals("US")) 
+				  {
+					  model.setViewName("index");
+					  return model; 
+				  }
+				  model.setViewName("Admin");
+				  
+				  return model; 
+				  
+	          } 
+			  else 	          
+	        	 return model; 
+	          
+	  }
+	
+	
 
 }
