@@ -31,17 +31,21 @@ public class Category implements Serializable{
 	@OneToMany(mappedBy = "categoryID")
 	private Set<Manufacturer> brandList;
 	
+	@OneToMany(mappedBy = "categoryID")
+	private Set<ProductTechSpecs> specList;
+	
 	public Category() {
 	}
 
 	public Category(Integer categoryID, String categoryName, Integer parentID, Set<Product> productList,
-			Set<Manufacturer> brandList) {
+			Set<Manufacturer> brandList, Set<ProductTechSpecs> specList) {
 		super();
 		this.categoryID = categoryID;
 		this.categoryName = categoryName;
 		this.parentID = parentID;
 		ProductList = productList;
 		this.brandList = brandList;
+		this.specList = specList;
 	}
 
 	public Integer getCategoryID() {
@@ -83,12 +87,19 @@ public class Category implements Serializable{
 	public void setBrandList(Set<Manufacturer> brandList) {
 		this.brandList = brandList;
 	}
+	
+	public Set<ProductTechSpecs> getSpecList() {
+		return specList;
+	}
+
+	public void setSpecList(Set<ProductTechSpecs> specList) {
+		this.specList = specList;
+	}
 
 	@Override
 	public String toString() {
 		return "categoryID=" + categoryID + "\n       categoryName=" + categoryName + "\n       parentID=" + parentID
-				+ "\n       ProductList=" + ProductList + "\n       brandList=" + brandList;
+				+ "\n       brandList=" + brandList + "\n       specList=" + specList;
 	}
-
 	
 }

@@ -6,7 +6,7 @@ import java.util.List;
 public class SpecSection implements Serializable{
 
 	String sectionHeader;
-	List<Attributes> attributes;
+	public List<Attributes> attributes;
 	
 	public SpecSection() {
 		
