@@ -115,19 +115,19 @@
 
                                           <div class="form-group">
                                             <label>Product ID</label> </br>
-                                            <input type="text" class="form-control" th:field="*{productID}" required> </br>
+                                            <input type="text" class="form-control" th:field="*{productID}" pattern="[A-Z\d]+" required> </br>
                                             <font color="red"></font>                                        
                                           </div>
 
                                           <div class="form-group">
                                             <label>Product Name</label> </br>
-                                            <input type="text" class="form-control" th:field="*{productName}" required> </br>
+                                            <input type="text" class="form-control" th:field="*{productName}" pattern="[\w\d]+" required> </br>
                                             <font color="red"></font>
                                           </div>
 
                                           <div class="form-group">
                                             <label>Product Price</label> </br>
-                                            <input type="number" class="form-control" th:field="*{price}" required min="50000" max="999000000" step="1000" > </br>
+                                            <input type="number" class="form-control" th:field="*{price}" pattern="[\d]+" required min="50000" max="999000000" step="1000" > </br>
                                             <font color="red"></font>                                       
                                           </div>
 
@@ -149,7 +149,7 @@
 
                                           <div class="form-group">
                                             <label>Product Warranty</label> </br>
-                                            <input type="number" class="form-control" th:field="*{productWarranty}" required> </br>
+                                            <input type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+" required> </br>
                                             <font color="red"></font>
                                           </div>
 
@@ -161,7 +161,7 @@
 
                                           <div class="form-group">
                                             <label>Product Interest Rate</label> </br>
-                                            <input type="number" class="form-control" th:field="*{interestRate}" required min="0" max="20" step="0.01"> </br>
+                                            <input type="number" class="form-control" th:field="*{interestRate}" pattern="[\d\.]+" required min="0" max="20" step="0.01"> </br>
                                             <font color="red"></font>
                                           </div>
 
@@ -173,7 +173,7 @@
 
                                           <div class="form-group">
                                             <label>Product Accessories Included</label>
-                                            <input type="text" class="form-control" th:field="*{accessoriesIncluded}" required>
+                                            <input type="text" class="form-control" th:field="*{accessoriesIncluded}" pattern="[\A-Za-z]+" required>
                                             <font color="red"></font>
                                           </div>
 
@@ -186,7 +186,7 @@
                                        <h3>Product Article</h3>
                                           <div class="form-group">
                                             <label>Article URL</label>
-                                            <input type="text" class="form-control" th:field="*{article.articleUrl}">
+                                            <input type="text" class="form-control" th:field="*{article.articleUrl}" pattern="[\A-Za-z]+"> 
                                             <font color="red"></font>
                                           </div>
 
@@ -200,13 +200,15 @@
                                        <h3>Product Discount</h3>
                                           <div class="form-group">
                                             <label>Discounted Price</label>
-                                            <input type="number" class="form-control" th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000">
+                                            <input type="number" class="form-control" th:field="*{discount.discountedPrice}" pattern="[\d\.]+" 
+                                                min="50000" max="10000000" step="1000">
                                             <font color="red"></font>
                                           </div>
 
                                           <div class="form-group">
                                             <label>Discount Percent</label>
-                                            <input type="number" class="form-control" th:field="*{discount.discountPercent}" min="0" max="60" step="1">
+                                            <input type="number" class="form-control" th:field="*{discount.discountPercent}" pattern="[\d\.]+" 
+                                                min="0" max="60" step="1">
                                             <font color="red"></font>
                                           </div>
 
@@ -263,13 +265,13 @@
                                        <h3>Product Variant</h3>
                                           <div class="form-group">
                                             <label>Original product ID</label>
-                                            <input type="text" class="form-control" th:field="*{variant.productOriginalIdentifier}">
+                                            <input type="text" class="form-control" th:field="*{variant.productOriginalIdentifier}" pattern="[\A-Za-z]+">
                                             <font color="red"></font>
                                           </div>
 
                                           <div class="form-group">
                                             <label>Product Variant Name</label>
-                                            <input type="text" class="form-control" th:field="*{variant.productVariantName}">
+                                            <input type="text" class="form-control" th:field="*{variant.productVariantName}" pattern="[\A-Za-z]+">
                                             <font color="red"></font
                                             >
                                           </div>
