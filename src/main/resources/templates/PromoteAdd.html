@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Create Product Page</title>
+    <title>Create Promotion Page</title>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
@@ -38,10 +38,12 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     />
+    <link rel="stylesheet" href="./PromoteAdd.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   </head>
+
   <body>
     <div class="container-xl">
       <div class="table-responsive">
@@ -49,10 +51,8 @@
           <div class="table-title">
             <div class="row">
               <div class="col-sm-5">
-                <h2>Add new <b>Products</b></h2>
-                <a href="MainController?action=Addnew" class="btn btn-success">
-                  <span>Back Admin Page</span></a
-                >
+                <h2>Add new <b>Promotions</b></h2>               
+                  <a th:href="@{/Admin/ViewPromote}" class="btn btn-success">View promotion</a>          
               </div>
             </div>
           </div>
@@ -60,299 +60,84 @@
         <div id="addEmployeeModal">
           <div class="modal-dialog">
             <div class="modal-content">
-             
-              <form
-                action="AddProductController"
-                method="POST"
-                enctype="multipart/form-data"
-              >
+              <c:set var="error" value="${requestScope.ERROR_CREATE}" />
+              <c:set var="p" value="${requestScope.PRODUCT}" />
+              
                 <div class="modal-header">
-                  <h4 class="modal-title">Add new product</h4>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                  >
-                    &times;
-                  </button>
+                  
+                  
                 </div>
                 <div class="modal-body">
                   <div class="form-group">
-                    <!DOCTYPE html>
-                    <html>
-                      <head>
-                        <meta
-                          http-equiv="Content-Type"
-                          content="text/html; charset=UTF-8"
-                        />
-                        <title>Create Product Page</title>
-                        <link
-                          rel="stylesheet"
-                          href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-                        />
-                        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-                        <link
-                          rel="stylesheet"
-                          href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-                        />
-                        <link
-                          rel="stylesheet"
-                          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-                        />
-                        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-                        <link rel="stylesheet" href="./create.css" />
+                    
+
                       </head>
                       <body>
                         <div class="container-xl">
-                          <div class="table-responsive">
-                            <div class="table-wrapper">                             
-                            </div>
-                            <div id="addEmployeeModal">
+                          
+                          
                               <div class="modal-dialog">
-                                <div class="modal-content">                                                                    
-                                    <div class="modal-header">                                      
-                                      <button
-                                        type="button"
-                                        class="close"
-                                        data-dismiss="modal"
-                                        aria-hidden="true"
-                                      >
-                                        &times;
-                                      </button>
+                                <div class="modal-content">                                  
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">
+                                        Add new promotions
+                                      </h4>                                      
                                     </div>
-                                    
-                                            <div class="modal-body">
-                                              <div class="form-group">
-                                                <div th:if="${CategoryList != null && Specification == null}">
-                                                  <span>Choose product category</span>
-                                                  <div>
-                                                    <form th:action="@{/admin/products-management/create-product/step-1}" method="get">
-                                                      <select name="Categorychosen" class="form-control">
-                                                        <div th:each="category :${CategoryList}">
-                                                          <option th:if="${category.parentID !=0}" th:value="${category.categoryName}"  
-                                                          th:utext="${category.categoryName}"></option>
-                                                        </div>
-                                                      </select>
-                                                      <br>
-                                                      <span>Specify the number of color variant that this product will have:</span>
-                                                      <input type="number" name="ColorVariantNumber" min="0" max="100" step="1" value="0">
-                                                      <input type="submit" value="Create">
-                                                    </form>
-                                                  </div>
-                                                </div>
-                                            </div>
+                                    <div>
+                                    <div class="modal-body">
+                                      <form th:action="@{/Admin/CreatePromote}" th:object="${PromoteForm}" method="post">
 
-                                            
-                                      <div th:if="${ProductInputForm != null}">
-                                        <form th:action="@{/admin/products-management/create-product}" th:object="${ProductInputForm}" method="post" 
-		                                     enctype="multipart/form-data">
-                                         <br>
-			                                      <input type="hidden" name="CateChosen"  th:value ="${CateChosen}">
-                                       <h3>Product main attributes</h3>
+                                        <div class="form-group">  
+                                          <label>Promotion Code Name</label>
+                                          <input type="text" class="form-control" th:field="*{promoteCodeName}"  required maxlength="20">
+                                        </div>
 
-                                          <div class="form-group">
-                                            <label>Product ID</label> </br>
-                                            <input type="text" class="form-control" th:field="*{productID}" required> </br>
-                                            <font color="red"></font>                                        
-                                          </div>
+                                        <div class="form-group">
+                                          <label>Promotion Code Description</label>
+                                          <input type="text" class="form-control" th:field="*{promoteCodeDescription}" required minlength="10">
+                                        </div>
 
-                                          <div class="form-group">
-                                            <label>Product Name</label> </br>
-                                            <input type="text" class="form-control" th:field="*{productName}" required> </br>
-                                            <font color="red"></font>
-                                          </div>
 
-                                          <div class="form-group">
-                                            <label>Product Price</label> </br>
-                                            <input type="number" class="form-control" th:field="*{price}" required min="50000" max="999000000" step="1000" > </br>
-                                            <font color="red"></font>                                       
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product ManufacturerID</label> </br>
-                                            <select th:field="*{manufacturerID}" class="form-control">
-                                              <div th:each="brand :${ManuList}">
-                                                <option th:value="${brand.manufacturerID}"  
-                                                th:utext="${brand.manufacturerName}"></option> </br>
-                                              </div>
-                                          </select>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Category ID</label> </br>
-                                            <input type="number" class="form-control" th:field="*{categoryID}" required readonly="readonly"></br>
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Warranty</label> </br>
-                                            <input type="number" class="form-control" th:field="*{productWarranty}" required> </br>
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Image</label>
-                                            <input type="file" th:field="${MultipartField.imageFile}" required accept="image/png, image/jpeg, image/webp">
-                                            <div id="preview"></div>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Interest Rate</label> </br>
-                                            <input type="number" class="form-control" th:field="*{interestRate}" required min="0" max="20" step="0.01"> </br>
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Exclusive</label>
-                                            <input type="radio" name="CheckExclusive" value="Exclusive" required="required"> Yes
-          	  	                            <input type="radio" name="CheckExclusive" value="NotExclusive" > No
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Accessories Included</label>
-                                            <input type="text" class="form-control" th:field="*{accessoriesIncluded}" required>
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Promotion Code Enabling</label>
-                                            <input type="radio" name="CheckEnabled" value="Enable" required="required"> Enable
-          	  	                            <input type="radio" name="CheckEnabled" value="Disable" > Disable
-                                          </div>
+                                        <div class="form-group">
+                                          <label>Promotion Code Discount Percent</label>
+				                                  <input type="number" class="form-control" th:field="*{discountPercent}" required min="0" max="70" step="1">
+                                        </div>
                                       
-                                       <h3>Product Article</h3>
-                                          <div class="form-group">
-                                            <label>Article URL</label>
-                                            <input type="text" class="form-control" th:field="*{article.articleUrl}">
-                                            <font color="red"></font>
-                                          </div>
-
-                                       <h3>Product Camerashot</h3>
-                                          <div class="form-group">
-                                            <label>Camerashot Gallery Path</label>
-                                            <input type="file" th:field="${MultipartField.cameraShotsFile}" required multiple="multiple" 
-				                                          accept="image/png, image/jpeg, image/webp">
-                                            <font color="red"></font>
-                                          </div>
-                                       <h3>Product Discount</h3>
-                                          <div class="form-group">
-                                            <label>Discounted Price</label>
-                                            <input type="number" class="form-control" th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000">
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Discount Percent</label>
-                                            <input type="number" class="form-control" th:field="*{discount.discountPercent}" min="0" max="60" step="1">
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Discount End Date</label>
-                                            <input type="datetime-local" class="form-control" th:field="*{discount.endDateInput}">
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Discount Enabling</label>
-                                            <input type="radio" name="DiscountEnabled" value="Enable" required="required"> Enable
-          	  	                            <input type="radio" name="DiscountEnabled" value="Disable" > Disable
-                                          </div>
-
-
-                                      <div th:if="${ProductInputForm.colorVariantInputList != null}">
-                                        <h3>Product Color Variants</h3> 
-                                        <div th:each="colorVar, state : ${ProductInputForm.colorVariantInputList}">
-                                          <label>Product color variant</label>
-                                          <select th:field="*{colorVariantInputList[__${state.index}__].ColorID}" class="form-control">
-                                              <div th:each="color :${ColorList}">
-                                                <option th:value="${color.colorID}"  
-                                                th:utext="${color.colorName}"></option>
-                                              </div>
-                                          </select>
-                                          <br>
-                                        <div>
-                                          <label>Color Variant Gallery Path</label>
-                                          <input type="file" th:field="*{colorVariantInputList[__${state.index}__].FileDatas}" multiple="multiple" 
-                                          accept="image/png, image/jpeg, image/webp">
+                                      
+                                        <div class="form-group">
+                                          <label>Promotion Code Max Discount Amount</label>
+				                                  <input type="number" class="form-control" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000">
                                         </div>
-                                        <br>
+
+                                        <div class="form-group">
+                                          <label>Promotion Code End Date</label>
+				                                  <input type="datetime-local" class="form-control" th:field="*{endDateInput}" required>
                                         </div>
-                                      </div>
 
-
-                                       <h3>Product Feature</h3>
-                                          <div class="form-group">
-                                            <label>Feature Images</label> <br>
-                                            <input type="file" th:field="${MultipartField.featureFile}" required multiple="multiple" 
-				                                        accept="image/png, image/jpeg, image/webp">
-                                            <font color="red"></font>
-                                          </div>
-
-                                       <h3>Product Unboxing Review</h3>
-                                          <div class="form-group">
-                                            <label>Unboxing Review Images</label> <br>
-                                            <input type="file" th:field="${MultipartField.unboxingFile}" required multiple="multiple" 
-				                                        accept="image/png, image/jpeg, image/webp">
-                                            <font color="red"></font>
-                                          </div>
-
-                                       <h3>Product Variant</h3>
-                                          <div class="form-group">
-                                            <label>Original product ID</label>
-                                            <input type="text" class="form-control" th:field="*{variant.productOriginalIdentifier}">
-                                            <font color="red"></font>
-                                          </div>
-
-                                          <div class="form-group">
-                                            <label>Product Variant Name</label>
-                                            <input type="text" class="form-control" th:field="*{variant.productVariantName}">
-                                            <font color="red"></font
-                                            >
-                                          </div>
-
-                                          <div class="modal-footer">
-                                            
-                                          <input type="submit" class="btn btn-success" value="Create">
-                                       </div>
-                                      </form>
+                                        <div class="form-group">
+                                          <span>Promotion Code Enabling</span> <br>
+				                                  <input type="radio" name="EnableCheck" value="Enable" required="required"> Enable <br>
+          	  	                          <input type="radio" name="EnableCheck" value="Disable" >Disable <br>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">                                     
+                                      <input
+                                        type="submit"
+                                        class="btn btn-success"
+                                        value="Create Promote Code"
+                                      />
                                     </div>
                                   </form>
                                 </div>
+                                </div>
                               </div>
-                            </div>
+                            
                           </div>
                         </div>
                       </body>
                     </html>
                   </div>
-                </div>
-              </form>
+                </div>            
             </div>
           </div>
         </div>
