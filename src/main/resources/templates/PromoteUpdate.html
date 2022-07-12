@@ -75,19 +75,19 @@
                     </div>
 
                     <div class="form-group">
-                      <label>Promote Name</label>
-                      <input type="text" class="form-control" th:field="*{promoteCodeName}" required maxlength="20" value="*{promoteCodeName}">
+                      <label>Promote Code Name</label>
+                      <input type="text" class="form-control" th:field="*{promoteCodeName}" required maxlength="20" pattern="[\w\d]+" value="*{promoteCodeName}">
                     </div>
 
                     <div class="form-group">
-                     <label>Promote Description</label>
-                     <input type="text" class="form-control" th:field="*{promoteCodeDescription}" required minlength="10" value="*{promoteCodeDescription}">
+                     <label>Promotion Code Description</label>
+                     <input type="text" class="form-control" th:field="*{promoteCodeDescription}" required minlength="10" pattern="[\w\d\%]+" value="*{promoteCodeDescription}">
                                         
                     </div>
                                       
                     <div class="form-group">
                       <label>Promotion Code Discount Percent</label>
-                      <input type="number" class="form-control" th:field="*{discountPercent}" required min="0" max="70" step="1" value="*{discountPercent}">
+                      <input type="number" class="form-control" th:field="*{discountPercent}" pattern="[\d\%\.]+" pattern="[\d\%\.]" required min="0" max="70" step="1" value="*{discountPercent}">
                     </div>
                     
                     <div>
