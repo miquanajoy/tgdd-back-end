@@ -64,14 +64,6 @@
               
                 <div class="modal-header">
                   <h4 class="modal-title">Update Product</h4>
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                  >
-                    &times;
-                  </button>
                 </div>
 
                 
@@ -80,12 +72,12 @@
 
                 <div class="modal-body">
                   <div th:if="${ProductUpdateForm == null && pID != null}">
-                    <div>
+                    <div class="form-group">
                       <form th:action="@{/admin/products-management/view-or-update-product/step-2/{proID} (proID=${pID})}" 
                       method="get">
                         <span>Specify the number of additional color variant that this product will have:</span>
                         <br>
-                        <input type="number" name="AdditionalColorVarNum" min="0" max="100" step="1" value="0">
+                        <input type="number" name="AdditionalColorVarNum" class="form-control" min="0" max="100" step="1" value="0">
                         <input type="submit" value="Next">
                       </form>
                     </div>
@@ -105,13 +97,13 @@
 
                               <div class="form-group">
                                     <label>Product Name</label>
-                                    <input type="text" class="form-control" th:field="*{productName}" required value="*{productName}">
+                                    <input type="text" class="form-control" th:field="*{productName}" pattern="[\w\d]+" required value="*{productName}">
                                     <font color="red"></font>
                               </div>
 
                               <div class="form-group">
                                 <label>Price</label>
-                                <input type="number" class="form-control" th:field="*{price}" required value="*{price}" min="50000" max="999000000" step="1000">
+                                <input type="number" class="form-control" th:field="*{price}" required value="*{price}" pattern="[\d]+" min="50000" max="999000000" step="1000">
                                 <font color="red"></font>
                               </div>
 
@@ -130,7 +122,7 @@
 
                               <div class="form-group">
                                 <label>Product Warranty</label>
-                                <input type="number" class="form-control" th:field="*{productWarranty}" value="*{productWarranty}" required >
+                                <input type="number" class="form-control" th:field="*{productWarranty}" pattern="[\d]+" value="*{productWarranty}" required >
                                 <font color="red"></font>
                               </div>
 
@@ -144,7 +136,7 @@
 
                               <div class="form-group">
                                 <label>Product Interest Rate</label>
-                                <input type="number" class="form-control" th:field="*{interestRate}" required value="*{interestRate}"
+                                <input type="number" class="form-control" th:field="*{interestRate}" pattern="[\d\.]+" required value="*{interestRate}"
 				                          min="0" max="20" step="0.01">
                                 <font color="red"></font>
                               </div>
@@ -165,7 +157,7 @@
 
                               <div class="form-group">
                                 <label>Product Accessories Included</label>
-                                <input type="text" class="form-control" th:field="*{accessoriesIncluded}" required value="*{accessoriesIncluded}">
+                                <input type="text" class="form-control" th:field="*{accessoriesIncluded}" pattern="[\A-Za-z]+" required value="*{accessoriesIncluded}">
                                 <font color="red"></font>
                               </div>
 
@@ -190,9 +182,9 @@
                                   </div>
                                   <lable>Article URL</lable>
                                     <input th:if="${ProductUpdateForm.article == null}" type="text" class="form-control" th:field="*{article.articleUrl}" 
-                                    value="*{article.articleUrl}"> <br>
+                                    pattern="[\A-Za-z]+" value="*{article.articleUrl}"> <br>
                                     <input th:if="${ProductUpdateForm.article != null}" type="text" class="form-control" th:field="*{article.articleUrl}" 
-                                    value="*{article.articleUrl}" required="required">
+                                    pattern="[\A-Za-z]+" value="*{article.articleUrl}" required="required">
                               </div>
                              <h4>Product Camerashots</h4>
                               <div class="form-group">                              
@@ -215,18 +207,18 @@
                               <div class="form-group">
                                 <label>Discounted Price</label>
                                 <input th:if="${ProductUpdateForm.discount.discountedPrice == null}" type="number" class="form-control"
-                                  th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}"> <br>
+                                  th:field="*{discount.discountedPrice}" pattern="[\d\.]+" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}"> <br>
                                   <input th:if="${ProductUpdateForm.discount.discountedPrice != null}" type="number" class="form-control" required="required"
-                                  th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}">
+                                  th:field="*{discount.discountedPrice}" pattern="[\d\.]+" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}">
                                 <font color="red"></font>
                               </div>
 
                               <div class="form-group">
                                 <label>Discount Percent</label>
                                 <input th:if="${ProductUpdateForm.discount.discountPercent == null}" type="number" class="form-control"
-                                  th:field="*{discount.discountPercent}" min="0" max="60" step="1" value="*{discount.discountPercent}"> <br>
+                                  th:field="*{discount.discountPercent}" pattern="[\d\%]+" min="0" max="60" step="1" value="*{discount.discountPercent}"> <br>
                                   <input th:if="${ProductUpdateForm.discount.discountPercent != null}" type="number" class="form-control" required="required" 
-                                  th:field="*{discount.discountPercent}" min="0" max="60" step="1" value="*{discount.discountPercent}">
+                                  th:field="*{discount.discountPercent}" pattern="[\d\%]+" min="0" max="60" step="1" value="*{discount.discountPercent}">
                                 <font color="red"></font>
                               </div>
 
