@@ -514,7 +514,7 @@ public class AdminController {
 		else productForm.getVariant().setProductVariantID(pID);
 		
 		System.out.println("At final create product step"+productForm.toString());
-		//productRepo.save(productForm);
+		productRepo.save(productForm);
 		//model.addObject("ProductInputForm1", productForm);
 		model.setViewName("redirect:/admin/products-management/view-products");
 		//model.setViewName("Result");

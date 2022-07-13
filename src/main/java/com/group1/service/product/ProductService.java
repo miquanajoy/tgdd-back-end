@@ -55,4 +55,17 @@ public class ProductService {
 		}
 		return proList ;
 	}
+	public List<Product> showProductByPhone(){
+		
+		List<Product> proList = productReposit.findProductByPhone();
+		for(Product prod: proList) 
+		{
+			System.out.println(prod.toString1());
+		}
+		return proList ;
+		
+	}
+	
+	
+	
 }
