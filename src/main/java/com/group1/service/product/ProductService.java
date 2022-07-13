@@ -18,54 +18,76 @@ public class ProductService {
 
 	@Resource
 	private ProductRepo productReposit;
-	
-	public List<GeneralProductViewDTO> getAllProducts()
-	{
+
+	public List<GeneralProductViewDTO> getAllProducts() {
 		List<GeneralProductViewDTO> pList = productReposit.showAllProduct();
-		for(GeneralProductViewDTO pr: pList) 
-		{
+		for (GeneralProductViewDTO pr : pList) {
 			System.out.println(pr);
 		}
-		
+
 		return pList;
 	}
-	
-	public ProductDiscountDTO getProductDiscount(int a, int b, String c)
-	{
-		ProductDiscountDTO pDiscount = productReposit.showProductDiscount(a,b,c);
-			System.out.println(pDiscount);
-		
+
+	public ProductDiscountDTO getProductDiscount(int a, int b, String c) {
+		ProductDiscountDTO pDiscount = productReposit.showProductDiscount(a, b, c);
+		System.out.println(pDiscount);
+
 		return pDiscount;
 	}
-	
-	public void saveNewProduct(Product toSaveProduct) 
-	{
+
+	public void saveNewProduct(Product toSaveProduct) {
 		System.out.println("Persist product review:");
 		System.out.println(toSaveProduct.toString());
 		productReposit.save(toSaveProduct);
 	}
-	
-	public List<Product> showAllProducts()
-	{
-		
+
+	public List<Product> showAllProducts() {
+
 		List<Product> proList = productReposit.findAllProducts();
-		for(Product prod: proList) 
-		{
+		for (Product prod : proList) {
 			System.out.println(prod.toString1());
 		}
-		return proList ;
+		return proList;
 	}
-	public List<Product> showProductByPhone(){
-		
+
+	public List<Product> showProductByPhone() {
+
 		List<Product> proList = productReposit.findProductByPhone();
-		for(Product prod: proList) 
-		{
+		for (Product prod : proList) {
 			System.out.println(prod.toString1());
 		}
-		return proList ;
-		
+		return proList;
+
 	}
-	
-	
-	
+
+	public List<Product> showProductByLatop() {
+
+		List<Product> proList = productReposit.findProductByLaptop();
+		for (Product prod : proList) {
+			System.out.println(prod.toString1());
+		}
+		return proList;
+
+	}
+
+	public List<Product> showProductByTablet() {
+
+		List<Product> proList = productReposit.findProductByTablet();
+		for (Product prod : proList) {
+			System.out.println(prod.toString1());
+		}
+		return proList;
+
+	}
+
+	public List<Product> showProductBySmartWatch() {
+
+		List<Product> proList = productReposit.findProductBySmartWatch();
+		for (Product prod : proList) {
+			System.out.println(prod.toString1());
+		}
+		return proList;
+
+	}
+
 }
