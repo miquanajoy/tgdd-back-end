@@ -20,6 +20,7 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 			+ "From Product p")
 	public List<GeneralProductViewDTO> showAllProduct();
 	
+	
 	@Query("Select new com.group1.dto.ProductDiscountDTO(p.productID, p.productName, p.price, m.manufacturerName, c.categoryName, "
 			+ "d.discountedPrice, d.discountPercent, d.startDate, d.endDate) "
 			+ "From Product p "
@@ -42,4 +43,7 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 	
 	@Query(value="Select * From Product", nativeQuery = true)
 	public List<Product> findAllProducts();
+	
+	@Query(value="Select * From Product p WHERE p.categoryID=2, p.enabled=1", nativeQuery = true)
+	public List<Product> findProductByPhone();
 }
