@@ -44,6 +44,18 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 	@Query(value="Select * From Product", nativeQuery = true)
 	public List<Product> findAllProducts();
 	
-	@Query(value="Select * From Product p WHERE p.categoryID=2, p.enabled=1", nativeQuery = true)
+	@Query(value="Select * From Product p WHERE p.categoryID=2 AND p.enabled=1", nativeQuery = true)
 	public List<Product> findProductByPhone();
+	
+	@Query(value="Select * From Product p WHERE p.categoryID=3 AND p.enabled=1", nativeQuery = true)
+	public List<Product> findProductByLaptop();
+	
+	@Query(value="Select * From Product p WHERE p.categoryID=4 AND p.enabled=1", nativeQuery = true)
+	public List<Product> findProductByTablet();
+	
+	@Query(value="Select * From Product p WHERE p.categoryID=5 AND p.enabled=1", nativeQuery = true)
+	public List<Product> findProductBySmartWatch();
+	
+	
+	
 }
