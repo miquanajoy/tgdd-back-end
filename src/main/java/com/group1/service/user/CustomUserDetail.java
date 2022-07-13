@@ -5,7 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.group1.entities.user;
+import com.group1.entities.user.User;
+import com.group1.entities.user.Role;
 
 
 public class CustomUserDetail implements UserDetails {
