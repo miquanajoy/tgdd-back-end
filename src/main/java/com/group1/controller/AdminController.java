@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -50,11 +51,13 @@ import com.group1.entities.product.ProductTechSpecs;
 import com.group1.entities.product.ProductUnboxingReview;
 import com.group1.entities.product.ProductVariant;
 import com.group1.entities.shopping.PromoteCode;
+import com.group1.entities.user.User;
 import com.group1.repositories.product.CategoryRepo;
 import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
 import com.group1.repositories.product.ProductRepo;
 import com.group1.repositories.shopping.PromoteCodeRepo;
+import com.group1.repositories.user.UserRepo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -75,6 +78,9 @@ public class AdminController {
 	
 	@Autowired
 	ProductRepo productRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 	
 	@Autowired
 	ManufacturerService manuServ;
@@ -163,6 +169,51 @@ public class AdminController {
 		System.out.println("Formatted end time in objec:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
+	
+	@GetMapping("/home")
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("")
+	public String viewHomePage() {
+		return "index";
+	}
+	
+	@GetMapping("/login")
+	public ModelAndView showLoginPage() {
+
+		return new ModelAndView("LoginPage");
+	}
+	
+	
+	@PostMapping("/loginAction") 
+	  public ModelAndView checkLogin(@ModelAttribute("LoginPage") User user, HttpSession session) {
+	  
+		  ModelAndView model =new ModelAndView();
+		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
+			  if (userdata != null) 
+			  {   
+				  Long createdTime= session.getCreationTime();
+				  System.out.println("Session created at:" + createdTime);
+				  session.setMaxInactiveInterval(60*30);
+				  int sessionage= session.getMaxInactiveInterval();
+				  System.out.println("Session will self-destroy in:" + sessionage);
+				  
+				  if (userdata.getRoleId().equals("US")) 
+				  {
+					  model.setViewName("index");
+					  return model; 
+				  }
+				  model.setViewName("Admin");
+				  
+				  return model; 
+				  
+	          } 
+			  else 	          
+	        	 return model; 
+	          
+	  }
 	
 	@GetMapping("/products-management/create-product/choose-category")
 	public ModelAndView chooseProductCategory(ModelAndView model) 
