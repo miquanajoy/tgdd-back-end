@@ -6,36 +6,69 @@
 </head>
 <body>
 	<span>Add a promotion</span>
-	<a th:href="@{/Admin/ViewPromote}">Back</a>
+	<a th:href="@{/admin/promotions-management/view-promotions}">Back</a>
 	<div>
-		<form th:action="@{/Admin/CreatePromote}" th:object="${PromoteForm}" method="post">
+		<form th:action="@{/admin/promotions-management/create-promotion}" th:object="${PromoteForm}" method="post">
 			<br>
 			<div>
 				<span>Promotion Code Name</span>
-				<input type="text" th:field="*{promoteCodeName}" required maxlength="20">
+				<input type="text" th:field="*{promoteCodeName}" required minlength="6" maxlength="15" value="*{promoteCodeName}">
+				<span th:if="${PromoteNameDup != null}" th:utext="${PromoteNameDup}" style="color: red;"></span>
 			</div>
 			<br>
 			<div>
 				<span>Promotion Code Description</span>
-				<input type="text" th:field="*{promoteCodeDescription}" required minlength="10">
+				<input type="text" th:field="*{promoteCodeDescription}" required minlength="10" maxlength="200"
+				value="*{promoteCodeDescription}">
 			</div>
 			<br>
 			<div>
 				<span>Promotion Code Discount Percent</span>
-				<input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1">
+				<input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1" value="*{discountPercent}">
 			</div><br>
 			<div>
 				<span>Promotion Code Max Discount Amount</span>
-				<input type="number" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000">
-			</div><br>
+				<input type="number" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000" 
+				value="*{discountMaxAmount}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Start Date</span>
+				<input type="datetime-local" th:field="*{startDateInput}" required 
+				value="*{startDateInput}" th:attr="min=${MinDateTime},max=${MaxDateTime}">
+			</div>
+			<br>
+			<span th:if="${StartSameAsEnd != null}" th:utext="${StartSameAsEnd}" style="color: red;"></span>
+			<span th:if="${StartIsAfterEnd != null}" th:utext="${StartIsAfterEnd}" style="color: red;"></span>
+			<br>
 			<div>
 				<span>Promotion Code End Date</span>
-				<input type="datetime-local" th:field="*{endDateInput}" required>
+				<input type="datetime-local" th:field="*{endDateInput}" required 
+				value="*{endDateInput}" th:attr="min=${MinDateTime},max=${MaxDateTime}">
 			</div><br>
 			<div>
 				<span>Promotion Code Enabling</span>
-				<input type="radio" name="EnableCheck" value="Enable" required="required"> Enable
-          	  	<input type="radio" name="EnableCheck" value="Disable" > Disable
+				<div th:if="${PromoteForm.enabled != null}">
+					<input th:if="${PromoteForm.enabled == true}" type="radio" name="EnableCheck" 
+					value="Enable" required="required" checked="checked" id="enableButton">
+					
+					<input th:unless="${PromoteForm.enabled == true}" type="radio" name="EnableCheck" 
+					value="Enable" required="required" id="enableButton">
+					
+					<label for="enableButton">Enable</label> 
+					
+          	  		<input th:if="${PromoteForm.enabled == false}" type="radio" name="EnableCheck" 
+          	  		value="Disable" checked="checked" id="disableButton">
+          	  		
+					<input th:unless="${PromoteForm.enabled == false}" type="radio" name="EnableCheck" 
+					value="Disable" id="disableButton">
+					
+					<label for="disableButton">Disable</label>
+				</div>
+				<div th:if="${PromoteForm.enabled == null}">
+					<input type="radio" name="EnableCheck" value="Enable" required="required"> Enable
+          	  		<input type="radio" name="EnableCheck" value="Disable" > Disable
+          	  	</div>
 			</div>
 			<input type="submit" value="Create Promote Code">
 			

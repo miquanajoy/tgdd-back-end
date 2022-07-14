@@ -20,9 +20,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.group1.dto.ColorVariantUpdateDTO;
 import com.group1.dto.SpecSection;
+import com.group1.entities.shopping.BillDetail;
 //fixed
 @Entity
 @Table(name= "product")
@@ -52,6 +54,9 @@ public class Product implements Serializable{
 	
 	@Column(name = "CategoryID")
 	private Integer categoryID;
+	
+	@OneToMany(mappedBy = "productidentifier", cascade = CascadeType.ALL)
+	private Set<BillDetail> productInBills;
 	
 	@OneToOne(mappedBy = "productIdentifier", cascade = CascadeType.ALL)
 	private ProductDiscount discount;
@@ -119,7 +124,7 @@ public class Product implements Serializable{
 	}
 
 	public Product(String productID, String productName, Integer price, Manufacturer manufacturer,
-			Integer manufacturerID, Category category, Integer categoryID, ProductDiscount discount,
+			Integer manufacturerID, Category category, Integer categoryID, Set<BillDetail> productInBills , ProductDiscount discount,
 			ProductArticle article, Set<ProductCameraShot> cameraShots, Set<ProductColorVariant> colorVariant,
 			Set<ProductFeature> features, ProductSpecification specifications, Set<ProductUnboxingReview> unboxing,
 			ProductVariant variant, Set<ProductVariant> original, Integer productWarranty, byte[] image, String imageType,
@@ -134,6 +139,7 @@ public class Product implements Serializable{
 		this.manufacturerID = manufacturerID;
 		this.category = category;
 		this.categoryID = categoryID;
+		this.productInBills =productInBills;
 		this.discount = discount;
 		this.article = article;
 		this.cameraShots = cameraShots;
@@ -210,6 +216,14 @@ public class Product implements Serializable{
 
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
+	}
+
+	public Set<BillDetail> getProductInBills() {
+		return productInBills;
+	}
+
+	public void setProductInBills(Set<BillDetail> productInBills) {
+		this.productInBills = productInBills;
 	}
 
 	public ProductDiscount getDiscount() {
@@ -385,18 +399,17 @@ public class Product implements Serializable{
 	public String toString() {
 		return "productID=" + productID + "\n       productName=" + productName + "\n       price=" + price
 				+ "\n       manufacturer=" + manufacturer + "\n       manufacturerID=" + manufacturerID
-				+ "\n       category=" + category + "\n       categoryID=" + categoryID + "\n       discount="
-				+ discount + "\n       article=" + article + "\n       cameraShots=" + cameraShots
-				+ "\n       colorVariant=" + colorVariant + "\n       features=" + features + "\n       specifications="
-				+ specifications + "\n       unboxing=" + unboxing + "\n       variant=" + variant
-				+ "\n       original=" + original + "\n       productWarranty=" + productWarranty
-				+ "\n       imageType=" + imageType + "\n       interestRate=" + interestRate + "\n       exclusive="
-				+ exclusive + "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
-				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       colorVarUpdateList="
-				+ colorVarUpdateList + "\n       specList=" + specList;
+				+ "\n       category=" + category + "\n       categoryID=" + categoryID + "\n       productInBills="
+				+ productInBills + "\n       discount=" + discount + "\n       article=" + article
+				+ "\n       cameraShots=" + cameraShots + "\n       colorVariant=" + colorVariant + "\n       features="
+				+ features + "\n       specifications=" + specifications + "\n       unboxing=" + unboxing
+				+ "\n       variant=" + variant + "\n       original=" + original + "\n       productWarranty="
+				+ productWarranty + "\n       image=" + Arrays.toString(image) + "\n       imageType=" + imageType
+				+ "\n       interestRate=" + interestRate + "\n       exclusive=" + exclusive
+				+ "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
+				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       imageToShow=" + imageToShow
+				+ "\n       colorVarUpdateList=" + colorVarUpdateList + "\n       specList=" + specList;
 	}
-
 	
-
 	
 }

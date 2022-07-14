@@ -1,5 +1,7 @@
 package com.group1.repositories.product;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,6 @@ public interface ManufacturerRepo extends JpaRepository<Manufacturer, Integer>{
 			+ "m.ManufacturerName = :#{#brand.ManufacturerName} "
 			+ "Where m.ManufacturerID = ?1")
 	public void updateBrand( Integer brandId, @Param("brand") Manufacturer brandModel); 
+	
+	public List<Manufacturer> findByCategoryID(Integer cateID);
 }

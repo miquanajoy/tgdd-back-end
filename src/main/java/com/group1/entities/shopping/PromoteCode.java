@@ -2,12 +2,16 @@ package com.group1.entities.shopping;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,6 +31,9 @@ public class PromoteCode implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "PromoteCodeID")
 	private Integer promoteCodeID;
+	
+	@OneToMany(mappedBy = "promoteCodeIdentifier", cascade = CascadeType.ALL)
+	private Set<ShoppingBill> billsWithPromoteID;
 	
 	@Column(name = "PromoteCodeName")
 	private String promoteCodeName;
@@ -48,6 +55,10 @@ public class PromoteCode implements Serializable {
 	
 	@Transient
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime startDateInput;
+	
+	@Transient
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime endDateInput;
 	
 	@Column(name = "Enabled")
@@ -56,17 +67,19 @@ public class PromoteCode implements Serializable {
 	public PromoteCode() {
 	}
 
-	public PromoteCode(Integer promoteCodeID, String promoteCodeName, String promoteCodeDescription,
-			Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate, LocalDateTime endDate,
-			LocalDateTime endDateInput, Boolean enabled) {
+	public PromoteCode(Integer promoteCodeID, Set<ShoppingBill> billsWithPromoteID, String promoteCodeName,
+			String promoteCodeDescription, Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate,
+			LocalDateTime endDate, LocalDateTime startDateInput, LocalDateTime endDateInput, Boolean enabled) {
 		super();
 		this.promoteCodeID = promoteCodeID;
+		this.billsWithPromoteID = billsWithPromoteID;
 		this.promoteCodeName = promoteCodeName;
 		this.promoteCodeDescription = promoteCodeDescription;
 		this.discountPercent = discountPercent;
 		this.discountMaxAmount = discountMaxAmount;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.startDateInput = startDateInput;
 		this.endDateInput = endDateInput;
 		this.enabled = enabled;
 	}
@@ -77,6 +90,14 @@ public class PromoteCode implements Serializable {
 
 	public void setPromoteCodeID(Integer promoteCodeID) {
 		this.promoteCodeID = promoteCodeID;
+	}
+
+	public Set<ShoppingBill> getBillsWithPromoteID() {
+		return billsWithPromoteID;
+	}
+
+	public void setBillsWithPromoteID(Set<ShoppingBill> billsWithPromoteID) {
+		this.billsWithPromoteID = billsWithPromoteID;
 	}
 
 	public String getPromoteCodeName() {
@@ -127,6 +148,14 @@ public class PromoteCode implements Serializable {
 		this.endDate = endDate;
 	}
 
+	public LocalDateTime getStartDateInput() {
+		return startDateInput;
+	}
+
+	public void setStartDateInput(LocalDateTime startDateInput) {
+		this.startDateInput = startDateInput;
+	}
+
 	public LocalDateTime getEndDateInput() {
 		return endDateInput;
 	}
@@ -145,10 +174,12 @@ public class PromoteCode implements Serializable {
 
 	@Override
 	public String toString() {
-		return "PromoteCode:\n\tpromoteCodeID=" + promoteCodeID + " \n\tpromoteCodeName=" + promoteCodeName
-				+ " \n\tpromoteCodeDescription=" + promoteCodeDescription + " \n\tdiscountPercent=" + discountPercent
-				+ " \n\tdiscountMaxAmount=" + discountMaxAmount + " \n\tstartDate=" + startDate + " \n\tendDate="
-				+ endDate + " \n\tenabled=" + enabled;
+		return "promoteCodeID=" + promoteCodeID + "\n       billsWithPromoteID=" + billsWithPromoteID
+				+ "\n       promoteCodeName=" + promoteCodeName + "\n       promoteCodeDescription="
+				+ promoteCodeDescription + "\n       discountPercent=" + discountPercent + "\n       discountMaxAmount="
+				+ discountMaxAmount + "\n       startDate=" + startDate + "\n       endDate=" + endDate
+				+ "\n       startDateInput=" + startDateInput + "\n       endDateInput=" + endDateInput
+				+ "\n       enabled=" + enabled;
 	}
 
 	
