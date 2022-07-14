@@ -26,7 +26,7 @@ public class User implements Serializable {
 	@Column(name = "PassWord")
 	private String password;
 	@Column(name = "RoleID")
-	private Role roleId;
+	private String roleId;
 	@Column(name = "Enabled")
 	private Boolean enabled;
 	@Column(name = "Status")
@@ -35,7 +35,7 @@ public class User implements Serializable {
 	public User() {
 	}
 
-	public User(String userId, String firstName, String lastName, String userName, String password, Role roleId,
+	public User(String userId, String firstName, String lastName, String userName, String password, String roleId,
 			Boolean enabled, Boolean status) {
 		this.userId = userId;
 		this.firstName = firstName;
@@ -87,11 +87,11 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Role getRoleId() {
+	public String getRoleId() {
 		return roleId;
 	}
 
-	public void setRoleId(Role roleId) {
+	public void setRoleId(String roleId) {
 		this.roleId = roleId;
 	}
 
