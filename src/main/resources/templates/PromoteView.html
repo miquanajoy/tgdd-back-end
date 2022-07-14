@@ -7,7 +7,7 @@
 <body>
 	<span>List of promotions</span>
 	<div>
-		<a th:href="@{/Admin/CreatePromote}">
+		<a th:href="@{/admin/promotions-management/create-promotion}">
 		Add a new promotion
 		</a>
 	</div>
@@ -35,7 +35,8 @@
           		<td th:if="${promote.enabled== true}" th:utext="Enabled"></td>
           		<td th:if="${promote.enabled== false}" th:utext="Disabled"></td>
           		<td>
-          			<form th:action="@{/Admin/UpdatePromote/{promote} (promote=${promote.promoteCodeName}) }" method="get">
+          			<form th:action="@{/admin/promotions-management/update-promotion/{promote} 
+          			(promote=${promote.promoteCodeName}) }" method="get">
           				<input type="submit" value="Update">
           			</form>
           		</td>
