@@ -83,8 +83,57 @@ public class CustomerController {
 		return model;
 	}
 	
-	
-	
+	@GetMapping("/view-products/laptop")
+	public ModelAndView viewProductsCateLaptop(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByLatop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhone");
+		return model;
+	}
+	@GetMapping("/view-products/tablet")
+	public ModelAndView viewProductsCateTablet(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhone");
+		return model;
+	}
+	@GetMapping("/view-products/smartwatch")
+	public ModelAndView viewProductsCateSmartWatch(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhone");
+		return model;
+	}
 	
 	
 	
