@@ -200,7 +200,7 @@ public class AdminController {
 				  int sessionage= session.getMaxInactiveInterval();
 				  System.out.println("Session will self-destroy in:" + sessionage);
 				  
-				  if (userdata.getRoleId().equals("US")) 
+				  if (userdata.getRoleId().equals("1")) 
 				  {
 					  model.setViewName("index");
 					  return model; 
