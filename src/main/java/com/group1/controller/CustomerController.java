@@ -69,3 +69,472 @@ public class CustomerController {
 		return model;
 }
 	
+	@GetMapping("/view-brand/phone/iphone")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/samsung")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/oppo")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/xiaomi")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/vivo")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/realme")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/phone/nokia")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList = productServ.showProductByPhone();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByPhoneBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/macbook")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/asus")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/hp")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/lenovo")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/acer")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/dell")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/laptop/msi")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/laptop/...";
+		List<Product> productList = productServ.showProductByLaptop();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByLaptopBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/ipad")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/samsung")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/xiaomi")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/lenovo")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/huawei")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/tablet/nokia")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/tablet/...";
+		List<Product> productList = productServ.showProductByTablet();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewByTabletBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/apple")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/samsung")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/garmin")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/xiaomi")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/oppo")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+	@GetMapping("/view-brand/smartwatch/amazfit")
+	public ModelAndView viewProductsCatePhone(ModelAndView model) {
+		String path ="/image/product/smartwatch/...";
+		List<Product> productList = productServ.showProductBySmartWatch();
+		
+		for(Product pro: productList) 
+		{	
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		
+		model.addObject("ProductList", productList);
+		model.addObject("ImgPath", path);
+		
+		model.setViewName("ProductViewBySmartWatchBrand");
+		return model;
+	}
+	
+}
