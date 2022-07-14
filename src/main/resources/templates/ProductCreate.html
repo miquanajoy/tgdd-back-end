@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<<<<<<< Updated upstream
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Create Product Page</title>
@@ -297,3 +298,343 @@
     </div>
   </body>
 </html>
+=======
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:if="${CategoryList != null && Specification == null}">
+		<span>Choose product category</span>
+		<div>
+			<form th:action="@{/admin/products-management/create-product/step-1}" method="get">
+				<select name="Categorychosen">
+					<div th:each="category :${CategoryList}">
+						<option th:if="${category.parentID !=0}" th:value="${category.categoryName}"  
+						th:utext="${category.categoryName}"></option>
+					</div>
+				</select>
+				<br>
+				<span>Specify the number of color variant that this product will have:</span>
+				<input type="number" name="ColorVariantNumber" min="0" max="100" step="1" value="0">
+				<input type="submit" value="Create">
+			</form>
+		</div>
+	</div>
+	
+	<div th:if="${ProductInputForm != null}">
+		<form th:action="@{/admin/products-management/create-product}" th:object="${ProductInputForm}" method="post" 
+		enctype="multipart/form-data">
+			<br>
+			<span>Product main attributes</span>
+			<div>
+				<span>Product ID</span>
+				<input th:if="${ProductInputForm.productID != null}" type="text" th:field="*{productID}" required 
+				value="*{productID}">
+				
+				<input th:unless="${ProductInputForm.productID != null}" type="text" th:field="*{productID}" required >
+				<span th:if="${dupProductID != null}" th:utext="${dupProductID}" style="color: red;"></span>
+			</div>
+			<br>
+			<div>
+				<span>Product Name</span>
+				<input th:if="${ProductInputForm.productName != null}" type="text" th:field="*{productName}" required 
+				value="*{productName}">
+				
+				<input th:unless="${ProductInputForm.productName != null}" type="text" th:field="*{productName}" required>
+			</div>
+			<br>
+			<div>
+				<span>Product Price</span>
+				<input th:if="${ProductInputForm.productName != null}" type="number" th:field="*{price}" required 
+				min="50000" max="999000000" step="1000" value="*{price}">
+				
+				<input th:unless="${ProductInputForm.productName != null}" type="number" th:field="*{price}" required 
+				min="50000" max="999000000" step="1000">
+			</div>
+			<br>
+			<div>
+				<span>Product ManufacturerID</span>
+				<select th:field="*{manufacturerID}">
+						<div th:each="brand :${ManuList}">
+							<option th:value="${brand.manufacturerID}"  
+							th:utext="${brand.manufacturerName}"></option>
+						</div>
+				</select>
+				<br>
+			</div>
+			<br>
+			<div>
+				<span>Product CategoryID</span>
+				<input type="number" th:field="*{categoryID}" required readonly="readonly" value="*{categoryID}" 
+				th:utext="${CategoryName}">
+			</div>
+			<br>
+			<div>
+				<span>Product Warranty</span>
+				<input th:if="${ProductInputForm.productWarranty != null}" type="number" th:field="*{productWarranty}" 
+				required value="*{productWarranty}">
+				
+				<input th:unless="${ProductInputForm.productWarranty != null}" type="number" th:field="*{productWarranty}" 
+				required>
+			</div>
+			<br>
+			<div>
+				<span>Product Image</span>
+				<input type="file" th:field="${MultipartField.imageFile}" required accept="image/png, image/jpeg, image/webp">
+			</div>
+			<br>
+			<div>
+				<span>Product Interest Rate</span>
+				<input th:if="${ProductInputForm.interestRate != null}" type="number" th:field="*{interestRate}" 
+				required min="0" max="20" step="0.01" value="*{interestRate}">
+				
+				<input th:unless="${ProductInputForm.interestRate != null}" type="number" th:field="*{interestRate}" 
+				required min="0" max="20" step="0.01" value="*{interestRate}">
+			</div>
+			<br>
+			<div>
+				<span>Product Exclusive</span>
+				<div th:if="${ProductInputForm.exclusive == null}">
+					<input type="radio" name="CheckExclusive" value="Exclusive" required="required"> Yes
+          	  		<input type="radio" name="CheckExclusive" value="NotExclusive" > No
+          	  	</div>
+          	  	<div th:unless="${ProductInputForm.exclusive == null}">
+					<input th:if="${ProductInputForm.exclusive == true}" type="radio" name="CheckExclusive" 
+					value="Exclusive" required="required" checked="checked" id="exclusiveBtn">
+					
+					<input th:unless="${ProductInputForm.exclusive == true}" type="radio" name="CheckExclusive" 
+					value="Exclusive" required="required" id="exclusiveBtn">
+					
+					<label for="exclusiveBtn">Yes</label> 
+					
+          	  		<input th:if="${ProductInputForm.exclusive == false}" type="radio" name="CheckExclusive"
+          	  		value="NotExclusive" checked="checked" id="NotExclusiveBtn">
+          	  		
+					<input th:unless="${ProductInputForm.exclusive == false}" type="radio" name="CheckExclusive" 
+					value="NotExclusive" id="NotExclusiveBtn">
+					
+					<label for="NotExclusiveBtn">No</label>
+          	  	</div>
+			</div>
+			<br>
+			<div>
+				<span>Product Accessories Included</span>
+				<input type="text" th:field="*{accessoriesIncluded}" required value="*{accessoriesIncluded}">
+			</div>
+			<br>
+			<div>
+				<span>Product Enabling</span>
+				<div th:if="${ProductInputForm.enabled == null}">
+					<input type="radio" name="CheckEnabled" value="Enable" required="required"> Enable
+          	  		<input type="radio" name="CheckEnabled" value="Disable" > Disable
+          	  	</div>
+          	  	<div th:unless="${ProductInputForm.enabled == null}">
+          	  		<input th:if="${ProductInputForm.enabled == true}" type="radio" name="CheckEnabled" 
+          	  		value="Enable" required="required" checked="checked" id="enableBtn">
+          	  		
+					<input th:unless="${ProductInputForm.enabled == true}" type="radio" name="CheckEnabled" 
+					value="Enable" required="required" id="enableBtn">
+					
+					<label for="enableBtn">Enable</label> 
+					
+          	  		<input th:if="${ProductInputForm.enabled == false}" type="radio" name="CheckEnabled" 
+          	  		value="Disable" checked="checked" id="disableBtn">
+          	  		
+					<input th:unless="${ProductInputForm.enabled == false}" type="radio" name="CheckEnabled" 
+					value="Disable" id="disableBtn">
+					
+					<label for="disableBtn">Disable</label>
+          	  	</div>
+			</div>
+			<br>
+			<span>Product Article</span>
+			<br>
+			<div>
+				<span>Article URL</span>
+				<div th:if="${ProductInputForm.article != null}">
+					<input type="hidden" th:field="*{article.articleID}" value="*{article.articleID)">
+					
+					<input type="hidden" th:field="*{article.productID}" value="*{article.productID)">
+				
+					<input type="text" th:field="*{article.articleUrl}" value="*{article.articleUrl}">
+				</div>
+				<input th:unless="${ProductInputForm.article != null}" type="text" 
+				th:field="*{article.articleUrl}">
+			</div>
+			<br>
+			
+			<span>Product Camerashots</span>
+			<br>
+			<br>
+			<div>
+				<span>Camerashot Images</span>
+				<input type="file" th:field="${MultipartField.cameraShotsFile}" multiple="multiple" 
+				accept="image/png, image/jpeg, image/webp">
+			</div>
+			<br>
+			<span>Product Discount</span>
+			<br>
+			<div th:if="${ProductInputForm.discount != null}">
+				<input type="hidden" th:field="*{discount.productID}" value="*{discount.productID}">
+				<input type="hidden" th:field="*{discount.startDate}" value="*{discount.startDate}">
+				<input type="hidden" th:field="*{discount.discountID}" value="*{discount.discountID}">
+			</div>
+			<div>
+				<span>Discounted Price</span>
+				<input th:if="${ProductInputForm.discount != null}" type="number" 
+				th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000" value="*{discount.discountedPrice}">
+				
+				<input th:unless="${ProductInputForm.discount != null}" type="number" 
+				th:field="*{discount.discountedPrice}" min="50000" max="10000000" step="1000">
+			</div>
+			<br>
+			<div>
+				<span>Discount Percent</span>
+				<input th:if="${ProductInputForm.discount != null}" type="number" 
+				th:field="*{discount.discountPercent}" min="0" max="60" step="1" value="*{discount.discountPercent}">
+				
+				<input th:unless="${ProductInputForm.discount != null}" type="number" 
+				th:field="*{discount.discountPercent}" min="0" max="60" step="1">
+			</div>
+			<br>
+			<span th:if="${StartEqualsEnd != null}" th:utext="${StartEqualsEnd}" style="color: red;"></span>
+			<span th:if="${StartAfterEnd != null}" th:utext="${StartAfterEnd}" style="color: red;"></span>
+			<div>
+				<span>Discount Start Date</span>
+				<input th:if="${ProductInputForm.discount != null}" type="datetime-local" 
+				th:field="*{discount.startDateInput}" value="*{discount.startDateInput}" 
+				th:attr="min=${MinDateTime},
+				max=${MaxDateTime}">
+				
+				<input th:unless="${ProductInputForm.discount != null}" type="datetime-local" 
+				th:field="*{discount.startDateInput}" 
+				th:attr="min=${MinDateTime},
+				max=${MaxDateTime}">
+				
+			</div>
+			<br>
+			<div>
+				<span>Discount End Date</span>
+				<input th:if="${ProductInputForm.discount != null}" type="datetime-local" 
+				th:field="*{discount.endDateInput}" value="*{discount.endDateInput}" 
+				th:attr="min=${MinDateTime},
+				max=${MaxDateTime}">
+				
+				<input th:unless="${ProductInputForm.discount != null}" type="datetime-local" 
+				th:field="*{discount.endDateInput}" 
+				th:attr="min=${MinDateTime},
+				max=${MaxDateTime}">
+			</div>
+			<br>
+			<div>
+				<span>Discount Enabling</span>
+				
+          	  	<div th:if="${ProductInputForm.discount.enabled != null}">
+          	  		<input th:if="${ProductInputForm.discount.enabled == true}" type="radio" name="DiscountEnabled" 
+          	  		value="Enable" required="required" checked="checked" id="discountEnableButton">
+          	  		
+					<input th:unless="${ProductInputForm.discount.enabled == true}" type="radio" name="DiscountEnabled"
+				 	value="Enable" required="required" id="discountEnableButton">
+				 	
+					<label for="discountEnableButton">Enable</label> 
+					
+          	  		<input th:if="${ProductInputForm.discount.enabled == false}" type="radio" name="DiscountEnabled" 
+          	  		value="Disable" checked="checked" id="discountDisableButton">
+          	  		
+					<input th:unless="${ProductInputForm.discount.enabled == false}" type="radio" name="DiscountEnabled" 
+					value="Disable" id="discountDisableButton">
+					
+					<label for="discountDisableButton">Disable</label>
+				</div>
+				<div th:if="${ProductInputForm.discount.enabled == null}">
+					<input type="radio" name="DiscountEnabled" value="Enable" > Enable
+          	  		<input type="radio" name="DiscountEnabled" value="Disable" > Disable
+				</div>
+			</div>
+			<br>
+			<div th:if="${ProductInputForm.colorVariantInputList != null}">
+				<span>Product Color Variants</span>
+				<span th:if="${dupColor != null}" th:utext="${dupColor}" style="color: red;"></span>
+				<br>
+				<div th:each="colorVar, state : ${ProductInputForm.colorVariantInputList}">
+					<span>Product color variant</span>
+					<select th:field="*{colorVariantInputList[__${state.index}__].ColorID}">
+							<div th:each="color :${ColorList}">
+								<option th:value="${color.colorID}"  
+								th:utext="${color.colorName}"></option>
+							</div>
+					</select>
+					<br>
+				<div>
+					<span>Color Variant Gallery Path</span>
+					<input type="file" th:field="*{colorVariantInputList[__${state.index}__].FileDatas}" multiple="multiple" 
+					accept="image/png, image/jpeg, image/webp">
+				</div>
+				<br>
+				</div>
+			</div>
+			<br>
+			<span>Product Feature</span>
+			<br>
+			<div>
+				<span>Feature Images</span>
+				<input type="file" th:field="${MultipartField.featureFile}" multiple="multiple" 
+				accept="image/png, image/jpeg, image/webp">
+			</div>
+			
+			<br>
+			<span>Product Unboxing Review</span>
+			<br>
+			<div>
+				<span>Unboxing Review Images</span>
+				<input type="file" th:field="${MultipartField.unboxingFile}" multiple="multiple" 
+				accept="image/png, image/jpeg, image/webp">
+			</div>
+			<br>
+			<span>Product Variant</span>
+			<br>
+			<div th:if="${ProductInputForm.variant != null}">
+				<input type="hidden" th:field="*{variant.productVariantID}" th:value="*{variant.productVariantID}">
+			</div>
+			<div>
+				<span>Original product ID</span>
+				<input th:if="${ProductInputForm.variant != null}" type="text" th:field="*{variant.productOriginalIdentifier}" 
+				value="*{variant.productOriginalIdentifier}">
+				<input th:unless="${ProductInputForm.variant != null}" type="text" th:field="*{variant.productOriginalIdentifier}">
+				
+				<span th:if="${selfReferProductID != null}" th:utext="${selfReferProductID}" style="color: red;"></span>
+				
+				<span th:if="${notKnownProductID != null}" th:utext="${notKnownProductID}" style="color: red;"></span>
+			</div>
+			<br><div>
+				<span>Product variant Name</span>
+				<input th:if="${ProductInputForm.variant != null}" type="text" th:field="*{variant.productVariantName}"
+				value="*{variant.productVariantName}">
+				
+				<input th:unless="${ProductInputForm.variant != null}" type="text" th:field="*{variant.productVariantName}">
+			</div>
+			<br>
+			<span>Product Specifications</span>
+			<span th:if="${over5AttrEmpty != null}" th:utext="${over5AttrEmpty}" style="color: red;"></span>
+			<br>
+			<div th:each="sect ,state : ${ProductInputForm.specList}">
+          		<input th:field="*{specList[__${state.index}__].Section}" 
+          		readonly="readonly" value="sect.section"></input>
+          		<br>
+          		<div th:each="attr, stat : ${sect.attributes}">
+          		<input th:field="*{specList[__${state.index}__].attributes[__${stat.index}__].Key}" 
+          		readonly="readonly" value="attr.key"></input>
+          		<input th:field="*{specList[__${state.index}__].attributes[__${stat.index}__].Value}" 
+          		placeholder="Split multiple values with ;"></input>
+          		</div>
+          		<br>
+      		</div>
+			<br>
+			<input type="submit" value="Create">
+		</form>
+	</div>
+		
+</body>
+</html>
+>>>>>>> Stashed changes
