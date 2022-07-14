@@ -1,10 +1,14 @@
 package com.group1.service.user;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.group1.entities.user.User;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 import com.group1.entities.user.User;
 import com.group1.entities.user.Role;
 
@@ -21,7 +25,8 @@ private User user;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return null;
+		SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRoleId());
+		return Arrays.asList(authority);
 	}
 
 	@Override
