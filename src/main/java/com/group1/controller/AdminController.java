@@ -205,7 +205,7 @@ public class AdminController {
 					  model.setViewName("index");
 					  return model; 
 				  }
-				  model.setViewName("Admin");
+				  model.setViewName("ProductView");
 				  
 				  return model; 
 				  
