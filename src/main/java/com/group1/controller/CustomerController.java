@@ -1,9 +1,13 @@
 package com.group1;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.group1.entities.product.Category;
 import com.group1.repositories.product.CategoryRepo;
 import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
@@ -44,4 +48,24 @@ public class CustomerController {
 	boolean loadCateBasedSpecForm = false;
 	int promoteIndex = 0;
 	
+	
+	@GetMapping("/view-products/view-brand/choosen-category")
+	public ModelAndView choosenCategory(ModelAndView model) {
+		
+		String chosenCategory = "";
+
+		List<Category> categoryList = cateRepo.findAll();
+		//Collections.sort(categoryList);
+		model.setViewName("ProductView");
+		model.addObject("CategoryList", categoryList);
+		return model;
+	}
+	
+	
+	@GetMapping("/view-brand")
+	public ModelAndView viewProducts(ModelAndView model) {
+		
+		model.setViewName("ProductViewByBrand");
+		return model;
 }
+	
