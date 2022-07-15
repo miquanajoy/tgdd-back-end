@@ -15,7 +15,7 @@ import com.group1.entities.user.Role;
 
 public class CustomUserDetail implements UserDetails {
 	
-private User user;
+	private User user;
 	
 	
 	public CustomUserDetail(User user) {
@@ -32,37 +32,37 @@ private User user;
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return null;
+		return user.getPassword();
 	}
-
+	
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return null;
+		return user.getUserName();
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

@@ -192,7 +192,7 @@ public class AdminController {
 	
 	
 	@PostMapping("/loginAction") 
-	  public ModelAndView checkLogin(@ModelAttribute("LoginPage") User user, HttpSession session) {
+	  public ModelAndView checkLogin(@ModelAttribute("login") User user, HttpSession session) {
 	  
 		  ModelAndView model =new ModelAndView();
 		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
