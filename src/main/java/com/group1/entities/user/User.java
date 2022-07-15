@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 //mqfixed
@@ -17,31 +19,44 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "UserID")
 	private String userId;
+	
 	@Column(name = "FirstName")
 	private String firstName;
+	
 	@Column(name = "LastName")
 	private String lastName;
+	
 	@Column(name = "UserName")
 	private String userName;
+	
 	@Column(name = "PassWord")
 	private String password;
+	
+	@ManyToOne
+	@JoinColumn(name = "RoleID",referencedColumnName = "RoleID", insertable = false, updatable = false)
+	private Role roleIdentity;
+	
 	@Column(name = "RoleID")
 	private String roleId;
+	
 	@Column(name = "Enabled")
 	private Boolean enabled;
+	
 	@Column(name = "Status")
 	private Boolean status;
 
 	public User() {
 	}
 
-	public User(String userId, String firstName, String lastName, String userName, String password, String roleId,
-			Boolean enabled, Boolean status) {
+	public User(String userId, String firstName, String lastName, String userName, String password, Role roleIdentity,
+			String roleId, Boolean enabled, Boolean status) {
+		super();
 		this.userId = userId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.userName = userName;
 		this.password = password;
+		this.roleIdentity = roleIdentity;
 		this.roleId = roleId;
 		this.enabled = enabled;
 		this.status = status;
@@ -87,6 +102,14 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public Role getRoleIdentity() {
+		return roleIdentity;
+	}
+
+	public void setRoleIdentity(Role roleIdentity) {
+		this.roleIdentity = roleIdentity;
+	}
+
 	public String getRoleId() {
 		return roleId;
 	}
@@ -109,6 +132,14 @@ public class User implements Serializable {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "userId=" + userId + "\n       firstName=" + firstName + "\n       lastName=" + lastName
+				+ "\n       userName=" + userName + "\n       password=" + password + "\n       roleIdentity="
+				+ roleIdentity + "\n       roleId=" + roleId + "\n       enabled=" + enabled + "\n       status="
+				+ status;
 	}
 
 }
