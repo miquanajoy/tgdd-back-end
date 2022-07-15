@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,8 +21,8 @@ import com.group1.service.user.CustomUserDetail;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private DataSource dataSource;
+	//@Autowired
+	//private DataSource dataSource;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -29,10 +30,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService());
-		
+		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 	}
 
@@ -47,13 +53,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/admin/**").hasAuthority("1")
-			.anyRequest().authenticated()
+			.anyRequest().permitAll()
 			.and().formLogin()
 				.loginPage("/admin/login")
 				.usernameParameter("userName")
 				.passwordParameter("password")
-				.defaultSuccessUrl("/adminpage")
+				.loginProcessingUrl("/admin/loginAction")
+				.defaultSuccessUrl("/admin/home")
 				.permitAll()
 			.and().logout().logoutSuccessUrl("/").permitAll();
+		http.csrf().disable();
+	}
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception
+	{
+		web
+		.ignoring()
+		.antMatchers("/resources/**", "/static/**");
 	}
 }
