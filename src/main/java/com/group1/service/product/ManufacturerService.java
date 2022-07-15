@@ -38,4 +38,10 @@ public class ManufacturerService {
 		System.out.println(brand.toString());
 		BrandRepo.updateBrand(toUpdateBrandID, brand);
 	}
+	
+	public List<Manufacturer> getAllCateBrands(Integer cateID)
+	{
+		List<Manufacturer> manuList = BrandRepo.findByCategoryID(cateID);
+		return manuList;
+	}
 }

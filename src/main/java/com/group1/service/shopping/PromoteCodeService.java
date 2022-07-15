@@ -19,7 +19,6 @@ public class PromoteCodeService {
 	public PromoteCode getPromoteByName(String promoteName) 
 	{
 		PromoteCode prom = promoteRepo.findByPromoteCodeName(promoteName);
-		System.out.println(prom.toString());
 		return prom;
 	}
 	
