@@ -108,4 +108,6 @@ public class BillDetail implements Serializable {
 				+ "\n       quantity=" + quantity;
 	}
 
+
 }
+

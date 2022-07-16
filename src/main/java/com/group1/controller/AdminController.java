@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+
 import org.hibernate.boot.model.source.internal.hbm.ModelBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -966,6 +967,9 @@ public class AdminController {
 				model.addObject("dupColor1", duplicateColorWarning);
 			}	
 		}
+
+		
+
 		
 		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null 
 				&& toUpdateForm.getDiscount().getStartDateInput() != null  && toUpdateForm.getDiscount().getEndDateInput() != null 
@@ -1138,6 +1142,7 @@ public class AdminController {
 			model.setViewName("ProductDetailsOrUpdate");
 		}
 		
+
 		if(errorCount ==0) 
 		{
 			
@@ -1522,6 +1527,7 @@ public class AdminController {
 			model.setViewName("PromoteAdd");
 		}
 		
+
 		if(errorCount == 0) {
 			LocalDateTime convertedCurrentTime= converttoLocalDateTime(form.getStartDateInput());
 			LocalDateTime convertedEndTime= converttoLocalDateTime(form.getEndDateInput());
