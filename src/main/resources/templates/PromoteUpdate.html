@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<<<<<<< Updated upstream
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Update Promotion</title>
@@ -124,4 +125,71 @@
       </div>
     </div>
   </body>
+=======
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	Update promotion
+	<a th:href="@{/admin/promotions-management/view-promotions}">Back</a>
+	<div>
+		<form th:action="@{/admin/promotions-management/update-promotion}" th:object="${PromoteUpdateForm}" method="post">
+			<br>
+			<input type="hidden" th:field="*{promoteCodeID}" th:value="*{promoteCodeID}">
+			<br>
+			<div>
+				<span>Promotion Code Name</span>
+				<input type="text" th:field="*{promoteCodeName}" required minlength="6" readonly="readonly"
+				maxlength="15" value="*{promoteCodeName}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Description</span>
+				<input type="text" th:field="*{promoteCodeDescription}" required minlength="10" 
+				maxlength="200" value="*{promoteCodeDescription}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Discount Percent</span>
+				<input type="number" th:field="*{discountPercent}" required min="0" max="70" step="1" value="*{discountPercent}">
+			</div><br>
+			<div>
+				<span>Promotion Code Max Discount Amount</span>
+				<input type="number" th:field="*{discountMaxAmount}" required min="50000" max="3000000" step="5000" value="*{discountMaxAmount}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Start Date</span>
+				<input type="datetime-local" th:field="*{startDateInput}" required value="*{startDateInput}" 
+				th:attr="min=${MinDateTime},max=${MaxDateTime}">
+			</div>
+			<br>
+			<span th:if="${StartSameAsEnd != null}" th:utext="${StartSameAsEnd}" style="color: red;"></span>
+			<span th:if="${StartIsAfterEnd != null}" th:utext="${StartIsAfterEnd}" style="color: red;"></span>
+			<br>
+			<div>
+				<span>Promotion Code End Date</span>
+				<input type="datetime-local" th:field="*{endDateInput}" required value="*{endDateInput}" 
+				th:attr="min=${MinDateTime},max=${MaxDateTime}">
+			</div>
+			<br>
+			<div>
+				<span>Promotion Code Enabling</span>
+				<input th:if="${PromoteUpdateForm.enabled == true}" type="radio" name="EnableCheck" value="Enable" required="required" checked="checked" 
+				id="enableButton">
+				<input th:unless="${PromoteUpdateForm.enabled == true}" type="radio" name="EnableCheck" value="Enable" required="required" 
+				id="enableButton">
+				<label for="enableButton">Enable</label> 
+          	  	<input th:if="${PromoteUpdateForm.enabled == false}" type="radio" name="EnableCheck" value="Disable" checked="checked" 
+				id="disableButton">
+				<input th:unless="${PromoteUpdateForm.enabled == false}" type="radio" name="EnableCheck" value="Disable" id="disableButton">
+				<label for="disableButton">Disable</label>
+			</div>
+			<input type="submit" value="Update Promote Code">
+			
+		</form>
+	</div>
+</body>
+>>>>>>> Stashed changes
 </html>
