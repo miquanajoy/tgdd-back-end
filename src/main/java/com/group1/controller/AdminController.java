@@ -16,6 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
+
+
 import org.hibernate.boot.model.source.internal.hbm.ModelBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -36,6 +39,8 @@ import com.group1.dto.MultiFieldsFilePathDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.SpecSection;
 import com.group1.dto.ColorVariantUpdateDTO;
+import com.group1.entities.user.User;
+import com.group1.entities.user.Role;
 import com.group1.entities.product.Category;
 import com.group1.entities.product.Color;
 import com.group1.entities.product.Manufacturer;
@@ -55,6 +60,7 @@ import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
 import com.group1.repositories.product.ProductRepo;
 import com.group1.repositories.shopping.PromoteCodeRepo;
+import com.group1.repositories.user.UserRepo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -76,6 +82,9 @@ public class AdminController {
 	
 	@Autowired
 	ProductRepo productRepo;
+	
+	@Autowired
+	UserRepo userRepo;
 	
 	@Autowired
 	ManufacturerService manuServ;
@@ -163,6 +172,53 @@ public class AdminController {
 		System.out.println("Formatted end time in object:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
+	
+	
+	
+	@GetMapping("/home")
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("")
+	public String viewHomePage() {
+		return "index";
+	}
+	
+	@GetMapping("/login")
+	public ModelAndView showLoginPage() {
+
+		return new ModelAndView("LoginPage");
+	}
+	
+	
+	@PostMapping("/loginAction") 
+	  public ModelAndView checkLogin(@ModelAttribute("login") User user, HttpSession session) {
+	  
+		  ModelAndView model =new ModelAndView();
+		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
+			  if (userdata != null) 
+			  {   
+				  Long createdTime= session.getCreationTime();
+				  System.out.println("Session created at:" + createdTime);
+				  session.setMaxInactiveInterval(60*30);
+				  int sessionage= session.getMaxInactiveInterval();
+				  System.out.println("Session will self-destroy in:" + sessionage);
+				  
+				  if (userdata.getRoleId().equals("1")) 
+				  {
+					  model.setViewName("index");
+					  return model; 
+				  }
+				  model.setViewName("ProductView");
+				  
+				  return model; 
+				  
+	          } 
+			  else 	          
+	        	 return model; 
+	          
+	  }
 	
 	@GetMapping("/products-management/create-product/choose-category")
 	public ModelAndView chooseProductCategory(ModelAndView model) 
@@ -911,6 +967,9 @@ public class AdminController {
 				model.addObject("dupColor1", duplicateColorWarning);
 			}	
 		}
+
+		
+
 		
 		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null 
 				&& toUpdateForm.getDiscount().getStartDateInput() != null  && toUpdateForm.getDiscount().getEndDateInput() != null 
@@ -1083,6 +1142,7 @@ public class AdminController {
 			model.setViewName("ProductDetailsOrUpdate");
 		}
 		
+
 		if(errorCount ==0) 
 		{
 			
@@ -1467,6 +1527,7 @@ public class AdminController {
 			model.setViewName("PromoteAdd");
 		}
 		
+
 		if(errorCount == 0) {
 			LocalDateTime convertedCurrentTime= converttoLocalDateTime(form.getStartDateInput());
 			LocalDateTime convertedEndTime= converttoLocalDateTime(form.getEndDateInput());

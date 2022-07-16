@@ -44,4 +44,5 @@ public class ManufacturerService {
 		List<Manufacturer> manuList = BrandRepo.findByCategoryID(cateID);
 		return manuList;
 	}
+
 }
