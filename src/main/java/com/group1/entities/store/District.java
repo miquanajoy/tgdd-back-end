@@ -122,4 +122,5 @@ public class District implements Serializable {
 				+ cityIdentity + "\n       cityID=" + cityID;
 	}
 
+
 }
