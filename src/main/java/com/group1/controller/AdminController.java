@@ -733,10 +733,13 @@ public class AdminController {
 		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
 		List<Product> productList;
 		List<Category> categoryList = cateServ.getAllCategorys();
-		if(category == null) {
+		
+		System.out.println(category);
+		
+		if (category == null) {
 			productList = productServ.showAllProducts();
 		} else {
-			productList = productServ.findProductByCategoryId(category);
+			productList = productServ.findProductByCategory(category);
 		}
 
 		for(Product pro: productList) 
@@ -745,12 +748,11 @@ public class AdminController {
 			pro.setImageToShow(encoder64);
 		}
 		model.addObject("ProductList", productList);
-		model.addObject("CategoryList", categoryList);
+		model.addObject("categoryList", categoryList);
 		model.addObject("ImgPath", path);
 		model.setViewName("ProductView");
 		return model;
 	}
-	
 	
 	
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
