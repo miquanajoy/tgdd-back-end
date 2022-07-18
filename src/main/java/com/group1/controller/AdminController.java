@@ -18,7 +18,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-
+import org.hibernate.annotations.Parameter;
 import org.hibernate.boot.model.source.internal.hbm.ModelBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -94,6 +95,9 @@ public class AdminController {
 	
 	@Autowired
 	CategoryRepo cateRepo;
+	
+	@Autowired
+	CategoryService cateServ;
 	
 	@Autowired
 	ManufacturerRepo manuRepo;
@@ -724,20 +728,30 @@ public class AdminController {
 	}
 	
 	@GetMapping("/products-management/view-products")
-	public ModelAndView viewProducts(ModelAndView model) {
+	public ModelAndView viewProducts(ModelAndView model, @RequestParam(required = false) Integer category) {
 		
 		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showAllProducts();
+		List<Product> productList;
+		List<Category> categoryList = cateServ.getAllCategorys();
+		if(category == null) {
+			productList = productServ.showAllProducts();
+		} else {
+			productList = productServ.findProductByCategoryId(category);
+		}
+
 		for(Product pro: productList) 
 		{
 			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
 			pro.setImageToShow(encoder64);
 		}
 		model.addObject("ProductList", productList);
+		model.addObject("CategoryList", categoryList);
 		model.addObject("ImgPath", path);
 		model.setViewName("ProductView");
 		return model;
 	}
+	
+	
 	
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {

@@ -18,7 +18,7 @@ public class CategoryService {
 	
 	public List<Category> getAllCategorys()
 	{
-		List<Category> categoryList =CategoryRepo.findAll();
+		List<Category> categoryList = CategoryRepo.findAll();
 		for(Category item: categoryList) 
 		{
 			System.out.println(item.toString());
