@@ -121,7 +121,7 @@
                                             <label>Product Name</label> </br>
                                             <input th:if="${ProductInputForm.productName != null}"
 												 type="text" class="form-control" th:field="*{productName}" 
-												 pattern="[\w\d]+" required value="*{productName}"> </br>
+												 pattern="[\w\d\s]+" required value="*{productName}"> </br>
 											
 											<input th:unless="${ProductInputForm.productName != null}" 
 												 type="text" class="form-control" th:field="*{productName}" required>
