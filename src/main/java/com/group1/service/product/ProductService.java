@@ -89,5 +89,16 @@ public class ProductService {
 		return proList;
 
 	}
+	public List<Product> showProductByCategoryID(Integer id) {
+
+		List<Product> proList = productReposit.findProductByCategoryId(id);
+		for (Product prod : proList) {
+			System.out.println(prod.toString1());
+		}
+		return proList;
+
+	}
+	
+	
 
 }
