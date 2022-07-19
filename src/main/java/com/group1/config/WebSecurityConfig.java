@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.group1.service.user.CustomUserDetailService;
 import com.group1.service.user.CustomUserDetail;
 
-@Configuration
+/*@Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -72,4 +72,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.ignoring()
 		.antMatchers("/resources/**", "/static/**");
 	}
-}
+}*/
