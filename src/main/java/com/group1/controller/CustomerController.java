@@ -24,7 +24,7 @@ import com.group1.service.product.ProductTechSpecsService;
 import com.group1.service.shopping.PromoteCodeService;
 
 @Controller
-@RequestMapping("/customer")
+
 public class CustomerController {
 	
 	@Autowired
@@ -57,13 +57,6 @@ public class CustomerController {
 	
 	boolean loadCateBasedSpecForm = false;
 	int promoteIndex = 0;
-	
-	@GetMapping("/view-products")
-	public ModelAndView viewProducts(ModelAndView model) {
-		
-		model.setViewName("ProductViewByCategory");
-		return model;
-	}
 	
 	@GetMapping("/view-products/phone")
 	public ModelAndView viewProductsCatePhone(ModelAndView model) {
@@ -132,6 +125,10 @@ public class CustomerController {
 		model.addObject("ImgPath", path);
 		
 		model.setViewName("ProductViewByPhone");
+		return model;
+	}
+	@GetMapping("/")
+	public ModelAndView viewProductByCateID(ModelAndView model) {
 		return model;
 	}
 	
