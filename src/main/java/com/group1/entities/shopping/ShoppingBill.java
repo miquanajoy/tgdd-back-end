@@ -61,13 +61,15 @@ public class ShoppingBill implements Serializable{
 	@Column(name = "ReplacingReceiverPhoneNumber")
 	private String replacingReceiverPhoneNumber;
 	
+	@Column(name = "Status")
+	private Boolean status;
 	public ShoppingBill() {
 	}
 
 	public ShoppingBill(Integer billId, Customer customerIdentifier, Set<BillDetail> billItems, Integer customerID,
 			LocalDateTime timeCreated, Integer promoteCodeID, PromoteCode promoteCodeIdentifier, String deliveryAddress,
 			String deliveryType, String otherRequirements, String replacingReceiverName, String replacingReceiverGender,
-			String replacingReceiverPhoneNumber) {
+			String replacingReceiverPhoneNumber, Boolean status) {
 		super();
 		this.billId = billId;
 		this.customerIdentifier = customerIdentifier;
@@ -82,6 +84,7 @@ public class ShoppingBill implements Serializable{
 		this.replacingReceiverName = replacingReceiverName;
 		this.replacingReceiverGender = replacingReceiverGender;
 		this.replacingReceiverPhoneNumber = replacingReceiverPhoneNumber;
+		this.status =status;
 	}
 
 	public Integer getBillId() {
@@ -188,6 +191,14 @@ public class ShoppingBill implements Serializable{
 		this.replacingReceiverPhoneNumber = replacingReceiverPhoneNumber;
 	}
 
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "billId=" + billId + "\n       customerIdentifier=" + customerIdentifier + "\n       billItems="
@@ -196,9 +207,8 @@ public class ShoppingBill implements Serializable{
 				+ "\n       deliveryAddress=" + deliveryAddress + "\n       deliveryType=" + deliveryType
 				+ "\n       otherRequirements=" + otherRequirements + "\n       replacingReceiverName="
 				+ replacingReceiverName + "\n       replacingReceiverGender=" + replacingReceiverGender
-				+ "\n       replacingReceiverPhoneNumber=" + replacingReceiverPhoneNumber;
+				+ "\n       replacingReceiverPhoneNumber=" + replacingReceiverPhoneNumber + "\n       status=" + status;
 	}
-
 	
-
+	
 }

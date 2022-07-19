@@ -1,6 +1,7 @@
 package com.group1.entities.product;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 //fixed
@@ -19,11 +21,24 @@ public class Category implements Serializable{
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	
+	@Column(name = "IsParent")
+	private Boolean isParent;
+	
+	@Column(name = "Level")
+	private Integer level;
+	
+	@Lob
+	@Column(name = "Icon", columnDefinition = "BLOB")
+	private byte[] icon;
+	
 	@Column(name = "CategoryName")
 	private String categoryName;
 	
 	@Column(name = "ParentID")
 	private Integer parentID;
+	
+	@Column(name = "Enabled")
+	private Boolean enabled;
 	
 	@OneToMany(mappedBy = "categoryID")
 	private Set<Product> ProductList;
@@ -37,12 +52,17 @@ public class Category implements Serializable{
 	public Category() {
 	}
 
-	public Category(Integer categoryID, String categoryName, Integer parentID, Set<Product> productList,
-			Set<Manufacturer> brandList, Set<ProductTechSpecs> specList) {
+	public Category(Integer categoryID, Boolean isParent, Integer level, byte[] icon, String categoryName,
+			Integer parentID, Boolean enabled, Set<Product> productList, Set<Manufacturer> brandList,
+			Set<ProductTechSpecs> specList) {
 		super();
 		this.categoryID = categoryID;
+		this.isParent = isParent;
+		this.level = level;
+		this.icon = icon;
 		this.categoryName = categoryName;
 		this.parentID = parentID;
+		this.enabled = enabled;
 		ProductList = productList;
 		this.brandList = brandList;
 		this.specList = specList;
@@ -54,6 +74,30 @@ public class Category implements Serializable{
 
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
+	}
+
+	public Boolean getIsParent() {
+		return isParent;
+	}
+
+	public void setIsParent(Boolean isParent) {
+		this.isParent = isParent;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public byte[] getIcon() {
+		return icon;
+	}
+
+	public void setIcon(byte[] icon) {
+		this.icon = icon;
 	}
 
 	public String getCategoryName() {
@@ -72,6 +116,14 @@ public class Category implements Serializable{
 		this.parentID = parentID;
 	}
 
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public Set<Product> getProductList() {
 		return ProductList;
 	}
@@ -87,7 +139,7 @@ public class Category implements Serializable{
 	public void setBrandList(Set<Manufacturer> brandList) {
 		this.brandList = brandList;
 	}
-	
+
 	public Set<ProductTechSpecs> getSpecList() {
 		return specList;
 	}
@@ -98,8 +150,10 @@ public class Category implements Serializable{
 
 	@Override
 	public String toString() {
-		return "categoryID=" + categoryID + "\n       categoryName=" + categoryName + "\n       parentID=" + parentID
-				+ "\n       brandList=" + brandList + "\n       specList=" + specList;
+		return "categoryID=" + categoryID + "\n       isParent=" + isParent + "\n       level=" + level
+				+ "\n       icon=" + Arrays.toString(icon) + "\n       categoryName=" + categoryName
+				+ "\n       parentID=" + parentID + "\n       enabled=" + enabled;
 	}
+
 	
 }

@@ -3,9 +3,7 @@ package com.group1.service.product;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.annotation.Resources;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.group1.dto.GeneralProductViewDTO;
@@ -40,8 +38,6 @@ public class ProductService {
 	
 	public void saveNewProduct(Product toSaveProduct) 
 	{
-		System.out.println("Persist product review:");
-		System.out.println(toSaveProduct.toString());
 		productReposit.save(toSaveProduct);
 	}
 	
@@ -56,6 +52,14 @@ public class ProductService {
 		return proList ;
 	}
 	
+	public Product getProductByID(String ProductID) 
+	{
+		Product findPro = productReposit.findByProductID(ProductID);
+		if(findPro != null) System.out.println("Product found:");
+		else System.out.println("Product not found:");
+		return findPro;
+	}
+
 	public List<Product> findProductByCategory(Integer id) 
 	{
 		List<Product> prodList = productReposit.findProductByCategory(id);

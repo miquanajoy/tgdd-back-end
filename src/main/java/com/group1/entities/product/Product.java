@@ -122,6 +122,25 @@ public class Product implements Serializable{
 	public Product() {
 		
 	}
+	
+	public Product(String productID, String productName, Integer price, Integer manufacturerID, 
+			Integer categoryID, Integer productWarranty, byte[] image, String imageType,
+			double interestRate, Boolean exclusive, String accessoriesIncluded, Boolean enabled) {
+		super();
+		this.productID = productID;
+		this.productName = productName;
+		this.price = price;
+		this.manufacturerID = manufacturerID;
+		this.categoryID = categoryID;
+		this.productWarranty = productWarranty;
+		this.image = image;
+		this.imageType = imageType ;
+		this.interestRate = interestRate;
+		this.exclusive = exclusive;
+		this.accessoriesIncluded = accessoriesIncluded;
+		this.enabled = enabled;
+		this.imageToShow = imageToShow;
+	}
 
 	public Product(String productID, String productName, Integer price, Manufacturer manufacturer,
 			Integer manufacturerID, Category category, Integer categoryID, Set<BillDetail> productInBills , ProductDiscount discount,
@@ -399,17 +418,16 @@ public class Product implements Serializable{
 	public String toString() {
 		return "productID=" + productID + "\n       productName=" + productName + "\n       price=" + price
 				+ "\n       manufacturer=" + manufacturer + "\n       manufacturerID=" + manufacturerID
-				+ "\n       category=" + category + "\n       categoryID=" + categoryID + "\n       productInBills="
-				+ productInBills + "\n       discount=" + discount + "\n       article=" + article
-				+ "\n       cameraShots=" + cameraShots + "\n       colorVariant=" + colorVariant + "\n       features="
-				+ features + "\n       specifications=" + specifications + "\n       unboxing=" + unboxing
-				+ "\n       variant=" + variant + "\n       original=" + original + "\n       productWarranty="
-				+ productWarranty + "\n       image=" + Arrays.toString(image) + "\n       imageType=" + imageType
-				+ "\n       interestRate=" + interestRate + "\n       exclusive=" + exclusive
-				+ "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
-				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       imageToShow=" + imageToShow
-				+ "\n       colorVarUpdateList=" + colorVarUpdateList + "\n       specList=" + specList;
+				+ "\n       category=" + category + "\n       categoryID=" + categoryID + "\n       discount="
+				+ discount + "\n       article=" + article + "\n       cameraShots=" + cameraShots
+				+ "\n       colorVariant=" + colorVariant + "\n       features=" + features + "\n       specifications="
+				+ specifications + "\n       unboxing=" + unboxing + "\n       variant=" + variant
+				+ "\n       original=" + original + "\n       productWarranty=" + productWarranty
+				+ "\n       imageType=" + imageType + "\n       interestRate=" + interestRate + "\n       exclusive="
+				+ exclusive + "\n       accessoriesIncluded=" + accessoriesIncluded + "\n       enabled=" + enabled
+				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       colorVarUpdateList="
+				+ colorVarUpdateList + "\n       specList=" + specList;
 	}
-	
+
 	
 }

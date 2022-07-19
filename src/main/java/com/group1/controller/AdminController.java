@@ -1,16 +1,10 @@
 package com.group1.controller;
 
-import java.io.BufferedReader;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,23 +15,28 @@ import javax.servlet.http.HttpSession;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.boot.model.source.internal.hbm.ModelBinder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
+
+
+import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group1.dto.Attributes;
-import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.MultiFieldsFilePathDTO;
-import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.SpecSection;
 import com.group1.dto.ColorVariantUpdateDTO;
 import com.group1.entities.user.User;
@@ -59,8 +58,6 @@ import com.group1.entities.shopping.PromoteCode;
 import com.group1.repositories.product.CategoryRepo;
 import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
-import com.group1.repositories.product.ProductRepo;
-import com.group1.repositories.shopping.PromoteCodeRepo;
 import com.group1.repositories.user.UserRepo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -68,21 +65,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.group1.service.product.CategoryService;
 import com.group1.service.product.ManufacturerService;
 import com.group1.service.product.ProductService;
 import com.group1.service.product.ProductTechSpecsService;
 import com.group1.service.shopping.PromoteCodeService;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
 	
 	@Autowired
-	ProductService productServ;
+	PromoteCodeService promotionServ;
 	
 	@Autowired
-	ProductRepo productRepo;
+	ProductService productServ;
 	
 	@Autowired
 	UserRepo userRepo;
@@ -91,14 +89,11 @@ public class AdminController {
 	ManufacturerService manuServ;
 	
 	@Autowired
-	PromoteCodeService promotionServ;
-	
-	@Autowired
 	CategoryRepo cateRepo;
 	
 	@Autowired
 	CategoryService cateServ;
-	
+
 	@Autowired
 	ManufacturerRepo manuRepo;
 	
@@ -110,15 +105,10 @@ public class AdminController {
 	
 	boolean loadCateBasedSpecForm = false;
 	
-	//List<CategoryBasedSpecification> specFormList =new ArrayList<CategoryBasedSpecification>();
-	
 	public List<SpecSection> loadCateBasedSpecificationForm(List<ProductTechSpecs> specList) 
 	{
-		List<String> txtFile = new ArrayList<String>();
-		
 		List<SpecSection> sectionList =new ArrayList<SpecSection>();
 		List<Attributes> attrList =new ArrayList<Attributes>();
-		//CategoryBasedSpecification specForm = new CategoryBasedSpecification();
 		SpecSection section =new SpecSection();
 
 		for(ProductTechSpecs spec: specList) 
@@ -133,7 +123,6 @@ public class AdminController {
 				section.getAttributes().add(attr);
 				sectionList.add(section);
 				continue;
-				
 			}
 
 			if(sectionList.get(sectionList.size()-1).getSection().equals(spec.getSection()) ) 
@@ -156,11 +145,41 @@ public class AdminController {
 				section.setAttributes(attrList);
 				sectionList.add(section);
 			}
-			
-			
+		}
+		return sectionList;
+	}
+	
+	public String convertToJsonString(Object objectToConvert) 
+	{
+		String jsonConverted = "";
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		mapper.registerModule(new JavaTimeModule());
+		try {
+			jsonConverted = mapper.writeValueAsString(objectToConvert);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 		
-		return sectionList;
+		return jsonConverted;
+	}
+	
+	public List<SpecSection> convertToSpecSection(String jsonString)
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<SpecSection> specList = new ArrayList<SpecSection>();
+		try {
+			specList = mapper.readValue(jsonString.getBytes(), 
+					new TypeReference<List<SpecSection>>() {});
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+		
+		return specList;
 	}
 	
 	public LocalDateTime converttoLocalDateTime(LocalDateTime toConvertTime) 
@@ -176,8 +195,6 @@ public class AdminController {
 		System.out.println("Formatted end time in object:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
-	
-	
 	
 	@GetMapping("/home")
 	public String home() {
@@ -329,7 +346,7 @@ public class AdminController {
 		
 		int errorCount = 0;
 		
-		Product checkProduct = productRepo.findByProductID(productForm.getProductID());
+		Product checkProduct = productServ.getProductByID(productForm.getProductID());
 		if( checkProduct != null) 
 		{
 			System.out.println("Product ID already existed");
@@ -348,7 +365,7 @@ public class AdminController {
 			}
 			else 
 			{
-				checkProduct = productRepo.findByProductID(productForm.getVariant().getProductOriginalIdentifier());
+				checkProduct = productServ.getProductByID(productForm.getVariant().getProductOriginalIdentifier());
 				if(checkProduct == null) 
 				{
 					System.out.println("Original Product ID not found");
@@ -654,14 +671,7 @@ public class AdminController {
 					}
 				}
 				
-				String json = "";
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-				try {
-					json = mapper.writeValueAsString(productForm.getSpecList());
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
+				String json = convertToJsonString(productForm.getSpecList());
 				ProductSpecification specification = new ProductSpecification();
 				productForm.setSpecifications(specification);
 				productForm.getSpecifications().setProductSpecifications(json);
@@ -711,7 +721,7 @@ public class AdminController {
 		System.out.println("At final create product step"+productForm.toString());
 		
 		
-		productRepo.save(productForm);
+		productServ.saveNewProduct(productForm);
 		model.setViewName("redirect:/admin/products-management/view-products");
 		model.addObject("dupProductID", null);
 		model.addObject("selfReferProductID", null);
@@ -727,31 +737,18 @@ public class AdminController {
 		return model;
 	}
 	
-	@GetMapping("/products-management/view-products")
-	public ModelAndView viewProducts(ModelAndView model, @RequestParam(required = false) Integer category) {
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/products-management/view-products")
+	public List<Product> viewProducts(ModelAndView model) {
 		
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList;
-		List<Category> categoryList = cateServ.getAllCategorys();
-		
-		System.out.println(category);
-		
-		if (category == null) {
-			productList = productServ.showAllProducts();
-		} else {
-			productList = productServ.findProductByCategory(category);
-		}
+		List<Product> productList = productServ.showAllProducts();
 
 		for(Product pro: productList) 
 		{
 			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
 			pro.setImageToShow(encoder64);
 		}
-		model.addObject("ProductList", productList);
-		model.addObject("categoryList", categoryList);
-		model.addObject("ImgPath", path);
-		model.setViewName("ProductView");
-		return model;
+		return productList;
 	}
 	
 	
@@ -765,13 +762,16 @@ public class AdminController {
 	
 	@GetMapping("/products-management/view-or-update-product/step-2/{proID}")
 	public ModelAndView viewOrUpdateProducts(ModelAndView model, @PathVariable("proID") String productIdentity, 
-			@ModelAttribute("AdditionalColorVarNum") Integer additionalColor) {
+			@ModelAttribute("AdditionalColorVarNum") String additionColor) {
 		
-		Product p = productRepo.findByProductID(productIdentity);
+		Integer additionalColor = Integer.valueOf(additionColor);
+		//Product p = productRepo.findByProductID(productIdentity);
+		Product p = productServ.getProductByID(productIdentity);
 		MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
 		List<ProductColorVariant> colorInputFormList = new ArrayList<ProductColorVariant>();
 		List<Color> colorList = colorRepo.findAll();
-		List<Color> backUpColorList = colorList;
+		List<Color> backUpColorList = new ArrayList<Color>();
+		backUpColorList.addAll(colorList);
 		List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
 		p.setImageToShow(Base64.getEncoder().encodeToString(p.getImage()) );
 		
@@ -843,7 +843,6 @@ public class AdminController {
 				{
 					if(colour.getColorID() == updateEL.getForColorID()) 
 					{
-						System.out.println("Found matching color:"+ colour.getColorName());
 						updateEL.setForColorName(colour.getColorName());
 						break;
 					}
@@ -868,6 +867,7 @@ public class AdminController {
 		}
 		else 
 		{
+			p.getDiscount().setStartDateInput(p.getDiscount().getStartDate());
 			p.getDiscount().setEndDateInput(p.getDiscount().getEndDate());
 		}
 		
@@ -898,18 +898,7 @@ public class AdminController {
 		
 		if(p.getSpecifications() != null) 
 		{
-			ObjectMapper mapper = new ObjectMapper();
-			List<SpecSection> specShow = new ArrayList<SpecSection>();
-			try {
-				specShow = mapper.readValue(p.getSpecifications().getProductSpecifications().getBytes(), 
-						new TypeReference<List<SpecSection>>() {});
-			} catch (JsonParseException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-			e.printStackTrace();
-			}
+			List<SpecSection> specShow = convertToSpecSection(p.getSpecifications().getProductSpecifications());
 			p.setSpecList(specShow);
 		}
 		
@@ -938,8 +927,8 @@ public class AdminController {
 			@ModelAttribute("CheckDiscountEnable") String discountSetter, 
 			@ModelAttribute("AddColor") String addCountColor) {
 		
-		Integer countAdditionColors = Integer.valueOf(addCountColor);
-		//System.out.println(p.toString());
+			Integer countAdditionColors = Integer.valueOf(addCountColor);
+		
 		if(exclusiveSetter.contains("Exclusive")) toUpdateForm.setExclusive(true);
 		if(exclusiveSetter.contains("NotExclusive")) toUpdateForm.setExclusive(false);
 		
@@ -949,10 +938,12 @@ public class AdminController {
 		if(discountSetter.contains("Enable")) toUpdateForm.getDiscount().setEnabled(true);
 		if(discountSetter.contains("Disable"))  toUpdateForm.getDiscount().setEnabled(false);
 		int errorCount = 0;
-		Product compareProduct = productRepo.findByProductID(toUpdateForm.getProductID());
-		List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
+		Product compareProduct = productServ.getProductByID(toUpdateForm.getProductID());
+		
+		//List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
 		List<Color> colorList  = colorRepo.findAll();
-		List<Color> backUpColorList  = colorList;
+		List<Color> backUpColorList  = new ArrayList<Color>();
+		backUpColorList.addAll(colorList);
 		if(toUpdateForm.getColorVariantInputList() != null && toUpdateForm.getColorVariantInputList().size() >1)
 		{
 			Integer prevID = 0;
@@ -984,9 +975,6 @@ public class AdminController {
 			}	
 		}
 
-		
-
-		
 		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null 
 				&& toUpdateForm.getDiscount().getStartDateInput() != null  && toUpdateForm.getDiscount().getEndDateInput() != null 
 				&& !discountSetter.isEmpty()) 
@@ -1017,59 +1005,18 @@ public class AdminController {
 			String formatedNowTime = now.format(dtf);
 			String formatedLimitTime = limit.format(dtf);
 			
-			if(countAdditionColors >0)
+			if(compareProduct.getColorVariant() != null) 
 			{
-				if(compareProduct.getColorVariant() != null) 
-				{
 					//Integer setColorID = 0;
 					//Integer colorListColorID = 0;
-					for(Iterator<ProductColorVariant> t = compareProduct.getColorVariant().iterator(); t.hasNext();) 
-					{ 
-						ProductColorVariant el = t.next();
-						//setColorID = el.getColorID();
-						el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-						
-						if(colorVarUpdateList.size() == 0) {
-							ColorVariantUpdateDTO colUpdateForm = new ColorVariantUpdateDTO();
-							colUpdateForm.setForColorID(el.getColorID());
-							colorVarUpdateList.add(colUpdateForm);
-						}
-						
-						int countOccur = 0;
-						if(colorVarUpdateList.size() > 0) {
-							for(ColorVariantUpdateDTO obj: colorVarUpdateList) {
-								if(obj.getForColorID() != el.getColorID()) {
-									countOccur +=1;
-								}
-							}
-							if(countOccur == colorVarUpdateList.size()) {
-								ColorVariantUpdateDTO colUpdateForm = new ColorVariantUpdateDTO();
-								colUpdateForm.setForColorID(el.getColorID());
-								colorVarUpdateList.add(colUpdateForm);
-							}
-						}
-						
-						/*if(additionalColor >0) 
-						{	
-							if(setColorID != colorListColorID)
-							{
-								for(Iterator<Color>  col = colorList.iterator(); col.hasNext();) 
-								{
-									Color colorCheck = col.next();
-									if(colorCheck.getColorID() == el.getColorID()) 
-									{
-										colorListColorID = colorCheck.getColorID();
-										col.remove();
-										break;
-									}
-								}	
-							}
-						}*/
-					}
-					toUpdateForm.setColorVarUpdateList(colorVarUpdateList);
-					toUpdateForm.setColorVariant(compareProduct.getColorVariant());
+				for(Iterator<ProductColorVariant> t = compareProduct.getColorVariant().iterator(); t.hasNext();) 
+				{ 
+					ProductColorVariant el = t.next();
+					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				}
+				toUpdateForm.setColorVariant(compareProduct.getColorVariant());
 					
-					for(ColorVariantUpdateDTO updateEL: toUpdateForm.getColorVarUpdateList()) 
+					/*for(ColorVariantUpdateDTO updateEL: toUpdateForm.getColorVarUpdateList()) 
 					{	
 						for(Color colour: backUpColorList) 
 						{
@@ -1079,11 +1026,11 @@ public class AdminController {
 								break;
 							}
 						}
-					}
-				}
+					}*/
+			}
 				
-				
-			
+			if(countAdditionColors >0)
+			{
 				if(toUpdateForm.getColorVariant() != null && countAdditionColors >0) 
 				{
 					for(Iterator<Color> t = colorList.iterator(); t.hasNext();) 
@@ -1104,18 +1051,7 @@ public class AdminController {
 			
 			if(compareProduct.getSpecifications() != null) 
 			{
-				ObjectMapper mapper = new ObjectMapper();
-				List<SpecSection> specShow = new ArrayList<SpecSection>();
-				try {
-					specShow = mapper.readValue(compareProduct.getSpecifications().getProductSpecifications().getBytes(), 
-							new TypeReference<List<SpecSection>>() {});
-				} catch (JsonParseException e) {
-					e.printStackTrace();
-				} catch (JsonMappingException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-				e.printStackTrace();
-				}
+				List<SpecSection> specShow = convertToSpecSection(compareProduct.getSpecifications().getProductSpecifications());	
 				toUpdateForm.setSpecList(specShow);
 			}
 			
@@ -1466,119 +1402,71 @@ public class AdminController {
 		return model;
 	}
 	
-	@GetMapping("/promotions-management/view-promotions")
-	public ModelAndView viewPromotions(ModelAndView model) {
+	@CrossOrigin(origins = "*")
+	@GetMapping(value="/promotions-management/view-promotions")
+	public List<PromoteCode> viewPromotions(ModelAndView model) {
 	
 		List<PromoteCode> promoteList = promotionServ.getAllPromotes();
-		model.addObject("PromoteList", promoteList);
-		model.setViewName("Promoteview");
-		return model;
+		return promoteList;
 	}
 	
+	@CrossOrigin(origins = "*")
 	@GetMapping("/promotions-management/create-promotion")
-	public ModelAndView addNewPromotion(ModelAndView model) {
+	public PromoteCode addNewPromotion() {
 		PromoteCode promotecode = new PromoteCode();
-		String enableButton = "";
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime limit = now.plusMonths(2);
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
-		
-		String formatedNowTime = now.format(dtf);
-		String formatedLimitTime = limit.format(dtf);
-		
-		model.addObject("MinDateTime", formatedNowTime);
-		model.addObject("MaxDateTime", formatedLimitTime);
-		model.addObject("PromoteForm", promotecode);
-		model.addObject("EnableCheck", enableButton);
-		model.setViewName("PromoteAdd");
-		return model;
+		return promotecode;
 	}
 
+	@CrossOrigin(origins = "*")
+	@GetMapping("/promotions-management/get-promotion/{promoteName}")
+	public PromoteCode getPromotion(@PathVariable("promoteName") String proName) {
+		String promoteName = proName;
+		
+		PromoteCode promotecode = new PromoteCode();
+		promotecode = promotionServ.getPromoteByName(promoteName);
+		return promotecode;
+	}
+	
+	@CrossOrigin(origins = "*")
 	@PostMapping("/promotions-management/create-promotion")
-	public ModelAndView processAddNewPromotion(ModelAndView model, @ModelAttribute("PromoteForm") PromoteCode form, 
-			@ModelAttribute("EnableCheck") String checkEnable/*, RedirectAttributes rediAttr*/) 
+	public PromoteCode processAddNewPromotion(PromoteCode form) 
 	{
-		if(checkEnable.equals("Enable")) form.setEnabled(true);
-		if(checkEnable.equals("Disable")) form.setEnabled(false);
-		
-		int errorCount = 0;
-		PromoteCode checkPromote = promotionServ.getPromoteByName(form.getPromoteCodeName());
-		if(checkPromote != null) 
-		{
-			System.out.println("Promotion name already existed");
-			errorCount +=1;
-			String promoteNameDupWarning = "Promotion name already existed";
-			model.addObject("PromoteNameDup", promoteNameDupWarning);
-		}
-		
-		if(form.getStartDateInput().isEqual(form.getEndDateInput())) 
-		{
-			System.out.println("Promotion start date and end date cannot be the same");
-			errorCount +=1;
-			String startSameAsEnd = "Promotion start date and end date cannot be the same";
-			model.addObject("StartSameAsEnd", startSameAsEnd);
-		}
-		else if(form.getStartDateInput().isAfter(form.getEndDateInput())) 
-		{
-			System.out.println("Promotion start date cannot be after end date");
-			errorCount +=1;
-			String starIsAfterEnd = "Promotion start date can't be after end date";
-			model.addObject("StartIsAfterEnd", starIsAfterEnd);
-		}
-		
-		if(errorCount >0) 
-		{
-			LocalDateTime now = LocalDateTime.now();
-			LocalDateTime limit = now.plusMonths(2);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
-			
-			String formatedNowTime = now.format(dtf);
-			String formatedLimitTime = limit.format(dtf);
-			model.addObject("MinDateTime", formatedNowTime);
-			model.addObject("MaxDateTime", formatedLimitTime);
-			model.addObject("PromoteForm", form);
-			//model.addObject("EnableCheck", enableButton);
-			model.setViewName("PromoteAdd");
-		}
-		
-
-		if(errorCount == 0) {
-			LocalDateTime convertedCurrentTime= converttoLocalDateTime(form.getStartDateInput());
-			LocalDateTime convertedEndTime= converttoLocalDateTime(form.getEndDateInput());
+			/*LocalDateTime startDate = form.getStartDateInput();
+			LocalDateTime endDate = form.getEndDateInput();
+			LocalDateTime convertedCurrentTime= converttoLocalDateTime(startDate);
+			LocalDateTime convertedEndTime= converttoLocalDateTime(endDate);
 		
 			form.setStartDate(convertedCurrentTime);
-			form.setEndDate(convertedEndTime);
+			form.setEndDate(convertedEndTime);*/
 			System.out.println("Promotion creation processed:"+form.toString());
-			promotionServ.savePromote(form);
-			//promoteList.add(form);
-			//model.addObject("PromoteForm", form);
-			model.addObject("PromoteNameDup", null);
-			model.addObject("StartSameAsEnd", null);
-			model.addObject("StartIsAfterEnd", null);
-			model.setViewName("redirect:/admin/promotions-management/view-promotions");
-		}
-		return model;
+			//promotionServ.savePromote(form);
+		return form;
 	}
 	
 	@GetMapping("/promotions-management/update-promotion/{promote}")
 	public ModelAndView UpdatePromotion(ModelAndView model, @PathVariable("promote") String promoteName) 
 	{
-		PromoteCode promote= promotionServ.getPromoteByName(promoteName);
+		LocalDateTime minLimit = null;
+		LocalDateTime limit = null;
+		PromoteCode promotion= new PromoteCode();
 		
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime limit = now.plusMonths(2);
+		promotion = promotionServ.getPromoteByName(promoteName);
+		
+		//if(promote != null) System.out.println("Promotion found:");
+		//else System.out.println("Promotion not found:");
+		minLimit = promotion.getStartDate();
+		limit = minLimit.plusMonths(2);
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
 		
-		String formatedNowTime = now.format(dtf);
+		String formatedNowTime = minLimit.format(dtf);
 		String formatedLimitTime = limit.format(dtf);
-		promote.setStartDateInput(promote.getStartDate());
-		promote.setEndDateInput(promote.getEndDate());
+		promotion.setStartDateInput(promotion.getStartDate());
+		promotion.setEndDateInput(promotion.getEndDate());
 		model.addObject("MinDateTime", formatedNowTime);
 		model.addObject("MaxDateTime", formatedLimitTime);
-		model.addObject("PromoteUpdateForm", promote);
+		model.addObject("PromoteUpdateForm", promotion);
 		model.setViewName("PromoteUpdate");
 		return model;
 	}
@@ -1629,7 +1517,7 @@ public class AdminController {
 		
 			updateform.setStartDate(convertedCurrentTime);
 			updateform.setEndDate(convertedEndTime);
-			System.out.println("Promotion creation processed:"+updateform.toString());
+			System.out.println("Promotion update processed:"+updateform.toString());
 		//promoteList.set(foundForm, updateform);
 			//promotionServ.savePromote(updateform);
 		//model.addObject("PromoteForm", form);
