@@ -42,4 +42,7 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 	
 	@Query(value="Select * From Product", nativeQuery = true)
 	public List<Product> findAllProducts();
+	
+	@Query(value="Select * From Product where ManufacturerID=:id", nativeQuery = true)
+	public List<Product> findProductByManufacturerID(Integer id);
 }
