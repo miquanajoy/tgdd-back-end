@@ -45,6 +45,7 @@ public class ProductService {
 	{
 		
 		List<Product> proList = productReposit.findAllProducts();
+		
 		for(Product prod: proList) 
 		{
 			System.out.println(prod.toString1());
@@ -64,6 +65,12 @@ public class ProductService {
 	{
 		List<Product> prodList = productReposit.findProductByCategory(id);
 		return prodList;
+	}
+	
+	public List<Product> findProductByBrand(Integer id) {
+		List<Product> prodList = productReposit.findProductByBrand(id);
+		return prodList;
+		
 	}
 	
 }

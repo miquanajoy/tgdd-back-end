@@ -739,9 +739,17 @@ public class AdminController {
 	
 	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/products-management/view-products")
-	public List<Product> viewProducts(ModelAndView model) {
+	public List<Product> viewProducts(ModelAndView model, @RequestParam(required = false) Integer category) {
 		
-		List<Product> productList = productServ.showAllProducts();
+		
+		List<Product> productList = null;
+		
+		if (category == null) {
+			productList = productServ.showAllProducts();
+		} else {
+			productList = productServ.findProductByCategory(category);
+			System.out.print(category);
+		}
 
 		for(Product pro: productList) 
 		{
@@ -749,6 +757,15 @@ public class AdminController {
 			pro.setImageToShow(encoder64);
 		}
 		return productList;
+	}
+	
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/products-management/view-category")
+	public List<Category> viewByCategory(ModelAndView model) {
+		
+		List<Category> categoryList = cateServ.getAllCategorys();
+		return categoryList;
+		
 	}
 	
 	

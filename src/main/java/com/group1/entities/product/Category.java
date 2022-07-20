@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 //fixed
 @Entity
 @Table(name = "category")
@@ -40,12 +43,15 @@ public class Category implements Serializable{
 	@Column(name = "Enabled")
 	private Boolean enabled;
 	
+	@Transient
 	@OneToMany(mappedBy = "categoryID")
 	private Set<Product> ProductList;
 	
+	@Transient
 	@OneToMany(mappedBy = "categoryID")
 	private Set<Manufacturer> brandList;
 	
+	@Transient
 	@OneToMany(mappedBy = "categoryID")
 	private Set<ProductTechSpecs> specList;
 	
@@ -66,6 +72,18 @@ public class Category implements Serializable{
 		ProductList = productList;
 		this.brandList = brandList;
 		this.specList = specList;
+	}
+	
+	public Category(Integer categoryID, Boolean isParent, Integer level, byte[] icon, String categoryName,
+			Integer parentID, Boolean enabled) {
+		super();
+		this.categoryID = categoryID;
+		this.isParent = isParent;
+		this.level = level;
+		this.icon = icon;
+		this.categoryName = categoryName;
+		this.parentID = parentID;
+		this.enabled = enabled;
 	}
 
 	public Integer getCategoryID() {
