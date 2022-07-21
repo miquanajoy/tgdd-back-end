@@ -33,7 +33,11 @@
                             <div class="col-sm-7">
                                <!--  <a href="LogoutController" class="btn btn-secondary"><span>Logout</span></a>	 -->
                                 <a th:href="@{/admin/products-management/create-product/choose-category}" class="btn btn-success" ><i class="material-icons">&#xE147;</i> <span>Add New Product</span></a>
+                                <br>
+                               <div th:each="category: ${categoryList}">
+                                    <a th:href="@{'/admin/products-management/view-products?category=' +${category.categoryID}}" th:utext="${category.categoryName}"></a>
 
+                               </div>
                             </div>
                         </div>
                     </div>

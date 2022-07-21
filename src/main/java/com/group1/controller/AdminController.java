@@ -1,41 +1,46 @@
 package com.group1.controller;
 
-import java.io.BufferedReader;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpSession;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.boot.model.source.internal.hbm.ModelBinder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.group1.dto.Attributes;
-import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.MultiFieldsFilePathDTO;
-import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.SpecSection;
 import com.group1.dto.ColorVariantUpdateDTO;
+import com.group1.entities.user.User;
+import com.group1.entities.user.Role;
 import com.group1.entities.product.Category;
 import com.group1.entities.product.Color;
 import com.group1.entities.product.Manufacturer;
@@ -53,38 +58,42 @@ import com.group1.entities.shopping.PromoteCode;
 import com.group1.repositories.product.CategoryRepo;
 import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
-import com.group1.repositories.product.ProductRepo;
-import com.group1.repositories.shopping.PromoteCodeRepo;
+import com.group1.repositories.user.UserRepo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.group1.service.product.CategoryService;
 import com.group1.service.product.ManufacturerService;
 import com.group1.service.product.ProductService;
 import com.group1.service.product.ProductTechSpecsService;
 import com.group1.service.shopping.PromoteCodeService;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
-	
-	@Autowired
-	ProductService productServ;
-	
-	@Autowired
-	ProductRepo productRepo;
-	
-	@Autowired
-	ManufacturerService manuServ;
 	
 	@Autowired
 	PromoteCodeService promotionServ;
 	
 	@Autowired
+	ProductService productServ;
+	
+	@Autowired
+	UserRepo userRepo;
+	
+	@Autowired
+	ManufacturerService manuServ;
+	
+	@Autowired
 	CategoryRepo cateRepo;
 	
+	@Autowired
+	CategoryService cateServ;
+
 	@Autowired
 	ManufacturerRepo manuRepo;
 	
@@ -95,59 +104,82 @@ public class AdminController {
 	ProductTechSpecsService specServ;
 	
 	boolean loadCateBasedSpecForm = false;
-	int promoteIndex = 0;
-	
-	//List<CategoryBasedSpecification> specFormList =new ArrayList<CategoryBasedSpecification>();
 	
 	public List<SpecSection> loadCateBasedSpecificationForm(List<ProductTechSpecs> specList) 
 	{
-		List<String> txtFile = new ArrayList<String>();
-		
 		List<SpecSection> sectionList =new ArrayList<SpecSection>();
 		List<Attributes> attrList =new ArrayList<Attributes>();
-		//CategoryBasedSpecification specForm = new CategoryBasedSpecification();
 		SpecSection section =new SpecSection();
 
 		for(ProductTechSpecs spec: specList) 
 		{
 			if(sectionList.size() == 0) 
 			{
-				section.setSectionHeader(spec.getSection());
+				section.setSection(spec.getSection());
 				section.setAttributes(attrList);
 				Attributes attr = new Attributes();
 				attr.setKey(spec.getSpecName());
-				attr.setValue("Split multiple values with ;");
+				attr.setValue("");
 				section.getAttributes().add(attr);
 				sectionList.add(section);
 				continue;
-				
 			}
 
-			if(sectionList.get(sectionList.size()-1).getSectionHeader().equals(spec.getSection()) ) 
+			if(sectionList.get(sectionList.size()-1).getSection().equals(spec.getSection()) ) 
 			{
 				Attributes attr = new Attributes();
 				attr.setKey(spec.getSpecName());
-				attr.setValue("Split multiple values with ;");
+				attr.setValue("");
 				sectionList.get(sectionList.size()-1).getAttributes().add(attr);
 			} 
 			else
 			{
 				section = new SpecSection();
-				section.setSectionHeader(spec.getSection());
+				section.setSection(spec.getSection());
 				attrList = new ArrayList<Attributes>();
 				
 				Attributes attr = new Attributes();
 				attr.setKey(spec.getSpecName());
-				attr.setValue("Split multiple values with ;");
+				attr.setValue("");
 				attrList.add(attr);
 				section.setAttributes(attrList);
 				sectionList.add(section);
 			}
-			
-			
+		}
+		return sectionList;
+	}
+	
+	public String convertToJsonString(Object objectToConvert) 
+	{
+		String jsonConverted = "";
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		mapper.registerModule(new JavaTimeModule());
+		try {
+			jsonConverted = mapper.writeValueAsString(objectToConvert);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
 		
-		return sectionList;
+		return jsonConverted;
+	}
+	
+	public List<SpecSection> convertToSpecSection(String jsonString)
+	{
+		ObjectMapper mapper = new ObjectMapper();
+		List<SpecSection> specList = new ArrayList<SpecSection>();
+		try {
+			specList = mapper.readValue(jsonString.getBytes(), 
+					new TypeReference<List<SpecSection>>() {});
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
+		
+		return specList;
 	}
 	
 	public LocalDateTime converttoLocalDateTime(LocalDateTime toConvertTime) 
@@ -160,9 +192,54 @@ public class AdminController {
 		
 		LocalDateTime finalFormatedTime = LocalDateTime.parse(formatedDateTime, dtf); 
 		
-		System.out.println("Formatted end time in objec:"+finalFormatedTime);
+		System.out.println("Formatted end time in object:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
+	
+	@GetMapping("/home")
+	public String home() {
+		return "index";
+	}
+	
+	@GetMapping("")
+	public String viewHomePage() {
+		return "index";
+	}
+	
+	@GetMapping("/login")
+	public ModelAndView showLoginPage() {
+
+		return new ModelAndView("LoginPage");
+	}
+	
+	
+	@PostMapping("/loginAction") 
+	  public ModelAndView checkLogin(@ModelAttribute("login") User user, HttpSession session) {
+	  
+		  ModelAndView model =new ModelAndView();
+		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
+			  if (userdata != null) 
+			  {   
+				  Long createdTime= session.getCreationTime();
+				  System.out.println("Session created at:" + createdTime);
+				  session.setMaxInactiveInterval(60*30);
+				  int sessionage= session.getMaxInactiveInterval();
+				  System.out.println("Session will self-destroy in:" + sessionage);
+				  
+				  if (userdata.getRoleId().equals("1")) 
+				  {
+					  model.setViewName("index");
+					  return model; 
+				  }
+				  model.setViewName("ProductView");
+				  
+				  return model; 
+				  
+	          } 
+			  else 	          
+	        	 return model; 
+	          
+	  }
 	
 	@GetMapping("/products-management/create-product/choose-category")
 	public ModelAndView chooseProductCategory(ModelAndView model) 
@@ -176,37 +253,6 @@ public class AdminController {
 		return model;
 	}
 	
-	/*String json = "";
-	ObjectMapper mapper = new ObjectMapper();
-	mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-	try {
-		json = mapper.writeValueAsString(specFormList.get(0));
-	} catch (JsonProcessingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	Product p= productRepo.findByProductID("SSGN1234");
-	ProductSpecification pSpec = new ProductSpecification();
-	pSpec.setProductID("SSGN1234");
-	pSpec.setProductSpecifications(json);
-	
-	p.setSpecifications(pSpec);
-	productRepo.save(p);
-	
-	Product newP= productRepo.findByProductID("SSGN1234");
-	try {
-		currSpec = mapper.readValue(newP.getSpecifications().getProductSpecifications().getBytes(), CategoryBasedSpecification.class);
-		System.out.println(currSpec.toString().replace("[", "").replace("]", "") );
-	} catch (JsonParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (JsonMappingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}*/
 	
 	@GetMapping("/products-management/create-product/step-1")
 	public ModelAndView AddProductStep1(ModelAndView model, @ModelAttribute("Categorychosen") String catechosen
@@ -218,10 +264,10 @@ public class AdminController {
 		String Exclusive = "";
 		String Enabled = "";
 		int categoryID = 0;
+		String cateName = "";
 		List<Category> categoryList = cateRepo.findAll();
-		List<Manufacturer> manuList = manuRepo.findAll();
 		List<Color> colorList = colorRepo.findAll();
-		//List<ProductTechSpecs> specList = new ArrayList<ProductTechSpecs>();
+		List<ProductTechSpecs> specList = new ArrayList<ProductTechSpecs>();
 		MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
 		List<ProductColorVariant> colorInputFormList = new ArrayList<ProductColorVariant>();
 		for(Category cate: categoryList) 
@@ -229,18 +275,20 @@ public class AdminController {
 			if(cate.getCategoryName().equals(catechosen) ) 
 			{
 				categoryID = cate.getCategoryID();
+				cateName = cate.getCategoryName();
 			}
 		}
 		productInputForm.setCategoryID(categoryID);
-		/*specList = specServ.findAllSpecsByCateID(categoryID);
+		
+		List<Manufacturer> manuList = manuServ.getAllCateBrands(categoryID);
+		
+		specList = specServ.findAllSpecsByCateID(categoryID);
 		List<SpecSection> newSpecList = loadCateBasedSpecificationForm(specList);
 		for(SpecSection spec : newSpecList) 
 		{
 			System.out.println(spec.toString());
 		}
-		ProductSpecification specification = new ProductSpecification();
-		productInputForm.setSpecifications(specification);
-		productInputForm.setSpecList(newSpecList);*/
+		productInputForm.setSpecList(newSpecList);
 		ProductArticle article = new ProductArticle();
 		productInputForm.setArticle(article);
 		
@@ -253,16 +301,25 @@ public class AdminController {
 			}
 		
 		}
+
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime limit = now.plusMonths(2);
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
+		
+		String formatedNowTime = now.format(dtf);
+		String formatedLimitTime = limit.format(dtf);
 		
 		ProductVariant variant = new ProductVariant();
 		productInputForm.setVariant(variant);
 		
 		model.addObject("ProductInputForm", productInputForm);
 		model.setViewName("ProductCreate");
-		model.addObject("CateChosen", catechosen);
 		model.addObject("CheckExclusive", Exclusive);
 		model.addObject("CheckEnabled", Enabled);
-		//model.addObject("SpecInputForm", specInputForm);
+		model.addObject("CategoryName", cateName);
+		model.addObject("MinDateTime", formatedNowTime);
+		model.addObject("MaxDateTime", formatedLimitTime);
 		model.addObject("ManuList", manuList);
 		model.addObject("ColorList", colorList);
 		model.addObject("MultipartField", multi);
@@ -281,13 +338,158 @@ public class AdminController {
 		
 		if(enabled.contains("Enable")) productForm.setEnabled(true);
 		if(enabled.contains("Disable")) productForm.setEnabled(false);
-
+		
 		if(discountSetter.contains("Enable")) productForm.getDiscount().setEnabled(true);
 		if(discountSetter.contains("Disable"))  productForm.getDiscount().setEnabled(false);
 		
 		System.out.println("Processing create product "+productForm.toString());
 		
-		int count = 0;
+		int errorCount = 0;
+		
+		Product checkProduct = productServ.getProductByID(productForm.getProductID());
+		if( checkProduct != null) 
+		{
+			System.out.println("Product ID already existed");
+			errorCount +=1;
+			String duplicateProductIDWarning = "Product ID already existed";
+			model.addObject("dupProductID", duplicateProductIDWarning);
+		}
+		
+		if(!productForm.getVariant().getProductOriginalIdentifier().isBlank()) {
+			if(productForm.getVariant().getProductOriginalIdentifier().equals(productForm.getProductID())) 
+			{
+				System.out.println("You can not refer this product to itself");
+				errorCount +=1;
+				String selfReferredProductIDWarning = "You can not refer this product to itself";
+				model.addObject("selfReferProductID", selfReferredProductIDWarning);
+			}
+			else 
+			{
+				checkProduct = productServ.getProductByID(productForm.getVariant().getProductOriginalIdentifier());
+				if(checkProduct == null) 
+				{
+					System.out.println("Original Product ID not found");
+					errorCount +=1;
+					String notKnownProductIDWarning = "Original Product ID not found";
+					model.addObject("notKnownProductID", notKnownProductIDWarning);
+				}
+			}
+		}
+		
+		boolean foundDup = false;
+		if(productForm.getColorVariantInputList() != null && productForm.getColorVariantInputList().size() >1) 
+		{
+			Integer prevID = 0;
+			Integer currID =0;
+			
+			for(ProductColorVariant colorVar: productForm.getColorVariantInputList()) 
+			{
+				if(prevID == 0) 
+				{
+					prevID =  colorVar.getColorID();
+					currID = colorVar.getColorID();
+					continue;
+				}
+				currID = colorVar.getColorID();
+				if(currID == prevID) 
+				{
+					foundDup = true;
+					break;
+				}
+				prevID = currID;
+			
+			}
+			if(foundDup) 
+			{
+				System.out.println("Duplicating color found");
+				errorCount +=1;
+				String duplicateColorWarning = "Duplicating color";
+				model.addObject("dupColor", duplicateColorWarning);
+			}
+		}
+		
+		if(productForm.getDiscount().getDiscountedPrice() != null && productForm.getDiscount().getDiscountPercent() != null 
+		&& productForm.getDiscount().getStartDateInput() != null  && productForm.getDiscount().getEndDateInput() != null 
+		&& !discountSetter.isEmpty()) 
+		{
+			if(productForm.getDiscount().getStartDateInput().isEqual(productForm.getDiscount().getEndDateInput())) 
+			{
+				System.out.println("Discount start date and end date cannot be the same");
+				errorCount +=1;
+				String startEqualsEnd = "Discount start date and end date cannot be the same";
+				model.addObject("StartEqualsEnd", startEqualsEnd);
+			}
+			else if(productForm.getDiscount().getStartDateInput().isAfter(productForm.getDiscount().getEndDateInput())) 
+			{
+				System.out.println("Discount start date cannot be after to end date");
+				errorCount +=1;
+				String starAfterEnd = "Discount start date and end date cannot be the same";
+				model.addObject("StarAfterEnd", starAfterEnd);
+			}
+		}
+		
+		int emptyCount = 0;
+		boolean breakLoop= false;
+		List<Integer> attrDeleteList = new ArrayList<Integer>();
+		int itemNumber = 0;
+		for(SpecSection spec : productForm.getSpecList()) 
+		{
+			for(Attributes attr: spec.attributes) 
+			{
+				if(attr.getValue().toString().isBlank()) 
+				{
+					if(emptyCount == 5) 
+					{
+						breakLoop = true;
+						break;
+					}
+					emptyCount+=1;
+					attrDeleteList.add(itemNumber);
+					continue;
+				}
+				itemNumber +=1;
+				if(breakLoop) break;
+			}
+		}
+		
+		if(emptyCount >=5) 
+		{
+			System.out.println("5 or more specification attributes empty");
+			errorCount +=1;
+			String over5AttrEmptyWarning = "You can not leave 5 or more specification attributes empty";
+			model.addObject("over5AttrEmpty", over5AttrEmptyWarning);
+		}
+		
+		if(errorCount >0 ) {
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime limit = now.plusMonths(2);
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
+			
+			String formatedNowTime = now.format(dtf);
+			String formatedLimitTime = limit.format(dtf);
+			List<Manufacturer> manuList = manuServ.getAllCateBrands(productForm.getCategoryID());
+			
+			if(productForm.getColorVariantInputList().size() >0) 
+			{
+				List<Color> colorList = colorRepo.findAll();
+				model.addObject("ColorList", colorList);
+			}
+			
+			MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
+			model.addObject("CheckExclusive", exclusive);
+			model.addObject("CheckEnabled", enabled);
+			model.addObject("ManuList", manuList);
+			model.addObject("MinDateTime", formatedNowTime);
+			model.addObject("MaxDateTime", formatedLimitTime);
+			model.addObject("MultipartField", multi);
+			model.addObject("ProductInputForm", productForm);
+			model.setViewName("ProductCreate");
+		}
+		
+		if(errorCount == 0) 
+		{
+			int count = 0;
 			System.out.println("MultipartFile has "+ filepath.getImageFile().length);
 			for(MultipartFile filePart: filepath.getImageFile()) 
 			{
@@ -348,56 +550,58 @@ public class AdminController {
 			
 		}
 		
-		int countEl = 0;
-		int countColor = 0;
-		Set<ProductColorVariant> colorSet = new  HashSet<ProductColorVariant>();
-		productForm.setColorVariant(colorSet);
-		for(Iterator<ProductColorVariant> t = productForm.getColorVariantInputList().iterator(); t.hasNext();) 
+		if(!foundDup)
 		{
-			ProductColorVariant el = t.next();
-			countEl +=1;
-			if(el.getFileDatas()[0].getOriginalFilename().isEmpty()) 
+			int countEl = 0;
+			int countColor = 0;
+			Set<ProductColorVariant> colorSet = new  HashSet<ProductColorVariant>();
+			productForm.setColorVariant(colorSet);
+			for(Iterator<ProductColorVariant> t = productForm.getColorVariantInputList().iterator(); t.hasNext();) 
 			{
-				t.remove();
-			}
-			else 
-			{
-				System.out.println("MultipartFile of color no. "+ countEl+" has "+ el.getFileDatas().length);
-				for(MultipartFile file: el.getFileDatas()) 
+				ProductColorVariant el = t.next();
+				countEl +=1;
+				if(el.getFileDatas()[0].getOriginalFilename().isEmpty()) 
 				{
-					countColor +=1;
-					String contentType = file.getContentType();
-					System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
-					String fileName = file.getOriginalFilename();
-					System.out.println("Name of multipartFile file no. "+ countColor + " :"+ fileName);
-					ProductColorVariant toSaveEl = new ProductColorVariant();
-					try {
-						toSaveEl.setImage(file.getBytes());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					t.remove();
+				}
+				else 
+				{
+					System.out.println("MultipartFile of color no. "+ countEl+" has "+ el.getFileDatas().length);
+					for(MultipartFile file: el.getFileDatas()) 
+					{
+						countColor +=1;
+						String contentType = file.getContentType();
+						System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
+						String fileName = file.getOriginalFilename();
+						System.out.println("Name of multipartFile file no. "+ countColor + " :"+ fileName);
+						ProductColorVariant toSaveEl = new ProductColorVariant();
+						try {
+							toSaveEl.setImage(file.getBytes());
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						toSaveEl.setImageType(contentType);
+						toSaveEl.setProductID(pID);
+						toSaveEl.setColorID(el.getColorID());
+						toSaveEl.setProductID(pID);
+						productForm.getColorVariant().add(toSaveEl);
 					}
-					toSaveEl.setImageType(contentType);
-					toSaveEl.setProductID(pID);
-					toSaveEl.setColorID(el.getColorID());
-					toSaveEl.setProductID(pID);
-					productForm.getColorVariant().add(toSaveEl);
 				}
 			}
+			if(productForm.getColorVariant().size() ==0) productForm.setColorVariant(null);
 		}
-		if(productForm.getColorVariant().size() ==0) productForm.setColorVariant(null);
-	
-		if(productForm.getDiscount().getDiscountedPrice() == null || productForm.getDiscount().getDiscountPercent() == null
-				 || productForm.getDiscount().getEndDateInput() == null) productForm.setDiscount(null);
+		
+		if(productForm.getDiscount().getDiscountedPrice() == null || productForm.getDiscount().getDiscountPercent() == null 
+				|| productForm.getDiscount().getStartDateInput() == null  || productForm.getDiscount().getEndDateInput() == null 
+				 || discountSetter.isEmpty()) productForm.setDiscount(null);
 		else 
-		{
-			LocalDateTime currTime = LocalDateTime.now();
-			
+		{	
 			productForm.getDiscount().setProductID(pID);
-			LocalDateTime startConvert = converttoLocalDateTime(currTime);
+			LocalDateTime startConvert = converttoLocalDateTime(productForm.getDiscount().getStartDateInput());
 			LocalDateTime endConvert = converttoLocalDateTime(productForm.getDiscount().getEndDateInput());
 			productForm.getDiscount().setEndDate(endConvert);
 			productForm.getDiscount().setStartDate(startConvert);
+			
 		}
 		
 		int count2 = 0;
@@ -421,7 +625,6 @@ public class AdminController {
 				try {
 					featureEl.setImage(featureFile.getBytes());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				featureEl.setProductID(pID);
@@ -430,48 +633,50 @@ public class AdminController {
 				
 			}
 		}
-			/*int emptyCount = 0;
-			boolean breakLoop= false;
-			for(SpecSection spec : productForm.getSpecList()) 
+			if(emptyCount <5)
 			{
-				for(Iterator<Attributes> attr = spec.getAttributes().iterator(); attr.hasNext();) 
-				{
-					Attributes att = attr.next();
-					if(att.getValue().toString().contains("Split multiple values with ;")) 
+				if(emptyCount >0) {
+					int delCount = 0;
+					for(Integer delItem: attrDeleteList) 
 					{
-						if(emptyCount == 5) 
-						{
-							breakLoop = true;
-							break;
+						boolean breakLoop1 = false;
+					
+						for(SpecSection section : productForm.specList) 
+						{	
+							for(Iterator<Attributes>  it = section.attributes.iterator(); it.hasNext();) 
+							{
+								Attributes item = it.next();
+								if(delCount == delItem) 
+								{
+									it.remove();
+									delCount = 0;
+									breakLoop1 =true;
+									break;
+								}
+								delCount +=1;
+							}
+							if(breakLoop1) break;	
 						}
-						attr.remove();
-						emptyCount+=1;
-						continue;
 					}
-					if(att.getValue().toString().contains(";")) 
-					{
-						String[] splitArr = att.getValue().toString().split(";");
-						att.setValue(splitArr);
-					}
-					if(breakLoop) break;
 				}
+				for(SpecSection sector : productForm.specList) 
+				{
+					for(Attributes attr: sector.attributes) 
+					{
+						if(attr.getValue().toString().contains(";")) 
+						{
+							String[] split = attr.getValue().toString().split(";");
+							attr.setValue(split);
+						}
+					}
+				}
+				
+				String json = convertToJsonString(productForm.getSpecList());
+				ProductSpecification specification = new ProductSpecification();
+				productForm.setSpecifications(specification);
+				productForm.getSpecifications().setProductSpecifications(json);
+				productForm.getSpecifications().setProductID(pID);
 			}
-			
-			if(emptyCount >=5) productForm.setSpecifications(null);
-			else
-			{
-			String json = "";
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-			try {
-				json = mapper.writeValueAsString(productForm.getSpecList());
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			productForm.getSpecifications().setProductSpecifications(json);
-			}*/
 		
 		
 		int count3 = 0;
@@ -514,40 +719,55 @@ public class AdminController {
 		else productForm.getVariant().setProductVariantID(pID);
 		
 		System.out.println("At final create product step"+productForm.toString());
-		//productRepo.save(productForm);
-		//model.addObject("ProductInputForm1", productForm);
+		
+		
+		productServ.saveNewProduct(productForm);
 		model.setViewName("redirect:/admin/products-management/view-products");
+		model.addObject("dupProductID", null);
+		model.addObject("selfReferProductID", null);
+		model.addObject("notKnownProductID", null);
+		model.addObject("dupColor", null);
+		model.addObject("over5AttrEmpty", null);
+		model.addObject("StartEqualsEnd", null);
+		model.addObject("StartAfterEnd", null);
+		}
 		//model.setViewName("Result");
-		//model.addObject("SpecInputForm1", specform);
 		//model.addObject("ColorList", colorList);
 		//model.addObject("CategoryList", categoryList);
 		return model;
 	}
 	
-	@GetMapping("/products-management/view-products")
-	public ModelAndView viewProducts(ModelAndView model) {
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/products-management/view-products")
+	public List<Product> viewProducts(ModelAndView model, @RequestParam(required = false) Integer category) {
 		
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showAllProducts();
+		
+		List<Product> productList = null;
+		
+		if (category == null) {
+			productList = productServ.showAllProducts();
+		} else {
+			productList = productServ.findProductByCategory(category);
+			System.out.print(category);
+		}
+
 		for(Product pro: productList) 
 		{
 			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
 			pro.setImageToShow(encoder64);
 		}
-		model.addObject("ProductList", productList);
-		model.addObject("ImgPath", path);
-		model.setViewName("ProductView");
-		return model;
+		return productList;
 	}
 	
-	@GetMapping("/promotions-management/view-promotions")
-	public ModelAndView viewPromotions(ModelAndView model) {
-	
-		List<PromoteCode> promoteList = promotionServ.getAllPromotes();
-		model.addObject("PromoteList", promoteList);
-		model.setViewName("Promoteview");
-		return model;
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/products-management/view-category")
+	public List<Category> viewByCategory(ModelAndView model) {
+		
+		List<Category> categoryList = cateServ.getAllCategorys();
+		return categoryList;
+		
 	}
+	
 	
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {
@@ -559,15 +779,17 @@ public class AdminController {
 	
 	@GetMapping("/products-management/view-or-update-product/step-2/{proID}")
 	public ModelAndView viewOrUpdateProducts(ModelAndView model, @PathVariable("proID") String productIdentity, 
-			@ModelAttribute("AdditionalColorVarNum") int additionalColor) {
+			@ModelAttribute("AdditionalColorVarNum") String additionColor) {
 		
-		Product p = productRepo.findByProductID(productIdentity);
+		Integer additionalColor = Integer.valueOf(additionColor);
+		//Product p = productRepo.findByProductID(productIdentity);
+		Product p = productServ.getProductByID(productIdentity);
 		MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
 		List<ProductColorVariant> colorInputFormList = new ArrayList<ProductColorVariant>();
-		List<Manufacturer> manuList = manuRepo.findAll();
 		List<Color> colorList = colorRepo.findAll();
+		List<Color> backUpColorList = new ArrayList<Color>();
+		backUpColorList.addAll(colorList);
 		List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
-		System.out.println("Before update:"+p.toString());
 		p.setImageToShow(Base64.getEncoder().encodeToString(p.getImage()) );
 		
 		if(p.getArticle() == null) 
@@ -586,15 +808,20 @@ public class AdminController {
 		
 		if(p.getColorVariant() != null) 
 		{
+			Integer setColorID = 0;
+			Integer colorListColorID = 0;
 			for(Iterator<ProductColorVariant> t = p.getColorVariant().iterator(); t.hasNext();) 
 			{ 
 				ProductColorVariant el = t.next();
+				setColorID = el.getColorID();
 				el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				
 				if(colorVarUpdateList.size() == 0) {
 					ColorVariantUpdateDTO colUpdateForm = new ColorVariantUpdateDTO();
 					colUpdateForm.setForColorID(el.getColorID());
 					colorVarUpdateList.add(colUpdateForm);
 				}
+				
 				int countOccur = 0;
 				if(colorVarUpdateList.size() > 0) {
 					for(ColorVariantUpdateDTO obj: colorVarUpdateList) {
@@ -608,18 +835,36 @@ public class AdminController {
 						colorVarUpdateList.add(colUpdateForm);
 					}
 				}
+				
+				if(additionalColor >0) 
+				{	
+					if(setColorID != colorListColorID)
+					{
+						for(Iterator<Color>  col = colorList.iterator(); col.hasNext();) 
+						{
+							Color colorCheck = col.next();
+							if(colorCheck.getColorID() == el.getColorID()) 
+							{
+								colorListColorID = colorCheck.getColorID();
+								col.remove();
+								break;
+							}
+						}	
+					}
+				}
 			}
 			p.setColorVarUpdateList(colorVarUpdateList);
-		}
-		
-		if(p.getDiscount() == null) 
-		{
-			ProductDiscount discountObj = new ProductDiscount();
-			p.setDiscount(discountObj);
-		}
-		else 
-		{
-			p.getDiscount().setEndDateInput(p.getDiscount().getEndDate());
+			for(ColorVariantUpdateDTO updateEL: p.getColorVarUpdateList()) 
+			{	
+				for(Color colour: backUpColorList) 
+				{
+					if(colour.getColorID() == updateEL.getForColorID()) 
+					{
+						updateEL.setForColorName(colour.getColorName());
+						break;
+					}
+				}
+			}
 		}
 		
 		if(additionalColor >0) {
@@ -631,6 +876,17 @@ public class AdminController {
 				}
 			
 			}
+		
+		if(p.getDiscount() == null) 
+		{
+			ProductDiscount discountObj = new ProductDiscount();
+			p.setDiscount(discountObj);
+		}
+		else 
+		{
+			p.getDiscount().setStartDateInput(p.getDiscount().getStartDate());
+			p.getDiscount().setEndDateInput(p.getDiscount().getEndDate());
+		}
 		
 		if(p.getFeatures() != null)
 		{
@@ -657,19 +913,26 @@ public class AdminController {
 			p.setVariant(variantObj);
 		}
 		
-		if(p.getSpecifications() == null) 
+		if(p.getSpecifications() != null) 
 		{
-			List<ProductTechSpecs> specList = specServ.findAllSpecsByCateID(p.getCategoryID());
-			List<SpecSection> formattedSpecList = loadCateBasedSpecificationForm(specList);
-			ProductSpecification specObj = new ProductSpecification();
-			p.setSpecifications(specObj);
-			p.setSpecList(formattedSpecList);
-			p.setSpecifications(specObj);
+			List<SpecSection> specShow = convertToSpecSection(p.getSpecifications().getProductSpecifications());
+			p.setSpecList(specShow);
 		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime limit = now.plusMonths(2);
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
+		
+		String formatedNowTime = now.format(dtf);
+		String formatedLimitTime = limit.format(dtf);
+		System.out.println("Before update:"+p.toString());
 		model.addObject("ProductUpdateForm", p);
 		model.addObject("MultiField", multi);
-		model.addObject("ManuList", manuList);
 		model.addObject("ColorList", colorList);
+		model.addObject("MinDateTime", formatedNowTime);
+		model.addObject("MaxDateTime", formatedLimitTime);
+		model.addObject("AdditionalColor", String.valueOf(additionalColor));
 		model.setViewName("ProductDetailsOrUpdate");
 		return model;
 	}
@@ -678,17 +941,180 @@ public class AdminController {
 	public ModelAndView UpdateProduct(ModelAndView model, @ModelAttribute("ProductUpdateForm") Product toUpdateForm,
 			@ModelAttribute("CheckExclusive") String exclusiveSetter, @ModelAttribute("CheckEnable") String enableSetter, 
 			@ModelAttribute("MultiField") MultiFieldsFilePathDTO filepath, 
-			@ModelAttribute("CheckDiscountEnable") String discountSetter) {
+			@ModelAttribute("CheckDiscountEnable") String discountSetter, 
+			@ModelAttribute("AddColor") String addCountColor) {
 		
-		//System.out.println(p.toString());
+			Integer countAdditionColors = Integer.valueOf(addCountColor);
+		
 		if(exclusiveSetter.contains("Exclusive")) toUpdateForm.setExclusive(true);
 		if(exclusiveSetter.contains("NotExclusive")) toUpdateForm.setExclusive(false);
 		
 		if(enableSetter.contains("Enable")) toUpdateForm.setEnabled(true);
 		if(enableSetter.contains("Disable")) toUpdateForm.setEnabled(false);
 		
-		Product compareProduct = productRepo.findByProductID(toUpdateForm.getProductID());
+		if(discountSetter.contains("Enable")) toUpdateForm.getDiscount().setEnabled(true);
+		if(discountSetter.contains("Disable"))  toUpdateForm.getDiscount().setEnabled(false);
+		int errorCount = 0;
+		Product compareProduct = productServ.getProductByID(toUpdateForm.getProductID());
 		
+		//List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
+		List<Color> colorList  = colorRepo.findAll();
+		List<Color> backUpColorList  = new ArrayList<Color>();
+		backUpColorList.addAll(colorList);
+		if(toUpdateForm.getColorVariantInputList() != null && toUpdateForm.getColorVariantInputList().size() >1)
+		{
+			Integer prevID = 0;
+			Integer currID =0;
+			boolean foundDup = false;
+			for(ProductColorVariant colorVar: toUpdateForm.getColorVariantInputList()) 
+			{
+				if(prevID == 0) 
+				{
+					prevID =  colorVar.getColorID();
+					currID = colorVar.getColorID();
+					continue;
+				}
+				currID = colorVar.getColorID();
+				if(currID == prevID) 
+				{
+					foundDup = true;
+					break;
+				}
+				prevID = currID;
+			
+			}
+			if(foundDup) 
+			{
+				System.out.println("Duplicating color found");
+				errorCount +=1;
+				String duplicateColorWarning = "Duplicating color";
+				model.addObject("dupColor1", duplicateColorWarning);
+			}	
+		}
+
+		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null 
+				&& toUpdateForm.getDiscount().getStartDateInput() != null  && toUpdateForm.getDiscount().getEndDateInput() != null 
+				&& !discountSetter.isEmpty()) 
+				{
+					if(toUpdateForm.getDiscount().getStartDateInput().isEqual(toUpdateForm.getDiscount().getEndDateInput())) 
+					{
+						System.out.println("Discount start date and end date cannot be the same");
+						errorCount +=1;
+						String startEqualsEnd = "Discount start date and end date cannot be the same";
+						model.addObject("StartEqualsEnd1", startEqualsEnd);
+					}
+					else if(toUpdateForm.getDiscount().getStartDateInput().isAfter(toUpdateForm.getDiscount().getEndDateInput())) 
+					{
+						System.out.println("Discount start date cannot be after to end date");
+						errorCount +=1;
+						String startAfterEnd = "Discount start date and end date cannot be the same";
+						model.addObject("StartAfterEnd1", startAfterEnd);
+					}
+				}
+		
+		if(errorCount >0) 
+		{
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime limit = now.plusMonths(2);
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
+			
+			String formatedNowTime = now.format(dtf);
+			String formatedLimitTime = limit.format(dtf);
+			
+			if(compareProduct.getColorVariant() != null) 
+			{
+					//Integer setColorID = 0;
+					//Integer colorListColorID = 0;
+				for(Iterator<ProductColorVariant> t = compareProduct.getColorVariant().iterator(); t.hasNext();) 
+				{ 
+					ProductColorVariant el = t.next();
+					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				}
+				toUpdateForm.setColorVariant(compareProduct.getColorVariant());
+					
+					/*for(ColorVariantUpdateDTO updateEL: toUpdateForm.getColorVarUpdateList()) 
+					{	
+						for(Color colour: backUpColorList) 
+						{
+							if(colour.getColorID() == updateEL.getForColorID()) 
+							{
+								updateEL.setForColorName(colour.getColorName());
+								break;
+							}
+						}
+					}*/
+			}
+				
+			if(countAdditionColors >0)
+			{
+				if(toUpdateForm.getColorVariant() != null && countAdditionColors >0) 
+				{
+					for(Iterator<Color> t = colorList.iterator(); t.hasNext();) 
+					{
+						Color ele = t.next();
+						for(ProductColorVariant colorVariant : toUpdateForm.getColorVariant()) 
+						{
+							if(ele.getColorID() == colorVariant.getColorID()) 
+							{
+								t.remove();
+								break;
+							}
+						}
+					}
+				}
+				model.addObject("ColorList", colorList);
+			}
+			
+			if(compareProduct.getSpecifications() != null) 
+			{
+				List<SpecSection> specShow = convertToSpecSection(compareProduct.getSpecifications().getProductSpecifications());	
+				toUpdateForm.setSpecList(specShow);
+			}
+			
+			if(compareProduct.getCameraShots() != null) {
+				for(Iterator<ProductCameraShot> t = compareProduct.getCameraShots().iterator(); t.hasNext();) 
+				{ 
+					ProductCameraShot el = t.next();
+					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				}
+				toUpdateForm.setCameraShots(compareProduct.getCameraShots());
+			}
+			
+			if(compareProduct.getFeatures() != null)
+			{
+				for(Iterator<ProductFeature> t = compareProduct.getFeatures().iterator(); t.hasNext();) 
+				{ 
+					ProductFeature el = t.next();
+					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				}
+				toUpdateForm.setFeatures(compareProduct.getFeatures());
+			}
+			
+			
+			if(compareProduct.getUnboxing() != null) 
+			{
+				for(Iterator<ProductUnboxingReview> t = compareProduct.getUnboxing().iterator(); t.hasNext();) 
+				{ 
+					ProductUnboxingReview el = t.next();
+					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
+				}
+				toUpdateForm.setUnboxing(compareProduct.getUnboxing());
+			}
+			//System.out.println("Update product after error "+ toUpdateForm);
+			MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
+			model.addObject("AdditionalColor", String.valueOf(countAdditionColors));
+			model.addObject("MinDateTime", formatedNowTime);
+			model.addObject("MaxDateTime", formatedLimitTime);
+			model.addObject("ProductUpdateForm", toUpdateForm);
+			model.addObject("MultiField", multi);
+			model.setViewName("ProductDetailsOrUpdate");
+		}
+		
+
+		if(errorCount ==0) 
+		{
+			
 		int count = 0;
 		if(!filepath.getImageFile()[0].getOriginalFilename().isEmpty()) {
 			System.out.println("MultipartFile has "+ filepath.getImageFile().length);
@@ -716,12 +1142,27 @@ public class AdminController {
 		
 		String pID = toUpdateForm.getProductID();
 		
-		if(toUpdateForm.getArticle().getArticleUrl().isEmpty()) 
+		if(compareProduct.getArticle() == null) {
+			if(toUpdateForm.getArticle().getArticleUrl().isEmpty()) 
+			{
+				System.out.println("Article is null");
+				toUpdateForm.setArticle(null);
+			} 
+			else toUpdateForm.getArticle().setProductID(pID);
+		}
+		else
 		{
-			System.out.println("Article is null");
-			toUpdateForm.setArticle(null);
-		} 
-		else toUpdateForm.getArticle().setProductID(pID);
+			String newArticleUrl = toUpdateForm.getArticle().getArticleUrl();
+			toUpdateForm.setArticle(compareProduct.getArticle());
+			if(toUpdateForm.getArticle().getArticleUrl().isEmpty()) System.out.println("Update article URL is null");
+			else
+			{	
+				System.out.println("Update article URL is not null");
+				if(newArticleUrl.equals(toUpdateForm.getArticle().getArticleUrl())) 
+				toUpdateForm.getArticle().setArticleUrl(newArticleUrl);
+			}
+			
+		}
 		
 		int count1= 0;
 		if(filepath.getCameraShotsFile()[0].getOriginalFilename().isEmpty() && compareProduct.getCameraShots() == null) 
@@ -730,7 +1171,7 @@ public class AdminController {
 			toUpdateForm.setCameraShots(null);
 		} 
 		
-		if(filepath.getCameraShotsFile() !=null)
+		if(!filepath.getCameraShotsFile()[0].getOriginalFilename().isBlank())
 		{
 			if(compareProduct.getCameraShots() == null) {
 				Set<ProductCameraShot> cameraSet = new  HashSet<ProductCameraShot>();
@@ -741,7 +1182,6 @@ public class AdminController {
 			System.out.println("MultipartFile for cameraShot has "+ filepath.getCameraShotsFile().length);
 			for(MultipartFile cameraFile: filepath.getCameraShotsFile()) 
 			{
-				if(!cameraFile.getOriginalFilename().isEmpty()) {
 					count1 +=1;
 					String contentType = cameraFile.getContentType();
 					System.out.println("Type of multipartFile file no. "+ count1 + " :"+ contentType);
@@ -756,7 +1196,6 @@ public class AdminController {
 					camShot.setImageType(contentType);
 					camShot.setProductID(pID);
 					toUpdateForm.getCameraShots().add(camShot);
-				}
 			}
 			
 		}	
@@ -773,14 +1212,12 @@ public class AdminController {
 			toUpdateForm.setColorVariant(compareProduct.getColorVariant());
 			for(ColorVariantUpdateDTO update: toUpdateForm.getColorVarUpdateList()) 
 			{
-				
-				System.out.println("Update MultipartFile of color ID. "+ update.getForColorID()
-				+" has "+ update.getUpdateFileDatas().length);
-				if(update.getUpdateFileDatas() != null) 
+				if(!update.getUpdateFileDatas()[0].getOriginalFilename().isBlank())
 				{
+					System.out.println("Update MultipartFile of color ID. "+ update.getForColorID()
+					+" has "+ update.getUpdateFileDatas().length);
 					for(MultipartFile updateFile: update.getUpdateFileDatas()) 
 					{
-						if(!updateFile.getOriginalFilename().isEmpty()) {
 							updateCount +=1;
 							String contentType = updateFile.getContentType();
 							System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
@@ -796,7 +1233,6 @@ public class AdminController {
 							toSaveEl.setProductID(pID);
 							toSaveEl.setColorID(update.getForColorID());
 							toUpdateForm.getColorVariant().add(toSaveEl);
-						}
 					}
 					updateCount =0;
 				}
@@ -816,8 +1252,7 @@ public class AdminController {
 					System.out.println("New MultipartFile of color no. "+ countEl+" has "+ el.getFileDatas().length);
 					for(MultipartFile file: el.getFileDatas()) 
 					{
-						if(!file.getOriginalFilename().isEmpty())
-						{
+
 							countColor +=1;
 							String contentType = file.getContentType();
 							System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
@@ -834,7 +1269,6 @@ public class AdminController {
 							toSaveEl.setColorID(el.getColorID());
 							toSaveEl.setProductID(pID);
 							toUpdateForm.getColorVariant().add(toSaveEl);
-						}
 					}
 				}
 			}
@@ -842,16 +1276,30 @@ public class AdminController {
 		}
 		
 		if(toUpdateForm.getDiscount().getDiscountedPrice() == null || toUpdateForm.getDiscount().getDiscountPercent() == null
-				 || toUpdateForm.getDiscount().getEndDateInput() == null 
-				 || discountSetter.isEmpty() || discountSetter == null) toUpdateForm.setDiscount(null);
-		else 
+				|| toUpdateForm.getDiscount().getStartDateInput() == null || toUpdateForm.getDiscount().getEndDateInput() == null 
+				 || discountSetter.isEmpty() || discountSetter == null) 
+		{
+			if(compareProduct.getDiscount() == null) toUpdateForm.setDiscount(null);
+			
+			else toUpdateForm.setDiscount(compareProduct.getDiscount());
+		}
+		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null
+				 && toUpdateForm.getDiscount().getStartDateInput() == null && toUpdateForm.getDiscount().getEndDateInput() != null 
+				 && discountSetter.isEmpty() || discountSetter != null) 
 		{
 			if(compareProduct.getDiscount() == null) {
-				LocalDateTime currTime = LocalDateTime.now();
 				toUpdateForm.getDiscount().setProductID(pID);
-				LocalDateTime startConvert = converttoLocalDateTime(currTime);
-				toUpdateForm.getDiscount().setStartDate(startConvert);
 			}
+			else 
+			{
+				Integer newDiscountPrice = toUpdateForm.getDiscount().getDiscountedPrice();
+				Integer newDiscountPercent = toUpdateForm.getDiscount().getDiscountedPrice();
+				toUpdateForm.setDiscount(compareProduct.getDiscount());
+				toUpdateForm.getDiscount().setDiscountedPrice(newDiscountPrice);
+				toUpdateForm.getDiscount().setDiscountPercent(newDiscountPercent);
+			}
+			LocalDateTime startConvert = converttoLocalDateTime(toUpdateForm.getDiscount().getStartDateInput());
+			toUpdateForm.getDiscount().setStartDate(startConvert);
 			LocalDateTime endConvert = converttoLocalDateTime(toUpdateForm.getDiscount().getEndDateInput());
 			toUpdateForm.getDiscount().setEndDate(endConvert);
 			
@@ -865,7 +1313,7 @@ public class AdminController {
 			toUpdateForm.setFeatures(null);
 		}
 		
-		if(filepath.getFeatureFile( ) != null)
+		if(!filepath.getFeatureFile()[0].getOriginalFilename().isBlank())
 		{
 			if(compareProduct.getFeatures() == null) {
 				Set<ProductFeature> featureSet = new  HashSet<ProductFeature>();
@@ -877,8 +1325,6 @@ public class AdminController {
 			System.out.println("MultipartFile for feature has "+ filepath.getFeatureFile().length);
 			for(MultipartFile featureFile: filepath.getFeatureFile()) 
 			{
-				if(!featureFile.getOriginalFilename().isEmpty()) 
-				{
 					count2 +=1;
 					String contentType = featureFile.getContentType();
 					System.out.println("Type of multipartFile file no. "+ count2 + " :"+ contentType);
@@ -893,7 +1339,6 @@ public class AdminController {
 					featureEl.setProductID(pID);
 					featureEl.setImageType(contentType);
 					toUpdateForm.getFeatures().add(featureEl);	
-				}
 			}
 		}
 		
@@ -904,7 +1349,7 @@ public class AdminController {
 			toUpdateForm.setUnboxing(null);
 		}
 		
-		if(filepath.getUnboxingFile() != null )
+		if(!filepath.getUnboxingFile()[0].getOriginalFilename().isBlank())
 		{
 			if(compareProduct.getUnboxing() == null) {
 				Set<ProductUnboxingReview> unboxSet = new  HashSet<ProductUnboxingReview>();
@@ -915,8 +1360,6 @@ public class AdminController {
 			System.out.println("MultipartFile for unboxing has "+ filepath.getUnboxingFile().length);
 			for(MultipartFile unboxFile: filepath.getUnboxingFile()) 
 			{
-				if(!unboxFile.getOriginalFilename().isEmpty())
-				{
 					count3 +=1;
 					String contentType = unboxFile.getContentType();
 					System.out.println("Type of multipartFile file no. "+ count3 + " :"+ contentType);
@@ -931,7 +1374,6 @@ public class AdminController {
 					unboxReview.setProductID(pID);
 					unboxReview.setImageType(contentType);
 					toUpdateForm.getUnboxing().add(unboxReview);
-				}
 			}
 			
 		}
@@ -940,86 +1382,108 @@ public class AdminController {
 		  || toUpdateForm.getVariant().getProductVariantName().isEmpty()) 
 		{
 			System.out.println("Variant is null");
-			toUpdateForm.setVariant(null);
+			if(compareProduct.getVariant() == null) toUpdateForm.setVariant(null);
+			
+			else toUpdateForm.setVariant(compareProduct.getVariant());
+			
 		}
-		else toUpdateForm.getVariant().setProductVariantID(pID);
-		
-		//form.setPromoteCodeID(1);
-		
-		/*
-	
-		//productForm.setCategoryID(cateID);
-				
-		*/
+		else if(!toUpdateForm.getVariant().getProductOriginalIdentifier().isEmpty()
+		&& !toUpdateForm.getVariant().getProductVariantName().isEmpty())
+		{
+			if(compareProduct.getVariant() == null) 
+			{
+				toUpdateForm.getVariant().setProductVariantID(pID);
+			}
+			
+			else 
+			{
+				String newVariantName = toUpdateForm.getVariant().getProductVariantName();
+				toUpdateForm.setVariant(compareProduct.getVariant());
+				toUpdateForm.getVariant().setProductVariantName(newVariantName);
+			}
+			
+		}
+		toUpdateForm.setSpecifications(compareProduct.getSpecifications());
 		
 		System.out.println("product after update is:"+toUpdateForm);
 		
-		//productList.set(foundForm, toUpdateForm);
 		//toUpdateform.setPromoteCodeID(promoteID);
-		productRepo.save(toUpdateForm);
-		//model.addObject("PromoteForm", form);
+		//productRepo.save(toUpdateForm);
+		model.addObject("StarAfterEnd1", null);
+		model.addObject("StartEqualsEnd1", null);
+		model.addObject("dupColor1", null);
 		model.setViewName("redirect:/admin/products-management/view-products");
+		}
 		//model.setViewName("Result");
 		//model.addObject("ProductList", productList);
 		return model;
 	}
 	
+	@CrossOrigin(origins = "*")
+	@GetMapping(value="/promotions-management/view-promotions")
+	public List<PromoteCode> viewPromotions(ModelAndView model) {
+	
+		List<PromoteCode> promoteList = promotionServ.getAllPromotes();
+		return promoteList;
+	}
+	
+	@CrossOrigin(origins = "*")
 	@GetMapping("/promotions-management/create-promotion")
-	public ModelAndView addNewPromotion(ModelAndView model) {
+	public PromoteCode addNewPromotion() {
 		PromoteCode promotecode = new PromoteCode();
-		String enableButton = "";
-
-		model.addObject("PromoteForm", promotecode);
-		model.addObject("EnableCheck", enableButton);
-		model.setViewName("PromoteAdd");
-		return model;
+		
+		return promotecode;
 	}
 
+	@CrossOrigin(origins = "*")
+	@GetMapping("/promotions-management/get-promotion/{promoteName}")
+	public PromoteCode getPromotion(@PathVariable("promoteName") String proName) {
+		String promoteName = proName;
+		
+		PromoteCode promotecode = new PromoteCode();
+		promotecode = promotionServ.getPromoteByName(promoteName);
+		return promotecode;
+	}
+	
+	@CrossOrigin(origins = "*")
 	@PostMapping("/promotions-management/create-promotion")
-	public ModelAndView processAddNewPromotion(ModelAndView model, @ModelAttribute("PromoteForm") PromoteCode form, 
-			@ModelAttribute("EnableCheck") String checkEnable/*, RedirectAttributes rediAttr*/) 
+	public PromoteCode processAddNewPromotion(PromoteCode form) 
 	{
-		if(checkEnable.equals("Enable")) form.setEnabled(true);
-		if(checkEnable.equals("Disable")) form.setEnabled(false);
+			/*LocalDateTime startDate = form.getStartDateInput();
+			LocalDateTime endDate = form.getEndDateInput();
+			LocalDateTime convertedCurrentTime= converttoLocalDateTime(startDate);
+			LocalDateTime convertedEndTime= converttoLocalDateTime(endDate);
 		
-		LocalDateTime currentTime = LocalDateTime.now();
-		
-		LocalDateTime convertedCurrentTime= converttoLocalDateTime(currentTime);
-		LocalDateTime convertedEndTime= converttoLocalDateTime(form.getEndDateInput());
-		
-		form.setStartDate(convertedCurrentTime);
-		form.setEndDate(convertedEndTime);
-		promoteIndex+=1;
-		form.setPromoteCodeID(promoteIndex);
-		promotionServ.savePromote(form);
-		//promoteList.add(form);
-		//model.addObject("PromoteForm", form);
-		model.setViewName("redirect:/Admin/ViewPromote");
-		return model;
+			form.setStartDate(convertedCurrentTime);
+			form.setEndDate(convertedEndTime);*/
+			System.out.println("Promotion creation processed:"+form.toString());
+			//promotionServ.savePromote(form);
+		return form;
 	}
 	
 	@GetMapping("/promotions-management/update-promotion/{promote}")
 	public ModelAndView UpdatePromotion(ModelAndView model, @PathVariable("promote") String promoteName) 
 	{
-		boolean breakLoop = false;
-		int checkEnabled = 0;
-		PromoteCode promote= promotionServ.getPromoteByName(promoteName);
-		/*PromoteCode form = new PromoteCode();
-		for(PromoteCode promotion: promoteList) 
-		{
-			
-			if(promoteName.equals(promotion.getPromoteCodeName())) 
-			{
-				breakLoop =true;
-				form = promotion;
-			}
-			if(breakLoop) break;
-			
-		}*/
-		//System.out.println("promoteID before is:"+form.getPromoteCodeID() );
-		/* if(form.getEnabled()) checkEnabled =1;
-		model.addObject("Enabling", checkEnabled);*/
-		model.addObject("PromoteUpdateForm", promote);
+		LocalDateTime minLimit = null;
+		LocalDateTime limit = null;
+		PromoteCode promotion= new PromoteCode();
+		
+		promotion = promotionServ.getPromoteByName(promoteName);
+		
+		//if(promote != null) System.out.println("Promotion found:");
+		//else System.out.println("Promotion not found:");
+		minLimit = promotion.getStartDate();
+		limit = minLimit.plusMonths(2);
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
+		
+		String formatedNowTime = minLimit.format(dtf);
+		String formatedLimitTime = limit.format(dtf);
+		promotion.setStartDateInput(promotion.getStartDate());
+		promotion.setEndDateInput(promotion.getEndDate());
+		model.addObject("MinDateTime", formatedNowTime);
+		model.addObject("MaxDateTime", formatedLimitTime);
+		model.addObject("PromoteUpdateForm", promotion);
 		model.setViewName("PromoteUpdate");
 		return model;
 	}
@@ -1031,37 +1495,53 @@ public class AdminController {
 		if(checkEnable.equals("Enable")) updateform.setEnabled(true);
 		if(checkEnable.equals("Disable")) updateform.setEnabled(false);
 		
-		int foundForm = 0;
-		int loopIndex = 0;
-		Integer promoteID = 0;
-		boolean breakFindLoop = false;
-		LocalDateTime currentTime = LocalDateTime.now();
+		int errorCount = 0;
 		
-		LocalDateTime convertedCurrentTime= converttoLocalDateTime(currentTime);
-		LocalDateTime convertedEndTime= converttoLocalDateTime(updateform.getEndDateInput());
-		
-		updateform.setStartDate(convertedCurrentTime);
-		updateform.setEndDate(convertedEndTime);
-		//form.setPromoteCodeID(1);
-		/*for(PromoteCode promotion: promoteList) 
+		if(updateform.getStartDateInput().isEqual(updateform.getEndDateInput())) 
 		{
+			System.out.println("Promotion start date and end date cannot be the same");
+			errorCount +=1;
+			String startSameAsEnd = "Promotion start date and end date cannot be the same";
+			model.addObject("StartSameAsEnd", startSameAsEnd);
+		}
+		else if(updateform.getStartDateInput().isAfter(updateform.getEndDateInput())) 
+		{
+			System.out.println("Promotion start date cannot be after end date");
+			errorCount +=1;
+			String starIsAfterEnd = "Promotion start date can't be after end date";
+			model.addObject("StartIsAfterEnd", starIsAfterEnd);
+		}
+		
+		if(errorCount >0) 
+		{
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime limit = now.plusMonths(2);
 			
-			if(updateform.getPromoteCodeID() == promotion.getPromoteCodeID()) 
-			{
-				breakFindLoop =true;
-				foundForm = loopIndex;
-				promoteID = promotion.getPromoteCodeID();
-			}
-			if(breakFindLoop) break;
-			loopIndex+=1;
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
 			
-		}*/
-		System.out.println("promoteID after is:"+promoteID);
+			String formatedNowTime = now.format(dtf);
+			String formatedLimitTime = limit.format(dtf);
+			model.addObject("MinDateTime", formatedNowTime);
+			model.addObject("MaxDateTime", formatedLimitTime);
+			model.addObject("PromoteForm", updateform);
+			//model.addObject("EnableCheck", enableButton);
+			model.setViewName("PromoteUpdate");
+		}
+		
+		if(errorCount ==0) {
+			LocalDateTime convertedCurrentTime= converttoLocalDateTime(updateform.getStartDateInput());
+			LocalDateTime convertedEndTime= converttoLocalDateTime(updateform.getEndDateInput());
+		
+			updateform.setStartDate(convertedCurrentTime);
+			updateform.setEndDate(convertedEndTime);
+			System.out.println("Promotion update processed:"+updateform.toString());
 		//promoteList.set(foundForm, updateform);
-		updateform.setPromoteCodeID(promoteID);
-		promotionServ.savePromote(updateform);
+			//promotionServ.savePromote(updateform);
 		//model.addObject("PromoteForm", form);
-		model.setViewName("redirect:/Admin/ViewPromote");
+			model.addObject("StartSameAsEnd", null);
+			model.addObject("StartIsAfterEnd", null);
+			model.setViewName("redirect:/admin/promotions-management/view-promotions");
+		}
 		return model;
 	}
 }

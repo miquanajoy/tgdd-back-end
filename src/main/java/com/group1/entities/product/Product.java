@@ -20,9 +20,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.group1.dto.ColorVariantUpdateDTO;
 import com.group1.dto.SpecSection;
+import com.group1.entities.shopping.BillDetail;
 //fixed
 @Entity
 @Table(name= "product")
@@ -52,6 +54,9 @@ public class Product implements Serializable{
 	
 	@Column(name = "CategoryID")
 	private Integer categoryID;
+	
+	@OneToMany(mappedBy = "productidentifier", cascade = CascadeType.ALL)
+	private Set<BillDetail> productInBills;
 	
 	@OneToOne(mappedBy = "productIdentifier", cascade = CascadeType.ALL)
 	private ProductDiscount discount;
@@ -117,9 +122,28 @@ public class Product implements Serializable{
 	public Product() {
 		
 	}
+	
+	public Product(String productID, String productName, Integer price, Integer manufacturerID, 
+			Integer categoryID, Integer productWarranty, byte[] image, String imageType,
+			double interestRate, Boolean exclusive, String accessoriesIncluded, Boolean enabled) {
+		super();
+		this.productID = productID;
+		this.productName = productName;
+		this.price = price;
+		this.manufacturerID = manufacturerID;
+		this.categoryID = categoryID;
+		this.productWarranty = productWarranty;
+		this.image = image;
+		this.imageType = imageType ;
+		this.interestRate = interestRate;
+		this.exclusive = exclusive;
+		this.accessoriesIncluded = accessoriesIncluded;
+		this.enabled = enabled;
+		this.imageToShow = imageToShow;
+	}
 
 	public Product(String productID, String productName, Integer price, Manufacturer manufacturer,
-			Integer manufacturerID, Category category, Integer categoryID, ProductDiscount discount,
+			Integer manufacturerID, Category category, Integer categoryID, Set<BillDetail> productInBills , ProductDiscount discount,
 			ProductArticle article, Set<ProductCameraShot> cameraShots, Set<ProductColorVariant> colorVariant,
 			Set<ProductFeature> features, ProductSpecification specifications, Set<ProductUnboxingReview> unboxing,
 			ProductVariant variant, Set<ProductVariant> original, Integer productWarranty, byte[] image, String imageType,
@@ -134,6 +158,7 @@ public class Product implements Serializable{
 		this.manufacturerID = manufacturerID;
 		this.category = category;
 		this.categoryID = categoryID;
+		this.productInBills =productInBills;
 		this.discount = discount;
 		this.article = article;
 		this.cameraShots = cameraShots;
@@ -210,6 +235,14 @@ public class Product implements Serializable{
 
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
+	}
+
+	public Set<BillDetail> getProductInBills() {
+		return productInBills;
+	}
+
+	public void setProductInBills(Set<BillDetail> productInBills) {
+		this.productInBills = productInBills;
 	}
 
 	public ProductDiscount getDiscount() {
@@ -395,8 +428,6 @@ public class Product implements Serializable{
 				+ "\n       colorVariantInputList=" + colorVariantInputList + "\n       colorVarUpdateList="
 				+ colorVarUpdateList + "\n       specList=" + specList;
 	}
-
-	
 
 	
 }
