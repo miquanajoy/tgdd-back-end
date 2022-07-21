@@ -52,6 +52,9 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 			+ "From Product p Where p.categoryID=:id")
 	public List<Product> findProductByCategory(Integer id);
 	
-	@Query(value="SELECT * FROM Product where manufacturerID=:id", nativeQuery = true)
-	public List<Product> findProductByBrand(Integer id);
+	@Query("Select new com.group1.entities.product.Product(p.productID, p.productName, p.price, p.manufacturerID,"
+			+ " p.categoryID, p.productWarranty, p.image, p.imageType,"
+			+ " p.interestRate, p.exclusive, p.accessoriesIncluded, p.enabled) "
+			+ "From Product p Where p.manufacturerID=:id")
+	public List<Product> findProductByManufacturer(Integer id);
 }
