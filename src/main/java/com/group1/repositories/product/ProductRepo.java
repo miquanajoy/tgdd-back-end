@@ -40,6 +40,18 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 	
 	public Product findByProductID(String productID);
 	
-	@Query(value="Select * From Product", nativeQuery = true)
+	@Query("Select new com.group1.entities.product.Product(p.productID, p.productName, p.price, p.manufacturerID,"
+			+ " p.categoryID, p.productWarranty, p.image, p.imageType,"
+			+ " p.interestRate, p.exclusive, p.accessoriesIncluded, p.enabled) "
+			+ "From Product p")
 	public List<Product> findAllProducts();
+		
+	@Query("Select new com.group1.entities.product.Product(p.productID, p.productName, p.price, p.manufacturerID,"
+			+ " p.categoryID, p.productWarranty, p.image, p.imageType,"
+			+ " p.interestRate, p.exclusive, p.accessoriesIncluded, p.enabled) "
+			+ "From Product p Where p.categoryID=:id")
+	public List<Product> findProductByCategory(Integer id);
+	
+	@Query(value="SELECT * FROM Product where manufacturerID=:id", nativeQuery = true)
+	public List<Product> findProductByBrand(Integer id);
 }

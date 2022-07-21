@@ -5,25 +5,25 @@ import java.util.List;
 
 public class SpecSection implements Serializable{
 
-	String sectionHeader;
+	String section;
 	public List<Attributes> attributes;
 	
 	public SpecSection() {
 		
 	}
 
-	public SpecSection(String sectionHeader, List<Attributes> attributes) {
+	public SpecSection(String section, List<Attributes> attributes) {
 		super();
-		this.sectionHeader = sectionHeader;
+		this.section = section;
 		this.attributes = attributes;
 	}
 
-	public String getSectionHeader() {
-		return sectionHeader;
+	public String getSection() {
+		return section;
 	}
 
-	public void setSectionHeader(String sectionHeader) {
-		this.sectionHeader = sectionHeader;
+	public void setSection(String section) {
+		this.section = section;
 	}
 
 	public List<Attributes> getAttributes() {
@@ -36,7 +36,7 @@ public class SpecSection implements Serializable{
 
 	@Override
 	public String toString() {
-		return sectionHeader + "\n    " + attributes;
+		return section + "\n    " + attributes;
 	}
 
 	
