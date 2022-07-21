@@ -14,6 +14,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 //fixed
 @Entity
 @Table(name = "manufacturer")
@@ -30,9 +31,11 @@ public class Manufacturer implements Serializable{
 	@Column(name = "Icon", columnDefinition = "BLOB")
 	private byte[] icon;
 	
+	@Transient
 	@OneToMany(mappedBy = "manufacturerID")
 	private Set<Product> ProductList;
 	
+	@Transient
 	@ManyToOne
 	@JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
 	private Category cateIDReferrence;

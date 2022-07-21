@@ -21,6 +21,6 @@ public interface ManufacturerRepo extends JpaRepository<Manufacturer, Integer>{
 			+ "Where m.ManufacturerID = ?1")
 	public void updateBrand( Integer brandId, @Param("brand") Manufacturer brandModel); 
 	
-	public List<Manufacturer> findByCategoryID(Integer cateID);
-
+	@Query(value="SELECT * FROM Manufacturer where categoryID=:id", nativeQuery = true)
+	public List<Manufacturer> findByCategoryID(Integer id);
 }

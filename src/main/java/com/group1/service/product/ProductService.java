@@ -67,8 +67,8 @@ public class ProductService {
 		return prodList;
 	}
 	
-	public List<Product> findProductByBrand(Integer id) {
-		List<Product> prodList = productReposit.findProductByBrand(id);
+	public List<Product> findProductByManufacturer(Integer id) {
+		List<Product> prodList = productReposit.findProductByManufacturer(id);
 		return prodList;
 		
 	}
