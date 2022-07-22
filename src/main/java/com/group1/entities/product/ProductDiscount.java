@@ -55,21 +55,13 @@ public class ProductDiscount implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
 	private LocalDateTime startDateInput;
 	
-	@Transient
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime minDateLimit;
-	
-	@Transient
-	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	private LocalDateTime maxDateLimit;
-
 	public ProductDiscount() {
 
 	}
 
 	public ProductDiscount(Integer discountID, Product productIdentifier, String productID, Integer discountedPrice,
 			Integer discountPercent, LocalDateTime startDate, LocalDateTime endDate, Boolean enabled, LocalDateTime endDateInput, 
-			LocalDateTime startDateInput, LocalDateTime minDateLimit, LocalDateTime maxDateLimit) {
+			LocalDateTime startDateInput) {
 		super();
 		this.discountID = discountID;
 		this.productIdentifier = productIdentifier;
@@ -81,8 +73,6 @@ public class ProductDiscount implements Serializable {
 		this.enabled = enabled;
 		this.endDateInput = endDateInput;
 		this.startDateInput = startDateInput;
-		this.minDateLimit = minDateLimit;
-		this.maxDateLimit = maxDateLimit;
 	}
 
 	public Integer getDiscountID() {
@@ -164,30 +154,13 @@ public class ProductDiscount implements Serializable {
 	public void setStartDateInput(LocalDateTime startDateInput) {
 		this.startDateInput = startDateInput;
 	}
-	
-	public LocalDateTime getMinDateLimit() {
-		return minDateLimit;
-	}
-
-	public void setMinDateLimit(LocalDateTime minDateLimit) {
-		this.minDateLimit = minDateLimit;
-	}
-
-	public LocalDateTime getMaxDateLimit() {
-		return maxDateLimit;
-	}
-
-	public void setMaxDateLimit(LocalDateTime maxDateLimit) {
-		this.maxDateLimit = maxDateLimit;
-	}
 
 	@Override
 	public String toString() {
 		return "discountID=" + discountID + "\n       productID=" + productID + "\n       discountedPrice="
 				+ discountedPrice + "\n       discountPercent=" + discountPercent + "\n       startDate=" + startDate
 				+ "\n       endDate=" + endDate + "\n       enabled=" + enabled + "\n       endDateInput="
-				+ endDateInput + "\n       startDateInput=" + startDateInput + "\n       minDateLimit=" + minDateLimit
-				+ "\n       maxDateLimit=" + maxDateLimit;
+				+ endDateInput + "\n       startDateInput=" + startDateInput;
 	}
 	
 }

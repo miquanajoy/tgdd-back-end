@@ -34,6 +34,14 @@ public class ProductTechSpecs {
 	public ProductTechSpecs() {
 		
 	}
+	
+	public ProductTechSpecs(Integer id, Integer categoryID, String specName, String section) {
+		super();
+		this.id = id;
+		this.categoryID = categoryID;
+		this.specName = specName;
+		this.section = section;
+	}
 
 	public ProductTechSpecs(Integer id, Category categoryIdentifier, Integer categoryID, String specName,
 			String section) {
