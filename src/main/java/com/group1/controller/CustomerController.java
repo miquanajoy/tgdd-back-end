@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.group1.entities.product.Category;
@@ -26,112 +27,58 @@ import com.group1.service.shopping.PromoteCodeService;
 @Controller
 
 public class CustomerController {
-	
+
 	@Autowired
 	ProductService productServ;
-	
+
 	@Autowired
 	ProductRepo productRepo;
-	
+
 	@Autowired
 	ManufacturerService manuServ;
-	
+
 	@Autowired
 	PromoteCodeService promotionServ;
-	
+
 	@Autowired
 	CategoryRepo cateRepo;
-	
+
 	@Autowired
 	ManufacturerRepo manuRepo;
-	
+
 	@Autowired
 	ColorRepo colorRepo;
-	
+
 	@Autowired
 	CategoryService cateServ;
-	
-	
+
 	@Autowired
 	ProductTechSpecsService specServ;
-	
+
 	boolean loadCateBasedSpecForm = false;
 	int promoteIndex = 0;
-	
-	@GetMapping("/view-products/phone")
-	public ModelAndView viewProductsCatePhone(ModelAndView model) {
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showProductByPhone();
-		
-		for(Product pro: productList) 
-		{	
-			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
-			pro.setImageToShow(encoder64);
-		}
-		
-		model.addObject("ProductList", productList);
-		model.addObject("ImgPath", path);
-		
-		model.setViewName("ProductViewByPhone");
-		return model;
-	}
-	
-	@GetMapping("/view-products/laptop")
-	public ModelAndView viewProductsCateLaptop(ModelAndView model) {
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showProductByLatop();
-		
-		for(Product pro: productList) 
-		{	
-			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
-			pro.setImageToShow(encoder64);
-		}
-		
-		model.addObject("ProductList", productList);
-		model.addObject("ImgPath", path);
-		
-		model.setViewName("ProductViewByPhone");
-		return model;
-	}
-	@GetMapping("/view-products/tablet")
-	public ModelAndView viewProductsCateTablet(ModelAndView model) {
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showProductByTablet();
-		
-		for(Product pro: productList) 
-		{	
-			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
-			pro.setImageToShow(encoder64);
-		}
-		
-		model.addObject("ProductList", productList);
-		model.addObject("ImgPath", path);
-		
-		model.setViewName("ProductViewByPhone");
-		return model;
-	}
-	@GetMapping("/view-products/smartwatch")
-	public ModelAndView viewProductsCateSmartWatch(ModelAndView model) {
-		String path ="/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
-		List<Product> productList = productServ.showProductBySmartWatch();
-		
-		for(Product pro: productList) 
-		{	
-			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
-			pro.setImageToShow(encoder64);
-		}
-		
-		model.addObject("ProductList", productList);
-		model.addObject("ImgPath", path);
-		
-		model.setViewName("ProductViewByPhone");
-		return model;
-	}
+
 	@GetMapping("/")
-	public ModelAndView viewProductByCateID(ModelAndView model) {
+	public ModelAndView viewProducts(ModelAndView model, @RequestParam(required = false) Integer category) {
+
+		String path = "/image/product/điện thoại/SSGN1234/Image/4x6.jpg";
+		List<Product> productList;
+		List<Category> categoryList = cateServ.getAllCategorys();
+		if (category == null ) {
+			productList = productServ.showAllProducts();
+		}
+		else {
+			productList = productServ.showProductByCategoryID(category);
+		}
+
+		for (Product pro : productList) {
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		model.addObject("ProductList", productList);
+		model.addObject("CategoryList", categoryList);
+		model.addObject("ImgPath", path);
+		model.setViewName("ProductViewByCategory");
 		return model;
 	}
-	
-	
-	
 }
