@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,19 +44,28 @@ public class Category implements Serializable{
 	@Column(name = "Enabled")
 	private Boolean enabled;
 	
-	@Transient
-	@OneToMany(mappedBy = "categoryID")
+	@OneToMany(mappedBy = "categoryID", cascade = CascadeType.ALL)
 	private Set<Product> ProductList;
 	
-	@Transient
-	@OneToMany(mappedBy = "categoryID")
+	@OneToMany(mappedBy = "cateIDReferrence", cascade = CascadeType.ALL)
 	private Set<Manufacturer> brandList;
 	
-	@Transient
-	@OneToMany(mappedBy = "categoryID")
+	@OneToMany(mappedBy = "categoryIdentifier", cascade = CascadeType.ALL)
 	private Set<ProductTechSpecs> specList;
 	
 	public Category() {
+	}
+	
+	public Category(Integer categoryID, Boolean isParent, Integer level, byte[] icon, String categoryName,
+			Integer parentID, Boolean enabled) {
+		super();
+		this.categoryID = categoryID;
+		this.isParent = isParent;
+		this.level = level;
+		this.icon = icon;
+		this.categoryName = categoryName;
+		this.parentID = parentID;
+		this.enabled = enabled;
 	}
 
 	public Category(Integer categoryID, Boolean isParent, Integer level, byte[] icon, String categoryName,
@@ -72,18 +82,6 @@ public class Category implements Serializable{
 		ProductList = productList;
 		this.brandList = brandList;
 		this.specList = specList;
-	}
-	
-	public Category(Integer categoryID, Boolean isParent, Integer level, byte[] icon, String categoryName,
-			Integer parentID, Boolean enabled) {
-		super();
-		this.categoryID = categoryID;
-		this.isParent = isParent;
-		this.level = level;
-		this.icon = icon;
-		this.categoryName = categoryName;
-		this.parentID = parentID;
-		this.enabled = enabled;
 	}
 
 	public Integer getCategoryID() {
@@ -169,8 +167,8 @@ public class Category implements Serializable{
 	@Override
 	public String toString() {
 		return "categoryID=" + categoryID + "\n       isParent=" + isParent + "\n       level=" + level
-				+ "\n       icon=" + Arrays.toString(icon) + "\n       categoryName=" + categoryName
-				+ "\n       parentID=" + parentID + "\n       enabled=" + enabled;
+				+ "\n       categoryName=" + categoryName + "\n       parentID=" + parentID + "\n       enabled="
+				+ enabled;
 	}
 
 	

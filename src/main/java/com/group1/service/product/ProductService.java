@@ -67,10 +67,17 @@ public class ProductService {
 		return prodList;
 	}
 	
+	public Boolean checkProductExist(String id) 
+	{
+		Boolean isProductExist = productReposit.existsById(id);
+		return isProductExist;
+	}
+
 	public List<Product> findProductByManufacturer(Integer id) {
 		List<Product> prodList = productReposit.findProductByManufacturer(id);
 		return prodList;
 		
 	}
 	
+
 }

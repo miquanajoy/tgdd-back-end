@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +32,8 @@ public class Manufacturer implements Serializable{
 	@Column(name = "Icon", columnDefinition = "BLOB")
 	private byte[] icon;
 	
-	@Transient
-	@OneToMany(mappedBy = "manufacturerID")
+
+	@OneToMany(mappedBy = "manufacturerID", cascade = CascadeType.ALL)
 	private Set<Product> ProductList;
 	
 	@Transient
@@ -47,6 +48,16 @@ public class Manufacturer implements Serializable{
 	private Boolean enabled;
 	
 	public Manufacturer() {
+	}
+	
+	public Manufacturer(Integer manufacturerID, String manufacturerName, byte[] icon, Integer categoryID,
+			Boolean enabled) {
+		super();
+		this.manufacturerID = manufacturerID;
+		this.manufacturerName = manufacturerName;
+		this.icon = icon;
+		this.categoryID = categoryID;
+		this.enabled = enabled;
 	}
 
 	public Manufacturer(Integer manufacturerID, String manufacturerName, byte[] icon, Set<Product> productList,
