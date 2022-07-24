@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import net.bytebuddy.implementation.bind.annotation.IgnoreForBinding;
 //fixed
 @Entity
@@ -43,13 +46,13 @@ public class Category implements Serializable{
 	
 	@Column(name = "Enabled")
 	private Boolean enabled;
-	
+
 	@OneToMany(mappedBy = "categoryID", cascade = CascadeType.ALL)
 	private Set<Product> ProductList;
-	
+
 	@OneToMany(mappedBy = "cateIDReferrence", cascade = CascadeType.ALL)
 	private Set<Manufacturer> brandList;
-	
+
 	@OneToMany(mappedBy = "categoryIdentifier", cascade = CascadeType.ALL)
 	private Set<ProductTechSpecs> specList;
 	

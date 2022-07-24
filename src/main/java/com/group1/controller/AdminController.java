@@ -174,8 +174,9 @@ public class AdminController {
 		return jsonConverted;
 	}
 	
-	
-	public List<SpecSection> convertToSpecSection(String jsonString)
+	@CrossOrigin(origins = "*")
+	@PostMapping("/convert-specs-to-list")
+	public List<SpecSection> convertToSpecSection(@RequestBody String jsonString)
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		List<SpecSection> specList = new ArrayList<SpecSection>();
@@ -208,51 +209,6 @@ public class AdminController {
 		System.out.println("Formatted end time in object:"+finalFormatedTime);
 		return finalFormatedTime;
 	}
-	
-	@GetMapping("/home")
-	public String home() {
-		return "index";
-	}
-	
-	@GetMapping("")
-	public String viewHomePage() {
-		return "index";
-	}
-	
-	@GetMapping("/login")
-	public ModelAndView showLoginPage() {
-
-		return new ModelAndView("LoginPage");
-	}
-	
-	
-	@PostMapping("/loginAction") 
-	  public ModelAndView checkLogin(@ModelAttribute("login") User user, HttpSession session) {
-	  
-		  ModelAndView model =new ModelAndView();
-		  User userdata = UserRepo.findByUserNameAndPassWord(user.getUserName(),user.getPassword()); 
-			  if (userdata != null) 
-			  {   
-				  Long createdTime= session.getCreationTime();
-				  System.out.println("Session created at:" + createdTime);
-				  session.setMaxInactiveInterval(60*30);
-				  int sessionage= session.getMaxInactiveInterval();
-				  System.out.println("Session will self-destroy in:" + sessionage);
-				  
-				  if (userdata.getRoleId().equals("1")) 
-				  {
-					  model.setViewName("index");
-					  return model; 
-				  }
-				  model.setViewName("ProductView");
-				  
-				  return model; 
-				  
-	          } 
-			  else 	          
-	        	 return model; 
-	          
-	  }
 	
 	@CrossOrigin(origins = "*")
 	@GetMapping("/get-categories")
@@ -303,6 +259,77 @@ public class AdminController {
 	public Product getAnExistingProduct(@RequestBody String proID) 
 	{
 		Product product = productServ.getProductByID(proID);
+		
+		if(product.getManufacturer() != null) 
+		{
+			if(product.getManufacturer().getCateIDReferrence() != null) product.getManufacturer().setCateIDReferrence(null);
+			if(product.getManufacturer().getProductList() != null) product.getManufacturer().setProductList(null);
+		}
+		
+		if(product.getCategory() != null) {
+			
+		 	if(product.getCategory().getBrandList() != null) product.getCategory().setBrandList(null);
+		 	if(product.getCategory().getProductList() != null) product.getCategory().setProductList(null);
+		 	if(product.getCategory().getSpecList() != null) product.getCategory().setSpecList(null);
+		}
+		
+		if(product.getOriginal() != null) 
+		{
+			for(ProductVariant it: product.getOriginal()) 
+			{
+				if(it.getProductOrigin() != null) it.setProductOrigin(null);
+				if(it.getProductVariantIdentifier() != null) it.setProductVariantIdentifier(null);
+			}
+		}
+		if(product.getArticle().getProductArticleIdentifier() != null) product.getArticle().setProductArticleIdentifier(null);
+		
+		if(product.getCameraShots() != null) {
+			for(ProductCameraShot item: product.getCameraShots()) 
+			{
+				if(item.getProductCameraShotIdentifier() != null) item.setProductCameraShotIdentifier(null);
+			}
+		}
+		
+		if(product.getColorVariant() != null) 
+		{
+			for(ProductColorVariant item :product.getColorVariant()) 
+			{ 
+				if(item.getProductColorVariantIdentifier() != null) item.setProductColorVariantIdentifier(null);
+			}
+		}
+		
+		if(product.getFeatures() != null)
+		{
+			for(ProductFeature el: product.getFeatures()) 
+			{ 
+				if(el.getProductFeatureIdentifier() != null) el.setProductFeatureIdentifier(null);
+			}
+		}
+		
+		if(product.getDiscount() != null) 
+		{
+			if(product.getDiscount().getProductIdentifier() != null) product.getDiscount().setProductIdentifier(null);
+		}
+		
+		if(product.getUnboxing() != null) 
+		{
+			for(ProductUnboxingReview el: product.getUnboxing()) 
+			{ 
+				if(el.getProductUnboxingReviewIdentifier() != null) el.setProductUnboxingReviewIdentifier(null);
+			}
+		}
+		
+		if(product.getVariant() != null) 
+		{
+			if(product.getVariant().getProductOrigin() != null) product.getVariant().setProductOrigin(null);
+			if(product.getVariant().getProductVariantIdentifier() != null) product.getVariant().setProductVariantIdentifier(null);
+		}
+
+		if(product.getSpecifications() != null) 
+		{
+			if(product.getSpecifications().getProductSpecificationIdentifier() != null)
+			product.getSpecifications().setProductSpecificationIdentifier(null);
+		}
 		return product;
 	}
 	
@@ -322,7 +349,7 @@ public class AdminController {
 	}*/
 	
 	@CrossOrigin(origins = "*")
-	@PostMapping(value="/products-management/create-product")
+	@PostMapping("/products-management/create-product")
 	public Product AddProductProcess(@RequestBody Product productForm) 
 	{
 		System.out.println("At final create product step"+productForm.toString());
@@ -374,6 +401,7 @@ public class AdminController {
 
 	}
 	
+	@CrossOrigin(origins = "*")
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {
 	
@@ -383,14 +411,16 @@ public class AdminController {
 
 	}
 	
-	@GetMapping("/products-management/view-or-update-product/step-2/{proID}")
-	public Product viewOrUpdateProducts( @PathVariable("proID") String productIdentity, 
-			@ModelAttribute("AddColor") String additionColor) {
+	@CrossOrigin(origins = "*")
+	@PostMapping("/products-management/view-or-update-product/step-2")
+	public Product viewOrUpdateProducts( @RequestBody String productIdentity, 
+			@RequestParam("AddColor") String additionColor) {
 		
 		Integer additionalColor = Integer.valueOf(additionColor);
 		//Product p = productRepo.findByProductID(productIdentity);
 		
 		Product p = getAnExistingProduct(productIdentity);
+		
 		//MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
 		List<ProductColorVariant> colorInputFormList = new ArrayList<ProductColorVariant>();
 		List<Color> colorList = getAllColors();
@@ -406,17 +436,19 @@ public class AdminController {
 		}
 		
 		if(p.getCameraShots() != null) {
-			for(Iterator<ProductCameraShot> t = p.getCameraShots().iterator(); t.hasNext();) 
-			{ 
-				ProductCameraShot el = t.next();
-				el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-			}
+			
+
+				for(ProductCameraShot item: p.getCameraShots()) 
+				{
+					item.setToShowImage(Base64.getEncoder().encodeToString(item.getImage()) );
+				}
 		}
 		
 		if(p.getColorVariant() != null) 
 		{
 			Integer setColorID = 0;
 			Integer colorListColorID = 0;
+
 			for(Iterator<ProductColorVariant> t = p.getColorVariant().iterator(); t.hasNext();) 
 			{ 
 				ProductColorVariant el = t.next();
@@ -490,26 +522,23 @@ public class AdminController {
 			p.setDiscount(discountObj);
 		}
 		else 
-		{
+		{	
 			p.getDiscount().setStartDateInput(p.getDiscount().getStartDate());
 			p.getDiscount().setEndDateInput(p.getDiscount().getEndDate());
 		}
 		
 		if(p.getFeatures() != null)
 		{
-			for(Iterator<ProductFeature> t = p.getFeatures().iterator(); t.hasNext();) 
+			for(ProductFeature el: p.getFeatures()) 
 			{ 
-				ProductFeature el = t.next();
 				el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
 			}
 		}
 		
-		
 		if(p.getUnboxing() != null) 
 		{
-			for(Iterator<ProductUnboxingReview> t = p.getUnboxing().iterator(); t.hasNext();) 
+			for(ProductUnboxingReview el: p.getUnboxing()) 
 			{ 
-				ProductUnboxingReview el = t.next();
 				el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
 			}
 		}
@@ -530,486 +559,12 @@ public class AdminController {
 		return p;
 	}
 	
+	@CrossOrigin(origins = "*")
 	@PostMapping("/products-management/update-product")
-	public ModelAndView UpdateProduct(ModelAndView model, @ModelAttribute("ProductUpdateForm") Product toUpdateForm,
-			@ModelAttribute("CheckExclusive") String exclusiveSetter, @ModelAttribute("CheckEnable") String enableSetter, 
-			@ModelAttribute("MultiField") MultiFieldsFilePathDTO filepath, 
-			@ModelAttribute("CheckDiscountEnable") String discountSetter, 
-			@ModelAttribute("AddColor") String addCountColor) {
-		
-			Integer countAdditionColors = Integer.valueOf(addCountColor);
-		
-		if(exclusiveSetter.contains("Exclusive")) toUpdateForm.setExclusive(true);
-		if(exclusiveSetter.contains("NotExclusive")) toUpdateForm.setExclusive(false);
-		
-		if(enableSetter.contains("Enable")) toUpdateForm.setEnabled(true);
-		if(enableSetter.contains("Disable")) toUpdateForm.setEnabled(false);
-		
-		if(discountSetter.contains("Enable")) toUpdateForm.getDiscount().setEnabled(true);
-		if(discountSetter.contains("Disable"))  toUpdateForm.getDiscount().setEnabled(false);
-		int errorCount = 0;
-		Product compareProduct = productServ.getProductByID(toUpdateForm.getProductID());
-		
-		//List<ColorVariantUpdateDTO> colorVarUpdateList = new ArrayList<ColorVariantUpdateDTO>();
-		List<Color> colorList  = colorServ.retrieveAllColors();
-		List<Color> backUpColorList  = new ArrayList<Color>();
-		backUpColorList.addAll(colorList);
-		if(toUpdateForm.getColorVariantInputList() != null && toUpdateForm.getColorVariantInputList().size() >1)
-		{
-			Integer prevID = 0;
-			Integer currID =0;
-			boolean foundDup = false;
-			for(ProductColorVariant colorVar: toUpdateForm.getColorVariantInputList()) 
-			{
-				if(prevID == 0) 
-				{
-					prevID =  colorVar.getColorID();
-					currID = colorVar.getColorID();
-					continue;
-				}
-				currID = colorVar.getColorID();
-				if(currID == prevID) 
-				{
-					foundDup = true;
-					break;
-				}
-				prevID = currID;
-			
-			}
-			if(foundDup) 
-			{
-				System.out.println("Duplicating color found");
-				errorCount +=1;
-				String duplicateColorWarning = "Duplicating color";
-				model.addObject("dupColor1", duplicateColorWarning);
-			}	
-		}
-
-		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null 
-				&& toUpdateForm.getDiscount().getStartDateInput() != null  && toUpdateForm.getDiscount().getEndDateInput() != null 
-				&& !discountSetter.isEmpty()) 
-				{
-					if(toUpdateForm.getDiscount().getStartDateInput().isEqual(toUpdateForm.getDiscount().getEndDateInput())) 
-					{
-						System.out.println("Discount start date and end date cannot be the same");
-						errorCount +=1;
-						String startEqualsEnd = "Discount start date and end date cannot be the same";
-						model.addObject("StartEqualsEnd1", startEqualsEnd);
-					}
-					else if(toUpdateForm.getDiscount().getStartDateInput().isAfter(toUpdateForm.getDiscount().getEndDateInput())) 
-					{
-						System.out.println("Discount start date cannot be after to end date");
-						errorCount +=1;
-						String startAfterEnd = "Discount start date and end date cannot be the same";
-						model.addObject("StartAfterEnd1", startAfterEnd);
-					}
-				}
-		
-		if(errorCount >0) 
-		{
-			LocalDateTime now = LocalDateTime.now();
-			LocalDateTime limit = now.plusMonths(2);
-			
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");		
-			
-			String formatedNowTime = now.format(dtf);
-			String formatedLimitTime = limit.format(dtf);
-			
-			if(compareProduct.getColorVariant() != null) 
-			{
-					//Integer setColorID = 0;
-					//Integer colorListColorID = 0;
-				for(Iterator<ProductColorVariant> t = compareProduct.getColorVariant().iterator(); t.hasNext();) 
-				{ 
-					ProductColorVariant el = t.next();
-					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-				}
-				toUpdateForm.setColorVariant(compareProduct.getColorVariant());
-					
-					/*for(ColorVariantUpdateDTO updateEL: toUpdateForm.getColorVarUpdateList()) 
-					{	
-						for(Color colour: backUpColorList) 
-						{
-							if(colour.getColorID() == updateEL.getForColorID()) 
-							{
-								updateEL.setForColorName(colour.getColorName());
-								break;
-							}
-						}
-					}*/
-			}
-				
-			if(countAdditionColors >0)
-			{
-				if(toUpdateForm.getColorVariant() != null && countAdditionColors >0) 
-				{
-					for(Iterator<Color> t = colorList.iterator(); t.hasNext();) 
-					{
-						Color ele = t.next();
-						for(ProductColorVariant colorVariant : toUpdateForm.getColorVariant()) 
-						{
-							if(ele.getColorID() == colorVariant.getColorID()) 
-							{
-								t.remove();
-								break;
-							}
-						}
-					}
-				}
-				model.addObject("ColorList", colorList);
-			}
-			
-			if(compareProduct.getSpecifications() != null) 
-			{
-				List<SpecSection> specShow = convertToSpecSection(compareProduct.getSpecifications().getProductSpecifications());	
-				toUpdateForm.setSpecList(specShow);
-			}
-			
-			if(compareProduct.getCameraShots() != null) {
-				for(Iterator<ProductCameraShot> t = compareProduct.getCameraShots().iterator(); t.hasNext();) 
-				{ 
-					ProductCameraShot el = t.next();
-					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-				}
-				toUpdateForm.setCameraShots(compareProduct.getCameraShots());
-			}
-			
-			if(compareProduct.getFeatures() != null)
-			{
-				for(Iterator<ProductFeature> t = compareProduct.getFeatures().iterator(); t.hasNext();) 
-				{ 
-					ProductFeature el = t.next();
-					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-				}
-				toUpdateForm.setFeatures(compareProduct.getFeatures());
-			}
-			
-			
-			if(compareProduct.getUnboxing() != null) 
-			{
-				for(Iterator<ProductUnboxingReview> t = compareProduct.getUnboxing().iterator(); t.hasNext();) 
-				{ 
-					ProductUnboxingReview el = t.next();
-					el.setToShowImage(Base64.getEncoder().encodeToString(el.getImage()) );
-				}
-				toUpdateForm.setUnboxing(compareProduct.getUnboxing());
-			}
-			//System.out.println("Update product after error "+ toUpdateForm);
-			MultiFieldsFilePathDTO multi = new MultiFieldsFilePathDTO();
-			model.addObject("AdditionalColor", String.valueOf(countAdditionColors));
-			model.addObject("MinDateTime", formatedNowTime);
-			model.addObject("MaxDateTime", formatedLimitTime);
-			model.addObject("ProductUpdateForm", toUpdateForm);
-			model.addObject("MultiField", multi);
-			model.setViewName("ProductDetailsOrUpdate");
-		}
-		
-
-		if(errorCount ==0) 
-		{
-			
-		int count = 0;
-		if(!filepath.getImageFile()[0].getOriginalFilename().isEmpty()) {
-			System.out.println("MultipartFile has "+ filepath.getImageFile().length);
-			for(MultipartFile filePart: filepath.getImageFile()) 
-			{
-					count +=1;
-					String contentType = filePart.getContentType();
-					System.out.println("Type of multipartFile file no. "+ count + " :"+ contentType);
-					toUpdateForm.setImageType(contentType);
-					String fileName = filePart.getOriginalFilename();
-					System.out.println("Name of multipartFile file no. "+ count + " :"+ fileName);
-					try {
-						toUpdateForm.setImage(filePart.getBytes());
-					} catch (IOException e) {
-					// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		else 
-		{
-			toUpdateForm.setImage(compareProduct.getImage());
-			toUpdateForm.setImageType(compareProduct.getImageType());
-		}
-		
-		String pID = toUpdateForm.getProductID();
-		
-		if(compareProduct.getArticle() == null) {
-			if(toUpdateForm.getArticle().getArticleUrl().isEmpty()) 
-			{
-				System.out.println("Article is null");
-				toUpdateForm.setArticle(null);
-			} 
-			else toUpdateForm.getArticle().setProductID(pID);
-		}
-		else
-		{
-			String newArticleUrl = toUpdateForm.getArticle().getArticleUrl();
-			toUpdateForm.setArticle(compareProduct.getArticle());
-			if(toUpdateForm.getArticle().getArticleUrl().isEmpty()) System.out.println("Update article URL is null");
-			else
-			{	
-				System.out.println("Update article URL is not null");
-				if(newArticleUrl.equals(toUpdateForm.getArticle().getArticleUrl())) 
-				toUpdateForm.getArticle().setArticleUrl(newArticleUrl);
-			}
-			
-		}
-		
-		int count1= 0;
-		if(filepath.getCameraShotsFile()[0].getOriginalFilename().isEmpty() && compareProduct.getCameraShots() == null) 
-		{
-			System.out.println("Camera shots is null");
-			toUpdateForm.setCameraShots(null);
-		} 
-		
-		if(!filepath.getCameraShotsFile()[0].getOriginalFilename().isBlank())
-		{
-			if(compareProduct.getCameraShots() == null) {
-				Set<ProductCameraShot> cameraSet = new  HashSet<ProductCameraShot>();
-				toUpdateForm.setCameraShots(cameraSet);
-			}
-			else toUpdateForm.setCameraShots(compareProduct.getCameraShots());
-			
-			System.out.println("MultipartFile for cameraShot has "+ filepath.getCameraShotsFile().length);
-			for(MultipartFile cameraFile: filepath.getCameraShotsFile()) 
-			{
-					count1 +=1;
-					String contentType = cameraFile.getContentType();
-					System.out.println("Type of multipartFile file no. "+ count1 + " :"+ contentType);
-					String fileName = cameraFile.getOriginalFilename();
-					System.out.println("Name of multipartFile file no. "+ count1 + " :"+ fileName);
-					ProductCameraShot camShot = new ProductCameraShot();
-					try {
-						camShot.setImage(cameraFile.getBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					camShot.setImageType(contentType);
-					camShot.setProductID(pID);
-					toUpdateForm.getCameraShots().add(camShot);
-			}
-			
-		}	
-			
-		int countEl = 0;
-		int countColor = 0;
-		if(compareProduct.getColorVariant() == null) {
-			Set<ProductColorVariant> colorSet = new  HashSet<ProductColorVariant>();
-			toUpdateForm.setColorVariant(colorSet);
-		}
-		else 
-		{
-			int updateCount = 0;
-			toUpdateForm.setColorVariant(compareProduct.getColorVariant());
-			for(ColorVariantUpdateDTO update: toUpdateForm.getColorVarUpdateList()) 
-			{
-				if(!update.getUpdateFileDatas()[0].getOriginalFilename().isBlank())
-				{
-					System.out.println("Update MultipartFile of color ID. "+ update.getForColorID()
-					+" has "+ update.getUpdateFileDatas().length);
-					for(MultipartFile updateFile: update.getUpdateFileDatas()) 
-					{
-							updateCount +=1;
-							String contentType = updateFile.getContentType();
-							System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
-							String fileName = updateFile.getOriginalFilename();
-							System.out.println("Name of multipartFile file no. "+ countColor + " :"+ fileName);
-							ProductColorVariant toSaveEl = new ProductColorVariant();
-							try {
-								toSaveEl.setImage(updateFile.getBytes());
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							toSaveEl.setImageType(contentType);
-							toSaveEl.setProductID(pID);
-							toSaveEl.setColorID(update.getForColorID());
-							toUpdateForm.getColorVariant().add(toSaveEl);
-					}
-					updateCount =0;
-				}
-			}
-		}
-		if(toUpdateForm.getColorVariantInputList() != null) {
-			for(Iterator<ProductColorVariant> t = toUpdateForm.getColorVariantInputList().iterator(); t.hasNext();) 
-			{
-				ProductColorVariant el = t.next();
-				countEl +=1;
-				if(el.getFileDatas()[0].getOriginalFilename().isEmpty()) 
-				{
-					t.remove();
-				}
-				else 
-				{
-					System.out.println("New MultipartFile of color no. "+ countEl+" has "+ el.getFileDatas().length);
-					for(MultipartFile file: el.getFileDatas()) 
-					{
-
-							countColor +=1;
-							String contentType = file.getContentType();
-							System.out.println("Type of multipartFile file no. "+ countColor + " :"+ contentType);
-							String fileName = file.getOriginalFilename();
-							System.out.println("Name of multipartFile file no. "+ countColor + " :"+ fileName);
-							ProductColorVariant toSaveEl = new ProductColorVariant();
-							try {
-								toSaveEl.setImage(file.getBytes());
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							toSaveEl.setImageType(contentType);
-							toSaveEl.setProductID(pID);
-							toSaveEl.setColorID(el.getColorID());
-							toSaveEl.setProductID(pID);
-							toUpdateForm.getColorVariant().add(toSaveEl);
-					}
-				}
-			}
-			if(toUpdateForm.getColorVariant().size() ==0) toUpdateForm.setColorVariant(null);
-		}
-		
-		if(toUpdateForm.getDiscount().getDiscountedPrice() == null || toUpdateForm.getDiscount().getDiscountPercent() == null
-				|| toUpdateForm.getDiscount().getStartDateInput() == null || toUpdateForm.getDiscount().getEndDateInput() == null 
-				 || discountSetter.isEmpty() || discountSetter == null) 
-		{
-			if(compareProduct.getDiscount() == null) toUpdateForm.setDiscount(null);
-			
-			else toUpdateForm.setDiscount(compareProduct.getDiscount());
-		}
-		if(toUpdateForm.getDiscount().getDiscountedPrice() != null && toUpdateForm.getDiscount().getDiscountPercent() != null
-				 && toUpdateForm.getDiscount().getStartDateInput() == null && toUpdateForm.getDiscount().getEndDateInput() != null 
-				 && discountSetter.isEmpty() || discountSetter != null) 
-		{
-			if(compareProduct.getDiscount() == null) {
-				toUpdateForm.getDiscount().setProductID(pID);
-			}
-			else 
-			{
-				Integer newDiscountPrice = toUpdateForm.getDiscount().getDiscountedPrice();
-				Integer newDiscountPercent = toUpdateForm.getDiscount().getDiscountedPrice();
-				toUpdateForm.setDiscount(compareProduct.getDiscount());
-				toUpdateForm.getDiscount().setDiscountedPrice(newDiscountPrice);
-				toUpdateForm.getDiscount().setDiscountPercent(newDiscountPercent);
-			}
-			LocalDateTime startConvert = converttoLocalDateTime(toUpdateForm.getDiscount().getStartDateInput());
-			toUpdateForm.getDiscount().setStartDate(startConvert);
-			LocalDateTime endConvert = converttoLocalDateTime(toUpdateForm.getDiscount().getEndDateInput());
-			toUpdateForm.getDiscount().setEndDate(endConvert);
-			
-			if(discountSetter.contains("Enable")) toUpdateForm.getDiscount().setEnabled(true);
-			if(discountSetter.contains("Disable"))  toUpdateForm.getDiscount().setEnabled(false);
-			
-		}
-		
-		if(filepath.getFeatureFile()[0].getOriginalFilename().isEmpty() && compareProduct.getFeatures() == null) {
-			System.out.println("Feature is null");
-			toUpdateForm.setFeatures(null);
-		}
-		
-		if(!filepath.getFeatureFile()[0].getOriginalFilename().isBlank())
-		{
-			if(compareProduct.getFeatures() == null) {
-				Set<ProductFeature> featureSet = new  HashSet<ProductFeature>();
-				toUpdateForm.setFeatures(featureSet);
-			}
-			else toUpdateForm.setFeatures(compareProduct.getFeatures());
-			int count2 = 0;
-
-			System.out.println("MultipartFile for feature has "+ filepath.getFeatureFile().length);
-			for(MultipartFile featureFile: filepath.getFeatureFile()) 
-			{
-					count2 +=1;
-					String contentType = featureFile.getContentType();
-					System.out.println("Type of multipartFile file no. "+ count2 + " :"+ contentType);
-					String fileName = featureFile.getOriginalFilename();
-					System.out.println("Name of multipartFile file no. "+ count2 + " :"+ fileName);
-					ProductFeature featureEl = new ProductFeature();
-					try {
-						featureEl.setImage(featureFile.getBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					featureEl.setProductID(pID);
-					featureEl.setImageType(contentType);
-					toUpdateForm.getFeatures().add(featureEl);	
-			}
-		}
-		
-		int count3 = 0;
-		if(filepath.getUnboxingFile()[0].getOriginalFilename().isEmpty() && compareProduct.getUnboxing() == null) 
-		{
-			System.out.println("Unboxing is null");
-			toUpdateForm.setUnboxing(null);
-		}
-		
-		if(!filepath.getUnboxingFile()[0].getOriginalFilename().isBlank())
-		{
-			if(compareProduct.getUnboxing() == null) {
-				Set<ProductUnboxingReview> unboxSet = new  HashSet<ProductUnboxingReview>();
-				toUpdateForm.setUnboxing(unboxSet);
-			}
-			else toUpdateForm.setUnboxing(compareProduct.getUnboxing());
-			
-			System.out.println("MultipartFile for unboxing has "+ filepath.getUnboxingFile().length);
-			for(MultipartFile unboxFile: filepath.getUnboxingFile()) 
-			{
-					count3 +=1;
-					String contentType = unboxFile.getContentType();
-					System.out.println("Type of multipartFile file no. "+ count3 + " :"+ contentType);
-					String fileName = unboxFile.getOriginalFilename();
-					System.out.println("Name of multipartFile file no. "+ count3 + " :"+ fileName);
-					ProductUnboxingReview unboxReview = new ProductUnboxingReview();
-					try {
-						unboxReview.setImage(unboxFile.getBytes());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					unboxReview.setProductID(pID);
-					unboxReview.setImageType(contentType);
-					toUpdateForm.getUnboxing().add(unboxReview);
-			}
-			
-		}
-		
-		if(toUpdateForm.getVariant().getProductOriginalIdentifier().isEmpty()
-		  || toUpdateForm.getVariant().getProductVariantName().isEmpty()) 
-		{
-			System.out.println("Variant is null");
-			if(compareProduct.getVariant() == null) toUpdateForm.setVariant(null);
-			
-			else toUpdateForm.setVariant(compareProduct.getVariant());
-			
-		}
-		else if(!toUpdateForm.getVariant().getProductOriginalIdentifier().isEmpty()
-		&& !toUpdateForm.getVariant().getProductVariantName().isEmpty())
-		{
-			if(compareProduct.getVariant() == null) 
-			{
-				toUpdateForm.getVariant().setProductVariantID(pID);
-			}
-			
-			else 
-			{
-				String newVariantName = toUpdateForm.getVariant().getProductVariantName();
-				toUpdateForm.setVariant(compareProduct.getVariant());
-				toUpdateForm.getVariant().setProductVariantName(newVariantName);
-			}
-			
-		}
-		toUpdateForm.setSpecifications(compareProduct.getSpecifications());
+	public Product UpdateProduct( @RequestBody Product toUpdateForm) {
 		
 		System.out.println("product after update is:"+toUpdateForm);
-		
-		//toUpdateform.setPromoteCodeID(promoteID);
-		//productRepo.save(toUpdateForm);
-		model.addObject("StarAfterEnd1", null);
-		model.addObject("StartEqualsEnd1", null);
-		model.addObject("dupColor1", null);
-		model.setViewName("redirect:/admin/products-management/view-products");
-		}
-		//model.setViewName("Result");
-		//model.addObject("ProductList", productList);
-		return model;
+		return toUpdateForm;
 	}
 	
 	@CrossOrigin(origins = "*")

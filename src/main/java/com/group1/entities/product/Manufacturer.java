@@ -16,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //fixed
 @Entity
 @Table(name = "manufacturer")
@@ -32,11 +35,9 @@ public class Manufacturer implements Serializable{
 	@Column(name = "Icon", columnDefinition = "BLOB")
 	private byte[] icon;
 	
-
 	@OneToMany(mappedBy = "manufacturerID", cascade = CascadeType.ALL)
 	private Set<Product> ProductList;
 	
-	@Transient
 	@ManyToOne
 	@JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
 	private Category cateIDReferrence;
@@ -130,8 +131,8 @@ public class Manufacturer implements Serializable{
 
 	@Override
 	public String toString() {
-		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName + "\n       icon="
-				+ Arrays.toString(icon) + "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
+		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName 
+				+ "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
 	}
 
 }
