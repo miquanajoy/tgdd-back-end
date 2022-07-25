@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
@@ -741,7 +743,8 @@ public class AdminController {
 	@GetMapping(value = "/products-management/view-products")
 	public List<Product> viewProducts(ModelAndView model, 
 			@RequestParam(name = "category", required = false) Integer category,
-			@RequestParam(name = "manufacturer", required = false) Integer manufacturer) {
+			@RequestParam(name = "manufacturer", required = false) Integer manufacturer,
+			@RequestParam(name = "name", required = false) String name) {
 
 		List<Product> productList = null;
 
@@ -755,7 +758,13 @@ public class AdminController {
 		} else {
 			productList = productServ.showAllProducts();
 		}
-
+		
+		if (name != null) {
+			productList = productList.stream().filter(p->p.getProductName()
+									 .toLowerCase().contains(name))
+									 .collect(Collectors.toList());					
+		} 
+		
 		for (Product pro : productList) {
 			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
 			pro.setImageToShow(encoder64);
@@ -781,7 +790,6 @@ public class AdminController {
 		return manufacturerList;
 
 	}
-	
 	
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {
