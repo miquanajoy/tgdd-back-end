@@ -73,4 +73,10 @@ public class ProductService {
 		
 	}
 	
+	public List<Product> findProductByName(String name)
+	{
+		List<Product> prodList = productReposit.findProductByName(name);
+		return prodList;
+	}
+	
 }
