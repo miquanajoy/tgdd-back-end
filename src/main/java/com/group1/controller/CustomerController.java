@@ -54,7 +54,6 @@ public class CustomerController {
 	ProductTechSpecsService specServ;
 	
 	
-	
 	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/view-products")
 	public List<Product> viewProducts(ModelAndView model, 
@@ -103,7 +102,5 @@ public class CustomerController {
 
 		List<Manufacturer> manufacturerList = manuServ.getAllCateBrands(categoryId);
 		return manufacturerList;
-
 	}
-	
 }
