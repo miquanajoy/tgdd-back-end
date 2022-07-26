@@ -77,9 +77,18 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.group1.service.product.CategoryService;
 import com.group1.service.product.ColorService;
 import com.group1.service.product.ManufacturerService;
+import com.group1.service.product.ProductArticleService;
+import com.group1.service.product.ProductCameraShotService;
+import com.group1.service.product.ProductColorVariantService;
+import com.group1.service.product.ProductDiscountService;
+import com.group1.service.product.ProductFeatureService;
 import com.group1.service.product.ProductService;
+import com.group1.service.product.ProductSpecificationService;
 import com.group1.service.product.ProductTechSpecsService;
+import com.group1.service.product.ProductUnboxingService;
+import com.group1.service.product.ProductVariantService;
 import com.group1.service.shopping.PromoteCodeService;
+import com.group1.service.user.UserService;
 
 @RestController
 @RequestMapping("/admin")
@@ -109,9 +118,18 @@ public class AdminController {
 	@Autowired
 	ProductTechSpecsService specServ;
 	
+	@Autowired
+	UserService userServ;
+	
 	boolean loadCateBasedSpecForm = false;
 	
-	@CrossOrigin(origins = "*")
+	@GetMapping("/check-user/{name}")
+	public User getUser(@PathVariable("name") String userName) 
+	{
+		User user = userServ.getUserByName(userName);
+		return user;
+	}
+	
 	@PostMapping("/convert-specs-to-form")
 	public List<SpecSection> loadCateBasedSpecificationForm(@RequestBody List<ProductTechSpecs> specList) 
 	{
@@ -157,7 +175,6 @@ public class AdminController {
 		return sectionList;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PostMapping("/convert-to-json-string")
 	public String convertToJsonString(@RequestBody Object objectToConvert) 
 	{
@@ -174,7 +191,6 @@ public class AdminController {
 		return jsonConverted;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PostMapping("/convert-specs-to-list")
 	public List<SpecSection> convertToSpecSection(@RequestBody String jsonString)
 	{
@@ -194,7 +210,6 @@ public class AdminController {
 		return specList;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PostMapping("/convert-date-time")
 	public LocalDateTime converttoLocalDateTime(@RequestBody LocalDateTime toConvertTime) 
 	{
@@ -210,7 +225,7 @@ public class AdminController {
 		return finalFormatedTime;
 	}
 	
-	@CrossOrigin(origins = "*")
+
 	@GetMapping("/get-categories")
 	public List<Category> getAllCategories() 
 	{
@@ -220,7 +235,7 @@ public class AdminController {
 		return categoryList;
 	}
 	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/get-specific-category")
 	public Category findCertainCategory(@RequestBody int ID) 
 	{
@@ -230,7 +245,7 @@ public class AdminController {
 		return category;
 	}
 	
-	@CrossOrigin(origins = "*")
+
 	@GetMapping("/get-colors")
 	public List<Color> getAllColors() 
 	{
@@ -238,15 +253,14 @@ public class AdminController {
 		return colorList;
 	}
 	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/get-category-brands")
 	public List<Manufacturer> getBrandsOfACate(@RequestBody Integer id) 
 	{
 		List<Manufacturer> brandList = manuServ.getAllCateBrands(id);
 		return brandList;
 	}
-		
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/get-category-specs")
 	public List<ProductTechSpecs> getSpecsOfACate(@RequestBody Integer id) 
 	{
@@ -254,7 +268,7 @@ public class AdminController {
 		return cateSpecList;
 	}
 	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/get-specific-product")
 	public Product getAnExistingProduct(@RequestBody String proID) 
 	{
@@ -333,7 +347,6 @@ public class AdminController {
 		return product;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PostMapping("/check-product-exist")
 	public Boolean testIfProductExist(@RequestBody String prodID) 
 	{
@@ -347,8 +360,7 @@ public class AdminController {
 	{
 		
 	}*/
-	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/products-management/create-product")
 	public Product AddProductProcess(@RequestBody Product productForm) 
 	{
@@ -356,7 +368,6 @@ public class AdminController {
 		return productForm;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/products-management/view-products")
 	public List<Product> viewProducts(ModelAndView model, 
 			@RequestParam(name = "category", required = false) Integer category,
@@ -382,7 +393,6 @@ public class AdminController {
 		return productList;
 	}
 
-	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/products-management/view-category")
 	public List<Category> viewByCategory(ModelAndView model) {
 
@@ -391,7 +401,6 @@ public class AdminController {
 
 	}
 
-	@CrossOrigin(origins = "*")
 	@GetMapping(value = "/products-management/view-manufacturer")
 	public List<Manufacturer> viewByManufacturerByCategory(ModelAndView model,
 			@RequestParam(required = true) Integer categoryId) {
@@ -400,8 +409,7 @@ public class AdminController {
 		return manufacturerList;
 
 	}
-	
-	@CrossOrigin(origins = "*")
+
 	@GetMapping("/products-management/view-or-update-product/step-1/{proID}")
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {
 	
@@ -410,8 +418,7 @@ public class AdminController {
 		return model;
 
 	}
-	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/products-management/view-or-update-product/step-2")
 	public Product viewOrUpdateProducts( @RequestBody String productIdentity, 
 			@RequestParam("AddColor") String additionColor) {
@@ -558,8 +565,7 @@ public class AdminController {
 		
 		return p;
 	}
-	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/products-management/update-product")
 	public Product UpdateProduct( @RequestBody Product toUpdateForm) {
 		
@@ -567,15 +573,13 @@ public class AdminController {
 		return toUpdateForm;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@GetMapping(value="/promotions-management/view-promotions")
 	public List<PromoteCode> viewPromotions(ModelAndView model) {
 	
 		List<PromoteCode> promoteList = promotionServ.getAllPromotes();
 		return promoteList;
 	}
-	
-	@CrossOrigin(origins = "*")
+
 	@GetMapping("/promotions-management/get-promotion/{promoteName}")
 	public PromoteCode getPromotion(@RequestBody(required = false) String promoteName, @PathVariable("promoteName") String promote) {
 		//String promoteName = proName;
@@ -585,8 +589,7 @@ public class AdminController {
 		else if(promote != null) promotecode = promotionServ.getPromoteByName(promote);
 		return promotecode;
 	}
-	
-	@CrossOrigin(origins = "*")
+
 	@PostMapping("/promotions-management/create-promotion")
 	public Object processAddNewPromotion(@RequestBody PromoteCode promoteInputForm) 
 	{		
@@ -639,7 +642,6 @@ public class AdminController {
 		return null;
 	}
 	
-	@CrossOrigin(origins = "*")
 	@PostMapping("/promotions-management/update-promotion")
 	public Object processUpdatePromotion(@RequestBody PromoteCode updateform) 
 	{
