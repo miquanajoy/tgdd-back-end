@@ -64,4 +64,7 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 			+ " p.interestRate, p.exclusive, p.accessoriesIncluded, p.enabled) "
 			+ "From Product p Where p.manufacturerID=:id")
 	public List<Product> findProductByManufacturer(Integer id);
+	
+	@Query(value="SELECT * FROM Product where productName like '%:name%'", nativeQuery = true)
+	public List<Product> findProductByName(String name);
 }

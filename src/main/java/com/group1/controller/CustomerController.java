@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +12,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group1.entities.product.Category;
+import com.group1.entities.product.Manufacturer;
+import com.group1.entities.product.Product;
 import com.group1.dto.SpecSection;
 import com.group1.dto.CustomerViewProductDetails.ArticleDetails;
 import com.group1.dto.CustomerViewProductDetails.CameraShotsDetails;
@@ -24,6 +31,10 @@ import com.group1.dto.CustomerViewProductDetails.FeatureDetails;
 import com.group1.dto.CustomerViewProductDetails.GeneralProductDetails;
 import com.group1.dto.CustomerViewProductDetails.ProductVariantDetails;
 import com.group1.dto.CustomerViewProductDetails.UnboxingDetails;
+import com.group1.repositories.product.CategoryRepo;
+import com.group1.repositories.product.ColorRepo;
+import com.group1.repositories.product.ManufacturerRepo;
+import com.group1.repositories.user.UserRepo;
 import com.group1.service.product.ProductArticleService;
 import com.group1.service.product.ProductCameraShotService;
 import com.group1.service.product.ProductColorVariantService;
@@ -33,10 +44,26 @@ import com.group1.service.product.ProductService;
 import com.group1.service.product.ProductSpecificationService;
 import com.group1.service.product.ProductUnboxingService;
 import com.group1.service.product.ProductVariantService;
+import com.group1.service.product.CategoryService;
+import com.group1.service.product.ManufacturerService;
+import com.group1.service.product.ProductService;
+import com.group1.service.product.ProductTechSpecsService;
+import com.group1.service.shopping.PromoteCodeService;
+
+
 
 @RestController
 public class CustomerController {
+
+  @Autowired
+	UserRepo userRepo;
+
+	@Autowired
+	ColorRepo colorRepo;
 	
+	@Autowired
+	ProductTechSpecsService specServ;
+  
 	@Autowired
 	ProductService productServ;
 	
@@ -63,6 +90,18 @@ public class CustomerController {
 	
 	@Autowired
 	ProductVariantService productVarServ;
+  
+  @Autowired
+	ManufacturerService manuServ;
+	
+	@Autowired
+	CategoryRepo cateRepo;
+	
+	@Autowired
+	CategoryService cateServ;
+
+	@Autowired
+	ManufacturerRepo manuRepo;
 	
 	@PostMapping("/convert-specs-to-list")
 	public List<SpecSection> convertToSpecSection(@RequestBody String jsonString)
@@ -82,6 +121,55 @@ public class CustomerController {
 		
 		return specList;
 	}
+  
+  @CrossOrigin(origins = "*")
+	@GetMapping(value = "/view-products")
+	public List<Product> viewProducts(ModelAndView model, 
+			@RequestParam(name = "category", required = false) Integer category,
+			@RequestParam(name = "manufacturer", required = false) Integer manufacturer,
+			@RequestParam(name = "name", required = false) String name) {
+
+		List<Product> productList = null;
+
+		if (category != null) {
+			if (manufacturer != null) {
+				productList = productServ.findProductByManufacturer(manufacturer);
+			} else {
+				productList = productServ.findProductByCategory(category);
+			}
+
+		} else {
+			productList = productServ.showAllProducts();
+		}
+		
+		if (name != null) {
+			productList = productList.stream().filter(p->p.getProductName()
+									 .toLowerCase().contains(name))
+									 .collect(Collectors.toList());					
+		} 
+		
+		for (Product pro : productList) {
+			String encoder64 = Base64.getEncoder().encodeToString(pro.getImage());
+			pro.setImageToShow(encoder64);
+		}
+		return productList;
+	}
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/view-category")
+	public List<Category> viewByCategory(ModelAndView model) {
+
+		List<Category> categoryList = cateServ.getAllCategorys();
+		return categoryList;
+
+	}
+
+	@CrossOrigin(origins = "*")
+	@GetMapping(value = "/view-manufacturer")
+	public List<Manufacturer> viewByManufacturerByCategory(ModelAndView model,
+			@RequestParam(required = true) Integer categoryId) {
+
+		List<Manufacturer> manufacturerList = manuServ.getAllCateBrands(categoryId);
+		return manufacturerList;
 	
 	@GetMapping("/view-details-product/{pID}")
 	public GeneralProductDetails getViewProductDetails(@PathVariable("pID") String productID) 
@@ -168,5 +256,6 @@ public class CustomerController {
 		prod.specList = specList;
 		
 		return prod;
+
 	}
 }
