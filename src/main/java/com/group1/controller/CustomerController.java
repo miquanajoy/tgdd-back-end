@@ -148,14 +148,19 @@ public class CustomerController {
 			prod.unboxing = null;
 		}
 		
-		List<ProductVariantDetails> prodVariantList = productVarServ.getVariantsOfProduct(productID);
-		if(prodVariantList.size() >0) 
+		List<ProductVariantDetails> prodVariantList = new ArrayList<ProductVariantDetails>();
+		ProductVariantDetails prodVariant = productVarServ.getVariantsOfProduct(productID);
+		if(prodVariant != null) 
 		{
-			prod.original = prodVariantList;
+			prodVariantList = productVarServ.getVariantsOfProductByOriginalID(prodVariant.getProductOriginalIdentifier());
+			if(prodVariantList.size() >0) prod.original = prodVariantList;
+			else prod.original = null;
 		}
 		else 
 		{
-			prod.original = null;
+			prodVariantList = productVarServ.getVariantsOfProductByOriginalID(productID);
+			if(prodVariantList.size() >0) prod.original = prodVariantList;
+			else prod.original = null;
 		}
 		
 		String specString = productSpecServ.getProductSpecs(productID);
