@@ -31,6 +31,12 @@ public class Color implements Serializable {
 
 	public Color() {
 	}
+	
+	public Color(Integer colorID, String colorName) {
+		super();
+		this.colorID = colorID;
+		this.colorName = colorName;
+	}
 
 	public Color(Integer colorID, Set<StoreProductInStock> stockProductsWithColorID, String colorName) {
 		super();

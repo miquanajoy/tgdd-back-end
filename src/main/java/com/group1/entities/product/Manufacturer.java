@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //fixed
 @Entity
 @Table(name = "manufacturer")
@@ -31,11 +35,9 @@ public class Manufacturer implements Serializable{
 	@Column(name = "Icon", columnDefinition = "BLOB")
 	private byte[] icon;
 	
-	@Transient
-	@OneToMany(mappedBy = "manufacturerID")
+	@OneToMany(mappedBy = "manufacturerID", cascade = CascadeType.ALL)
 	private Set<Product> ProductList;
 	
-	@Transient
 	@ManyToOne
 	@JoinColumn(name = "CategoryID", referencedColumnName = "CategoryID", insertable = false, updatable = false)
 	private Category cateIDReferrence;
@@ -47,6 +49,16 @@ public class Manufacturer implements Serializable{
 	private Boolean enabled;
 	
 	public Manufacturer() {
+	}
+	
+	public Manufacturer(Integer manufacturerID, String manufacturerName, byte[] icon, Integer categoryID,
+			Boolean enabled) {
+		super();
+		this.manufacturerID = manufacturerID;
+		this.manufacturerName = manufacturerName;
+		this.icon = icon;
+		this.categoryID = categoryID;
+		this.enabled = enabled;
 	}
 
 	public Manufacturer(Integer manufacturerID, String manufacturerName, byte[] icon, Set<Product> productList,
@@ -119,8 +131,8 @@ public class Manufacturer implements Serializable{
 
 	@Override
 	public String toString() {
-		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName + "\n       icon="
-				+ Arrays.toString(icon) + "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
+		return "manufacturerID=" + manufacturerID + "\n       manufacturerName=" + manufacturerName 
+				+ "\n       categoryID=" + categoryID + "\n       enabled=" + enabled;
 	}
 
 }

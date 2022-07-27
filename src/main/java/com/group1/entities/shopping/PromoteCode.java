@@ -67,6 +67,20 @@ public class PromoteCode implements Serializable {
 	public PromoteCode() {
 	}
 
+	public PromoteCode(Integer promoteCodeID, String promoteCodeName, String promoteCodeDescription,
+			Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate, LocalDateTime endDate,
+			Boolean enabled) {
+		super();
+		this.promoteCodeID = promoteCodeID;
+		this.promoteCodeName = promoteCodeName;
+		this.promoteCodeDescription = promoteCodeDescription;
+		this.discountPercent = discountPercent;
+		this.discountMaxAmount = discountMaxAmount;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.enabled = enabled;
+	}
+
 	public PromoteCode(Integer promoteCodeID, Set<ShoppingBill> billsWithPromoteID, String promoteCodeName,
 			String promoteCodeDescription, Integer discountPercent, Integer discountMaxAmount, LocalDateTime startDate,
 			LocalDateTime endDate, LocalDateTime startDateInput, LocalDateTime endDateInput, Boolean enabled) {

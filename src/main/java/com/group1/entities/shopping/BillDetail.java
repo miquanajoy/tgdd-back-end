@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.group1.entities.product.Product;
+import com.group1.entities.store.StoreProductInStock;
 
 //mqfixed
 @Entity
@@ -30,11 +31,11 @@ public class BillDetail implements Serializable {
 	private Integer billId;
 	
 	@ManyToOne
-	@JoinColumn(name = "ProductID", referencedColumnName = "ProductID", insertable = false, updatable = false)
-	private Product productidentifier;
+	@JoinColumn(name = "StoreProductID", referencedColumnName = "ID", insertable = false, updatable = false)
+	private StoreProductInStock storeProductIdentifier;
 	
-	@Column(name = "ProductID")
-	private Product productId;
+	@Column(name = "StoreProductID")
+	private Integer storeProductId;
 	
 	@Column(name = "Quantity")
 	private Integer quantity;
@@ -42,14 +43,14 @@ public class BillDetail implements Serializable {
 	public BillDetail() {
 	}
 
-	public BillDetail(Integer id, ShoppingBill billIdentifier, Integer billId, Product productidentifier,
-			Product productId, Integer quantity) {
+	public BillDetail(Integer id, ShoppingBill billIdentifier, Integer billId, StoreProductInStock storeProductIdentifier,
+			Integer storeProductId, Integer quantity) {
 		super();
 		this.id = id;
 		this.billIdentifier = billIdentifier;
 		this.billId = billId;
-		this.productidentifier = productidentifier;
-		this.productId = productId;
+		this.storeProductIdentifier = storeProductIdentifier;
+		this.storeProductId = storeProductId;
 		this.quantity = quantity;
 	}
 
@@ -76,21 +77,21 @@ public class BillDetail implements Serializable {
 	public void setBillId(Integer billId) {
 		this.billId = billId;
 	}
-
-	public Product getProductidentifier() {
-		return productidentifier;
+	
+	public StoreProductInStock getStoreProductIdentifier() {
+		return storeProductIdentifier;
 	}
 
-	public void setProductidentifier(Product productidentifier) {
-		this.productidentifier = productidentifier;
+	public void setStoreProductIdentifier(StoreProductInStock storeProductIdentifier) {
+		this.storeProductIdentifier = storeProductIdentifier;
 	}
 
-	public Product getProductId() {
-		return productId;
+	public Integer getStoreProductId() {
+		return storeProductId;
 	}
 
-	public void setProductId(Product productId) {
-		this.productId = productId;
+	public void setStoreProductId(Integer storeProductId) {
+		this.storeProductId = storeProductId;
 	}
 
 	public Integer getQuantity() {
@@ -103,11 +104,9 @@ public class BillDetail implements Serializable {
 
 	@Override
 	public String toString() {
-		return "id=" + id + "\n       billIdentifier=" + billIdentifier + "\n       billId=" + billId
-				+ "\n       productidentifier=" + productidentifier + "\n       productId=" + productId
+		return "id=" + id + "\n       billId=" + billId + "\n       storeProductId=" + storeProductId
 				+ "\n       quantity=" + quantity;
 	}
-
 
 }
 

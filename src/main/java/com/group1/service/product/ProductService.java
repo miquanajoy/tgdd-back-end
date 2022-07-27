@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
+import com.group1.dto.CustomerViewProductDetails.GeneralProductDetails;
 import com.group1.entities.product.Product;
 import com.group1.repositories.product.ProductRepo;
 
@@ -67,12 +68,23 @@ public class ProductService {
 		return prodList;
 	}
 	
+	public Boolean checkProductExist(String id) 
+	{
+		Boolean isProductExist = productReposit.existsById(id);
+		return isProductExist;
+	}
+
 	public List<Product> findProductByManufacturer(Integer id) {
 		List<Product> prodList = productReposit.findProductByManufacturer(id);
 		return prodList;
 		
 	}
 	
+	public GeneralProductDetails getProductDetailsForCustomerView(String prodID)
+	{
+		GeneralProductDetails customerViewProduct = productReposit.getCertainProductDetails(prodID);
+		return customerViewProduct;
+	}
 	public List<Product> findProductByName(String name)
 	{
 		List<Product> prodList = productReposit.findProductByName(name);
