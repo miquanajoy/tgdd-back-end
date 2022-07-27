@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.group1.dto.CartViewImageAttachment;
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.CustomerViewProductDetails.GeneralProductDetails;
@@ -85,10 +86,17 @@ public class ProductService {
 		GeneralProductDetails customerViewProduct = productReposit.getCertainProductDetails(prodID);
 		return customerViewProduct;
 	}
+	
+	public CartViewImageAttachment getImageForCartItem(String pID) 
+	{
+		CartViewImageAttachment imageAttachment = productReposit.getImageAttachment(pID);
+		return imageAttachment;
+	}
+
 	public List<Product> findProductByName(String name)
 	{
 		List<Product> prodList = productReposit.findProductByName(name);
 		return prodList;
 	}
-	
+
 }

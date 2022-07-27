@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.group1.dto.CartViewImageAttachment;
 import com.group1.dto.GeneralProductViewDTO;
 import com.group1.dto.ProductDiscountDTO;
 import com.group1.dto.CustomerViewProductDetails.GeneralProductDetails;
@@ -67,4 +68,9 @@ public interface ProductRepo extends JpaRepository<Product, String>{
 	
 	@Query(value="SELECT * FROM Product where productName like '%:name%'", nativeQuery = true)
 	public List<Product> findProductByName(String name);
+
+	@Query("Select new com.group1.dto.CartViewImageAttachment(p.productID, p.image) "
+			+ "From Product p Where p.productID = :ID")
+	public CartViewImageAttachment getImageAttachment(@Param("ID") String pID);
+
 }
