@@ -367,6 +367,7 @@ public class AdminController {
 	public Product AddProductProcess(@RequestBody Product productForm) 
 	{
 		System.out.println("At final create product step"+productForm.toString());
+		//productServ.saveNewProduct(productForm);
 		return productForm;
 	}
 	
@@ -423,7 +424,7 @@ public class AdminController {
 	public ModelAndView viewOrUpdateProductsStep1(ModelAndView model, @PathVariable("proID") String productIdentifier) {
 	
 		model.addObject("pID", productIdentifier);
-		model.setViewName("ProductDetailsOrUpdate");
+		//model.setViewName("ProductDetailsOrUpdate");
 		return model;
 
 	}
@@ -579,6 +580,7 @@ public class AdminController {
 	public Product UpdateProduct( @RequestBody Product toUpdateForm) {
 		
 		System.out.println("product after update is:"+toUpdateForm);
+		//productServ.saveNewProduct(toUpdateForm);
 		return toUpdateForm;
 	}
 	
@@ -685,6 +687,7 @@ public class AdminController {
 			updateform.setStartDate(convertedCurrentTime);
 			updateform.setEndDate(convertedEndTime);
 
+			promotionServ.savePromote(updateform);
 			System.out.println("Promotion has successfully been updated");
 			System.out.println("Promotion details:" + updateform.toString());
 		}

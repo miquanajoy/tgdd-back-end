@@ -20,9 +20,17 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.group1.entities.product.Category;
 import com.group1.entities.product.Manufacturer;
 import com.group1.entities.product.Product;
+
+import com.group1.dto.CartViewImageAttachment;
+
+import com.group1.entities.product.Category;
+import com.group1.entities.product.Manufacturer;
+import com.group1.entities.product.Product;
+
 import com.group1.dto.SpecSection;
 import com.group1.dto.CustomerViewProductDetails.ArticleDetails;
 import com.group1.dto.CustomerViewProductDetails.CameraShotsDetails;
@@ -31,10 +39,14 @@ import com.group1.dto.CustomerViewProductDetails.FeatureDetails;
 import com.group1.dto.CustomerViewProductDetails.GeneralProductDetails;
 import com.group1.dto.CustomerViewProductDetails.ProductVariantDetails;
 import com.group1.dto.CustomerViewProductDetails.UnboxingDetails;
+
+import com.group1.service.product.ColorService;
+
 import com.group1.repositories.product.CategoryRepo;
 import com.group1.repositories.product.ColorRepo;
 import com.group1.repositories.product.ManufacturerRepo;
 import com.group1.repositories.user.UserRepo;
+
 import com.group1.service.product.ProductArticleService;
 import com.group1.service.product.ProductCameraShotService;
 import com.group1.service.product.ProductColorVariantService;
@@ -102,6 +114,27 @@ public class CustomerController {
 
 	@Autowired
 	ManufacturerRepo manuRepo;
+
+	
+	@Autowired
+	ColorService colorServ;
+	
+	@GetMapping("/get-color-name/{cID}")
+	public String getColorName(@PathVariable("cID") Integer colorID) 
+	{
+		System.out.println("Color ID:"+colorID);
+		String colorName = colorServ.getSpecificColorName(colorID);
+		return colorName;
+	}
+	
+	@GetMapping("/get-image-attachment/{pID}")
+	public CartViewImageAttachment getImageAttachment(@PathVariable("pID") String productID) 
+	{
+		System.out.println("product ID:"+productID);
+		CartViewImageAttachment imageAttach = productServ.getImageForCartItem(productID);
+		return imageAttach;
+	}
+
 	
 	@PostMapping("/convert-specs-to-list")
 	public List<SpecSection> convertToSpecSection(@RequestBody String jsonString)
@@ -158,7 +191,7 @@ public class CustomerController {
 	@GetMapping(value = "/view-category")
 	public List<Category> viewByCategory(ModelAndView model) {
 
-		List<Category> categoryList = cateServ.getAllCategorys();
+		List<Category> categoryList = cateServ.getAllCategories();
 		return categoryList;
 
 	}
@@ -170,6 +203,7 @@ public class CustomerController {
 
 		List<Manufacturer> manufacturerList = manuServ.getAllCateBrands(categoryId);
 		return manufacturerList;
+	}
 	
 	@GetMapping("/view-details-product/{pID}")
 	public GeneralProductDetails getViewProductDetails(@PathVariable("pID") String productID) 

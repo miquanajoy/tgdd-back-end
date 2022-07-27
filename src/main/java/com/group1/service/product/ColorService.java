@@ -20,4 +20,10 @@ public class ColorService {
 		List<Color> colorList = colorReposit.getColorList();
 		return colorList;
 	}
+	
+	public String getSpecificColorName(Integer colorID) 
+	{
+		String colorName = colorReposit.getColorName(colorID);
+		return colorName;
+	}
 }
