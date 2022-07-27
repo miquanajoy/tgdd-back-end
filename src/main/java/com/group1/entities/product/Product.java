@@ -55,9 +55,6 @@ public class Product implements Serializable{
 	@Column(name = "CategoryID")
 	private Integer categoryID;
 	
-	@OneToMany(mappedBy = "productidentifier", cascade = CascadeType.ALL)
-	private Set<BillDetail> productInBills;
-	
 	@OneToOne(mappedBy = "productIdentifier", cascade = CascadeType.ALL)
 	private ProductDiscount discount;
 	
@@ -143,7 +140,7 @@ public class Product implements Serializable{
 	}
 
 	public Product(String productID, String productName, Integer price, Manufacturer manufacturer,
-			Integer manufacturerID, Category category, Integer categoryID, Set<BillDetail> productInBills , ProductDiscount discount,
+			Integer manufacturerID, Category category, ProductDiscount discount,
 			ProductArticle article, Set<ProductCameraShot> cameraShots, Set<ProductColorVariant> colorVariant,
 			Set<ProductFeature> features, ProductSpecification specifications, Set<ProductUnboxingReview> unboxing,
 			ProductVariant variant, Set<ProductVariant> original, Integer productWarranty, byte[] image, String imageType,
@@ -158,7 +155,6 @@ public class Product implements Serializable{
 		this.manufacturerID = manufacturerID;
 		this.category = category;
 		this.categoryID = categoryID;
-		this.productInBills =productInBills;
 		this.discount = discount;
 		this.article = article;
 		this.cameraShots = cameraShots;
@@ -235,14 +231,6 @@ public class Product implements Serializable{
 
 	public void setCategoryID(Integer categoryID) {
 		this.categoryID = categoryID;
-	}
-
-	public Set<BillDetail> getProductInBills() {
-		return productInBills;
-	}
-
-	public void setProductInBills(Set<BillDetail> productInBills) {
-		this.productInBills = productInBills;
 	}
 
 	public ProductDiscount getDiscount() {

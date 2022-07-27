@@ -17,7 +17,7 @@ public class PromoteCodeService {
 
 	public List<PromoteCode> getAllPromotes()
 	{
-		List<PromoteCode> promList = promoteReposit.findAll();
+		List<PromoteCode> promList = promoteReposit.getAllPromotions();
 		//System.out.println(prom.toString());
 		return promList;
 	}
@@ -30,7 +30,9 @@ public class PromoteCodeService {
 	
 	public PromoteCode getPromoteByName(String promoteName) 
 	{
-		PromoteCode prom = promoteReposit.getPromoteCodeByName(promoteName);
+		PromoteCode prom = new PromoteCode();
+		prom = promoteReposit.getPromotionByName(promoteName);
+		//System.out.println("Promotion details when found:"+prom.toString());
 		if(prom != null) System.out.println("Promotion found:");
 		else System.out.println("Promotion not found:");
 		return prom;

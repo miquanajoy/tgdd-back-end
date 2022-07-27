@@ -12,4 +12,9 @@ public class ProductSpecificationService {
 	@Resource
 	ProductSpecificationRepo pSpecificationRepo;
 
+	public String getProductSpecs(String ID) 
+	{
+		String productSpecifications = pSpecificationRepo.getProductSpecification(ID);
+		return productSpecifications;
+	}
 }

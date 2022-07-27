@@ -49,6 +49,9 @@ public class ShoppingBill implements Serializable{
 	@Column(name = "DeliveryType")
 	private String deliveryType;
 	
+	@Column(name = "TotalPrice")
+	private Integer totalPrice;
+	
 	@Column(name = "OtherRequirements")
 	private String otherRequirements;
 	
@@ -68,7 +71,7 @@ public class ShoppingBill implements Serializable{
 
 	public ShoppingBill(Integer billId, Customer customerIdentifier, Set<BillDetail> billItems, Integer customerID,
 			LocalDateTime timeCreated, Integer promoteCodeID, PromoteCode promoteCodeIdentifier, String deliveryAddress,
-			String deliveryType, String otherRequirements, String replacingReceiverName, String replacingReceiverGender,
+			String deliveryType, Integer totalPrice , String otherRequirements, String replacingReceiverName, String replacingReceiverGender,
 			String replacingReceiverPhoneNumber, Boolean status) {
 		super();
 		this.billId = billId;
@@ -80,6 +83,7 @@ public class ShoppingBill implements Serializable{
 		this.promoteCodeIdentifier = promoteCodeIdentifier;
 		this.deliveryAddress = deliveryAddress;
 		this.deliveryType = deliveryType;
+		this.totalPrice = totalPrice;
 		this.otherRequirements = otherRequirements;
 		this.replacingReceiverName = replacingReceiverName;
 		this.replacingReceiverGender = replacingReceiverGender;
@@ -158,6 +162,14 @@ public class ShoppingBill implements Serializable{
 	public void setDeliveryType(String deliveryType) {
 		this.deliveryType = deliveryType;
 	}
+	
+	public Integer getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Integer totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 
 	public String getOtherRequirements() {
 		return otherRequirements;
@@ -205,6 +217,7 @@ public class ShoppingBill implements Serializable{
 				+ billItems + "\n       customerID=" + customerID + "\n       timeCreated=" + timeCreated
 				+ "\n       promoteCodeID=" + promoteCodeID + "\n       promoteCodeIdentifier=" + promoteCodeIdentifier
 				+ "\n       deliveryAddress=" + deliveryAddress + "\n       deliveryType=" + deliveryType
+				+ "\n       totalPrice=" + totalPrice 
 				+ "\n       otherRequirements=" + otherRequirements + "\n       replacingReceiverName="
 				+ replacingReceiverName + "\n       replacingReceiverGender=" + replacingReceiverGender
 				+ "\n       replacingReceiverPhoneNumber=" + replacingReceiverPhoneNumber + "\n       status=" + status;

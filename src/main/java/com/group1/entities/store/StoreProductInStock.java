@@ -1,7 +1,9 @@
 package com.group1.entities.store;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,10 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.group1.entities.product.Color;
 import com.group1.entities.product.Product;
+import com.group1.entities.shopping.BillDetail;
 
 //mqfixed
 @Entity
@@ -22,6 +26,9 @@ public class StoreProductInStock implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name ="ID")
 	private Integer id;
+	
+	@OneToMany(mappedBy = "storeProductIdentifier", cascade = CascadeType.ALL)
+	private Set<BillDetail> storeProductInBills;
 	
 	@ManyToOne
 	@JoinColumn(name = "StoreID", referencedColumnName = "StoreID", insertable = false, updatable = false)
@@ -53,10 +60,11 @@ public class StoreProductInStock implements Serializable {
 	public StoreProductInStock() {
 	}
 
-	public StoreProductInStock(Integer id, Store storeIdentity, Integer storeId, Product productIdentity,
+	public StoreProductInStock(Integer id, Set<BillDetail> storeProductInBills, Store storeIdentity, Integer storeId, Product productIdentity,
 			Integer productId, Integer quantity, Integer localPrice, Color colorIdentity, Integer colorId) {
 		super();
 		this.id = id;
+		this.storeProductInBills = storeProductInBills;
 		this.storeIdentity = storeIdentity;
 		this.storeId = storeId;
 		this.productIdentity = productIdentity;
@@ -73,6 +81,14 @@ public class StoreProductInStock implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public Set<BillDetail> getStoreProductInBills() {
+		return storeProductInBills;
+	}
+
+	public void setStoreProductInBills(Set<BillDetail> storeProductInBills) {
+		this.storeProductInBills = storeProductInBills;
 	}
 
 	public Store getStoreIdentity() {

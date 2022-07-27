@@ -17,7 +17,7 @@ public class ProductTechSpecsService {
 	
 	public List<ProductTechSpecs> findAllSpecsByCateID(Integer cateID)
 	{
-		List<ProductTechSpecs> specList = techSpecsRepo.findByCategoryID(cateID);
+		List<ProductTechSpecs> specList = techSpecsRepo.specListByCategoryID(cateID);
 		for(ProductTechSpecs spec: specList) 
 		{
 			System.out.println(spec.toString());

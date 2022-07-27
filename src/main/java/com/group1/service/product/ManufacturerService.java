@@ -41,7 +41,7 @@ public class ManufacturerService {
 	
 	public List<Manufacturer> getAllCateBrands(Integer cateID)
 	{
-		List<Manufacturer> manuList = BrandRepo.findByCategoryID(cateID);
+		List<Manufacturer> manuList = BrandRepo.getBrandsByCateID(cateID);
 		return manuList;
 	}
 

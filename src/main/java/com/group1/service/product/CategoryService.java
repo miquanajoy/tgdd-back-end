@@ -16,9 +16,10 @@ public class CategoryService {
 	@Resource
 	CategoryRepo CategoryRepo;
 	
-	public List<Category> getAllCategorys()
+	public List<Category> getAllCategories()
 	{
-		List<Category> categoryList = CategoryRepo.findAllCategory();
+		List<Category> categoryList = CategoryRepo.getCategories();
+
 		for(Category item: categoryList) 
 		{
 			System.out.println(item.toString());
@@ -26,9 +27,10 @@ public class CategoryService {
 		return categoryList;
 	}
 	
-	public Category getSpecificCategory(Integer CategoryID)
+	public Category getSpecificCategory(Integer id)
 	{
-		Category categoryItem =CategoryRepo.findByCategoryID(CategoryID);
+		//System.out.println("Cate name at service:"+name);
+		Category categoryItem =CategoryRepo.getCategoryByID(id);
 			System.out.println(categoryItem.toString());
 		return categoryItem;
 	}
