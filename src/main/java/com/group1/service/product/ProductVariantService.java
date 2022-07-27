@@ -21,9 +21,15 @@ public class ProductVariantService {
 		return productIsOrigin;
 	}*/
 	
-	public List<ProductVariantDetails> getVariantsOfProduct(String ID)
+	public ProductVariantDetails getVariantsOfProduct(String ID)
 	{
-		List<ProductVariantDetails> productVariants = pVariantRepo.getProductVariantDetails(ID);
+		ProductVariantDetails productVariants = pVariantRepo.getProductVariantByVariantID(ID);
+		return productVariants;
+	}
+	
+	public List<ProductVariantDetails> getVariantsOfProductByOriginalID(String ID)
+	{
+		List<ProductVariantDetails> productVariants = pVariantRepo.getProductVariantByOriginalID(ID);
 		return productVariants;
 	}
 }

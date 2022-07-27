@@ -15,6 +15,11 @@ public interface ProductVariantRepo extends JpaRepository<ProductVariant, Intege
 	
 	@Query("Select new com.group1.dto.CustomerViewProductDetails.ProductVariantDetails(pv.productVariantID, "
 			+ "pv.productOriginalIdentifier, pv.productVariantName) "
-			+ "From ProductVariant pv Where pv.productVariantID = :ID Or pv.productOriginalIdentifier =:ID")
-	public List<ProductVariantDetails> getProductVariantDetails(@Param("ID") String pID);
+			+ "From ProductVariant pv Where pv.productVariantID = :ID")
+	public ProductVariantDetails getProductVariantByVariantID(@Param("ID") String pID);
+	
+	@Query("Select new com.group1.dto.CustomerViewProductDetails.ProductVariantDetails(pv.productVariantID, "
+			+ "pv.productOriginalIdentifier, pv.productVariantName) "
+			+ "From ProductVariant pv Where pv.productOriginalIdentifier =:ID")
+	public List<ProductVariantDetails> getProductVariantByOriginalID(@Param("ID") String prodID);
 }
