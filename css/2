@@ -1,0 +1,19 @@
+#lhc_status_container #status-icon {
+    background-color:#E97F02!important;
+    border-color:#e3e3e3!important;
+}
+
+
+
+#lhc_status_container #status-icon {
+    color:#ffffff!important;
+}
+
+
+
+
+
+#lhc_status_container,
+#lhc_questionary_container,
+#lhc_faq_container,
+#lhc_chatbox_container{box-shadow: 1px -1px 5px rgba(233,127,2, 0.4);}
