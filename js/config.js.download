@@ -1,0 +1,6 @@
+
+window[window["TiktokAnalyticsObject"]].instance("CANVQ2RC77UFDAKT9FD0").setAdvancedMatchingAvailableProperties({"email":true,"phone_number":true,"auto_email":false,"auto_phone_number":false});
+window[window["TiktokAnalyticsObject"]].instance("CANVQ2RC77UFDAKT9FD0").setPixelInfo && window[window["TiktokAnalyticsObject"]].instance("CANVQ2RC77UFDAKT9FD0").setPixelInfo({status: 0, name: "The Gioi Di Dong Pixel", advertiserID: "7111139404785287169", setupMode: 0, partner: "", is_onsite: false });
+window[window["TiktokAnalyticsObject"]].setPCMDomain && window[window["TiktokAnalyticsObject"]].setPCMDomain("thegioididong.com");
+window[window["TiktokAnalyticsObject"]].setPCMConfig && window[window["TiktokAnalyticsObject"]].setPCMConfig([]);
+window[window["TiktokAnalyticsObject"]].enableFirstPartyCookie && window[window["TiktokAnalyticsObject"]].enableFirstPartyCookie(true);
