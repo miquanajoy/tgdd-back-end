@@ -91,7 +91,7 @@ public class CustomerController {
 	@Autowired
 	ProductVariantService productVarServ;
   
-  @Autowired
+	@Autowired
 	ManufacturerService manuServ;
 	
 	@Autowired
@@ -158,7 +158,7 @@ public class CustomerController {
 	@GetMapping(value = "/view-category")
 	public List<Category> viewByCategory(ModelAndView model) {
 
-		List<Category> categoryList = cateServ.getAllCategorys();
+		List<Category> categoryList = cateServ.getAllCategories();
 		return categoryList;
 
 	}
@@ -170,6 +170,7 @@ public class CustomerController {
 
 		List<Manufacturer> manufacturerList = manuServ.getAllCateBrands(categoryId);
 		return manufacturerList;
+	}
 	
 	@GetMapping("/view-details-product/{pID}")
 	public GeneralProductDetails getViewProductDetails(@PathVariable("pID") String productID) 
@@ -178,6 +179,7 @@ public class CustomerController {
 		prod.imageToShow = Base64.getEncoder().encodeToString(prod.getImage());
 		ArticleDetails article = articleServ.findViewArticle(productID);
 		prod.article = article; 
+		
 		
 		List<CameraShotsDetails> camShots = cameraServ.getCammerShotViews(productID);
 		if(camShots.size() >0)

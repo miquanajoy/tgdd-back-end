@@ -85,6 +85,7 @@ public class ProductService {
 		GeneralProductDetails customerViewProduct = productReposit.getCertainProductDetails(prodID);
 		return customerViewProduct;
 	}
+	
 	public List<Product> findProductByName(String name)
 	{
 		List<Product> prodList = productReposit.findProductByName(name);
